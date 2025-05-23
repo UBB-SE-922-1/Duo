@@ -1,8 +1,12 @@
-﻿using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Media;
+﻿// <copyright file="Helpers.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace DuoDesktop.Helpers
 {
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Media;
+
     /// <summary>
     /// Provides helper methods for working with XAML visual trees.
     /// </summary>
@@ -29,6 +33,7 @@ namespace DuoDesktop.Helpers
 
                 parent = VisualTreeHelper.GetParent(parent);
             }
+
             return null;
         }
     }
