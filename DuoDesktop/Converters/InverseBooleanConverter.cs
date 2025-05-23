@@ -1,59 +1,56 @@
-﻿using System;
+﻿// <copyright file="InverseBooleanConverter.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-namespace Duo.Converters
+namespace DuoDesktop.Converters
 {
+    using System;
+
     /// <summary>
     /// A converter that inverts a boolean value.
-    /// If the value is true, it returns false.
-    /// if the value is false, it returns true.
+    /// Returns <c>false</c> if the input is <c>true</c>, and <c>true</c> if the input is <c>false</c>.
     /// </summary>
     public partial class InverseBooleanConverter : IAppValueConverter
     {
+        /// <inheritdoc />
         public object Convert(object value, Type targetType, object parameter, string language)
-            => ConvertSafe(value, targetType, parameter, language);
+            => this.ConvertSafe(value, targetType, parameter, language);
 
+        /// <inheritdoc />
         public object ConvertBack(object value, Type targetType, object parameter, string language)
-            => ConvertBackSafe(value, targetType, parameter, language);
+            => this.ConvertBackSafe(value, targetType, parameter, language);
 
         /// <summary>
-        /// Converts a boolean value to its inverse.
+        /// Inverts a boolean value.
         /// </summary>
-        /// <param name="value">The boolean value to invert (expected to be a boolean).</param>
-        /// <param name="targetType">The target type (expected to be a boolean).</param>
-        /// <param name="parameter">Any optional parameters passed in XAML.</param>
-        /// <param name="language">The language for localization.</param>
-        /// <returns>The inverse of the input boolean value, or the original value if it's not boolean.</returns>
+        /// <param name="value">The value to invert (expected to be of type <see cref="bool"/>).</param>
+        /// <param name="targetType">The target type (expected to be <see cref="bool"/>).</param>
+        /// <param name="parameter">An optional parameter (unused).</param>
+        /// <param name="language">The language or culture info (unused).</param>
+        /// <returns>
+        /// <c>true</c> if <paramref name="value"/> is <c>false</c>,
+        /// <c>false</c> if <paramref name="value"/> is <c>true</c>,
+        /// otherwise returns the input <paramref name="value"/> unchanged.
+        /// </returns>
         public object ConvertSafe(object value, Type targetType, object parameter, string language)
         {
-            // Ensure the value is a boolean before inverting it.
-            if (value is bool booleanValue)
-            {
-                // Return the inverse of the boolean value.
-                return !booleanValue;
-            }
-            // Return the original value if it's not a boolean.
-            return value;
+            return value is bool booleanValue ? !booleanValue : value;
         }
 
-        /// <inheritdoc/>
         /// <summary>
-        /// Converts the inverted boolean value back to its original state.
+        /// Inverts a boolean value back to its original.
         /// </summary>
-        /// <param name="value">The value to convert back (expected to be a boolean).</param>
-        /// <param name="targetType">The target type (expected to be a boolean).</param>
-        /// <param name="parameter">Any optional parameters passed in XAML.</param>
-        /// <param name="language">The language for localization.</param>
-        /// <returns>The inverse of the input boolean value, or the original value if it's not boolean.</returns>
+        /// <param name="value">The value to convert back (expected to be of type <see cref="bool"/>).</param>
+        /// <param name="targetType">The original type (expected to be <see cref="bool"/>).</param>
+        /// <param name="parameter">An optional parameter (unused).</param>
+        /// <param name="language">The language or culture info (unused).</param>
+        /// <returns>
+        /// The inverse of the input boolean value,
+        /// or the original value if it is not of type <see cref="bool"/>.
+        /// </returns>
         public object ConvertBackSafe(object value, Type targetType, object parameter, string language)
         {
-            // Ensure the value is a boolean before inverting it.
-            if (value is bool booleanValue)
-            {
-                // Return the inverse of the boolean value.
-                return !booleanValue;
-            }
-            // Return the original value if it's not a boolean.
-            return value;
+            return value is bool booleanValue ? !booleanValue : value;
         }
     }
 }

@@ -1,11 +1,10 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Duo.Views.Pages;
-using Duo.ViewModels;
+using DuoDesktop.Views.Pages;
+using DuoDesktop.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using Duo.Services.Interfaces;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace Duo
 {

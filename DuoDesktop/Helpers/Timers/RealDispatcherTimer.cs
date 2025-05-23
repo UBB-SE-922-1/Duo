@@ -1,9 +1,16 @@
-﻿namespace DuoDesktop.Helpers.Timers
+﻿// <copyright file="RealDispatcherTimer.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
+
+namespace DuoDesktop.Helpers.Timers
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
     using DuoDesktop.Helpers.Interfaces;
     using Microsoft.UI.Xaml;
+
+    #pragma warning disable IDE0079 // Remove unnecessary suppression
+    #pragma warning disable SA1009 // Closing parenthesis should be spaced correctly
 
     /// <summary>
     /// Wrapper class for the UWP DispatcherTimer that implements our custom IDispatcherTimer interface.
@@ -11,7 +18,7 @@
     /// tight coupling with the Windows Runtime (WinRT) in UWP, which causes COM exceptions during testing.
     /// </summary>
     /// <remarks>
-    /// Initializes a new instance of the RealDispatcherTimer class
+    /// Initializes a new instance of the RealDispatcherTimer class.
     /// </remarks>
     /// <param name="dispatcherTimer">
     /// Optional DispatcherTimer instance to wrap. If null, creates a new instance.
@@ -20,16 +27,7 @@
     [ExcludeFromCodeCoverage]
     public class RealDispatcherTimer(IDispatcherTimer? dispatcherTimer = null) : IDispatcherTimer
     {
-
-        #region Constructor
-
-        #endregion
-
-        #region Fields
         private readonly DispatcherTimer dispatcherTimer = dispatcherTimer as DispatcherTimer ?? new DispatcherTimer();
-        #endregion
-
-        #region Events
 
         /// <summary>
         /// Event that occurs when the timer interval has elapsed
@@ -40,34 +38,27 @@
         /// </remarks>
         public event EventHandler<object> Tick
         {
-            add => dispatcherTimer.Tick += (sender, e) => value(sender, e);
-            remove => dispatcherTimer.Tick -= (sender, e) => value(sender, e);
+            add => this.dispatcherTimer.Tick += (sender, e) => value(sender, e);
+            remove => this.dispatcherTimer.Tick -= (sender, e) => value(sender, e);
         }
-        #endregion
-
-        #region Properties
 
         /// <summary>
-        /// Gets or sets the amount of time between timer ticks
+        /// Gets or sets the amount of time between timer ticks.
         /// </summary>
         public TimeSpan Interval
         {
-            get => dispatcherTimer.Interval;
-            set => dispatcherTimer.Interval = value;
+            get => this.dispatcherTimer.Interval;
+            set => this.dispatcherTimer.Interval = value;
         }
-        #endregion
-
-        #region Methods
 
         /// <summary>
-        /// Starts the timer
+        /// Starts the timer.
         /// </summary>
-        public void Start() => dispatcherTimer.Start();
+        public void Start() => this.dispatcherTimer.Start();
 
         /// <summary>
-        /// Stops the timer
+        /// Stops the timer.
         /// </summary>
-        public void Stop() => dispatcherTimer.Stop();
-        #endregion
+        public void Stop() => this.dispatcherTimer.Stop();
     }
 }

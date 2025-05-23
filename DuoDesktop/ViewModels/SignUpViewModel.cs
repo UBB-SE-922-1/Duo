@@ -6,6 +6,11 @@ using Duo.Validators;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DuoClassLibrary.Services;
+using Duo.Services.Interfaces;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using DuolingoClassLibrary.Services;
+using DuoDesktop.Validators;
 
 namespace Duo.ViewModels
 {

@@ -1,13 +1,13 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Duo.ViewModels;
-using DuolingoClassLibrary.Entities;
+using DuoDesktop.ViewModels;
+using DuoClassLibrary.Models;
 using System;
 using System.Threading.Tasks;
-using DuolingoNou.Views;
+using DuoDesktop.Views;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Duo.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     /// <summary>
     /// Page for user sign-up functionality

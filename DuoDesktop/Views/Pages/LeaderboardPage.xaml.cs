@@ -12,19 +12,19 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using DuolingoClassLibrary.Entities;
+using DuoClassLibrary.Models;
 using System.Collections.ObjectModel;
-using Duo.Helpers;
+using DuoDesktop.Helpers;
 using System.Data;
-using DuolingoNou.Views.Pages;
-using Duo.ViewModels;
+using DuoDesktop.Views.Pages;
+using DuoDesktop.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace Duo.Views.Pages;
+namespace DuoDesktop.Views.Pages;
 
 
 /// <summary>

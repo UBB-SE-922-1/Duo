@@ -1,4 +1,8 @@
-﻿namespace DuoDesktop.Helpers.Interfaces
+﻿// <copyright file="IDispatcherTimer.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
+
+namespace DuoDesktop.Helpers.Interfaces
 {
     using System;
 
@@ -9,8 +13,6 @@
     /// </summary>
     public interface IDispatcherTimer
     {
-        #region Events
-
         /// <summary>
         /// Event that occurs when the timer interval has elapsed.
         /// </summary>
@@ -21,10 +23,6 @@
         /// </remarks>
         event EventHandler<object> Tick;
 
-        #endregion
-
-        #region Properties
-
         /// <summary>
         /// Gets or sets the time interval between timer ticks.
         /// </summary>
@@ -33,10 +31,6 @@
         /// The minimum allowed interval may vary by platform implementation.
         /// </value>
         TimeSpan Interval { get; set; }
-
-        #endregion
-
-        #region Methods
 
         /// <summary>
         /// Starts the timer.
@@ -55,7 +49,5 @@
         /// No more ticks will occur until Start() is called again.
         /// </remarks>
         void Stop();
-
-        #endregion
     }
 }

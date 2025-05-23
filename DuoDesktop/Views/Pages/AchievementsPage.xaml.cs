@@ -12,18 +12,18 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Duo.ViewModels;
-using DuolingoClassLibrary.Entities;
-using Duo.Services;
-using Duo;
+using DuoDesktop.ViewModels;
+using DuoClassLibrary.Models;
+using DuoClassLibrary.Services;
+using DuoDesktop;
 using Microsoft.Extensions.DependencyInjection;
 using System.Threading.Tasks;
-using DuolingoClassLibrary.Services;
+using DuoClassLibrary.Services;
 
 // To learn more about WinUI, the WinUI project structure,
 // and more about our project templates, see: http://aka.ms/winui-project-info.
 
-namespace DuolingoNou.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     public sealed partial class AchievementsPage : Page
     {
