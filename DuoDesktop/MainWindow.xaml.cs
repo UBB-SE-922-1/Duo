@@ -5,7 +5,7 @@ using Duo.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using Duo.Services.Interfaces;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace Duo
 {
