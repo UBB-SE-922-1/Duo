@@ -1,6 +1,6 @@
-using DuolingoClassLibrary.Entities;
-using Duo.Services;
-using Duo.Views.Components;
+using DuoClassLibrary.Models;
+using DuoClassLibrary.Services;
+using DuoDesktop.Views.Components;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Duo.ViewModels;
-using static Duo.App;
-using Duo.Services.Interfaces;
+using DuoDesktop.ViewModels;
+using static DuoDesktop.App;
+using DuoClassLibrary.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI;
 
-namespace Duo.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     public sealed partial class PostDetailPage : Page
     {
@@ -40,7 +40,7 @@ namespace Duo.Views.Pages
         {
             base.OnNavigatedTo(e);
 
-            if (e.Parameter is DuolingoClassLibrary.Entities.Post post && post.Id > INVALID_ID)
+            if (e.Parameter is DuoClassLibrary.Models.Post post && post.Id > INVALID_ID)
             {
                 ViewModel.LoadPostDetails(post.Id);
             }

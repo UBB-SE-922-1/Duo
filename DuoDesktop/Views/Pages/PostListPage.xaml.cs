@@ -7,12 +7,12 @@ using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System;
 using System.Threading.Tasks;
-using DuolingoClassLibrary.Entities;
-using Duo.ViewModels;
-using Duo.Services;
-using static Duo.App;
+using DuoClassLibrary.Models;
+using DuoDesktop.ViewModels;
+using DuoClassLibrary.Services;
+using static DuoDesktop.App;
 
-namespace Duo.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     public sealed partial class PostListPage : Page
     {

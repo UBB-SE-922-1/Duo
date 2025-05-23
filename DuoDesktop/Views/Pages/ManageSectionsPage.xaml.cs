@@ -1,32 +1,36 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
+using Microsoft.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Input;
+using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using DuoDesktop.ViewModels;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
 
 namespace DuoDesktop.Views.Pages
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A page for managing sections.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class ManageSectionsPage : Page
     {
-        private MainPageViewModel viewModel;
-
-        public MainPage()
+        public ManageSectionsPage()
         {
             try
             {
                 this.InitializeComponent();
-                viewModel = new MainPageViewModel();
-                viewModel.NavigationRequested += OnNavigationRequested;
-                viewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Initialization error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Initialization error: {ex.Message}");
             }
         }
 
@@ -38,7 +42,7 @@ namespace DuoDesktop.Views.Pages
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to show error dialog: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"Failed to show error dialog: {ex.Message}");
             }
         }
 
@@ -58,31 +62,22 @@ namespace DuoDesktop.Views.Pages
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"ContentDialog error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"ContentDialog error: {ex.Message}");
             }
         }
 
-        private void NavigationView_SelectionChanged(object sender, NavigationViewSelectionChangedEventArgs args)
+        public void BackButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                viewModel.HandleNavigationSelectionChanged(args);
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Navigation selection error: {ex.Message}");
-            }
-        }
-
-        private void OnNavigationRequested(object sender, Type pageType)
-        {
-            try
-            {
-                contentFrame.Navigate(pageType);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Navigation error: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"BackButton_Click error: {ex.Message}");
             }
         }
     }

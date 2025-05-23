@@ -3,15 +3,15 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Diagnostics;
-using DuolingoClassLibrary.Entities;
+using DuoClassLibrary.Models;
 using System.Collections.Generic;
-using Duo.ViewModels;
-using Duo.Views.Components;
-using static Duo.App;
-using DuolingoNou.Views.Pages;
+using DuoDesktop.ViewModels;
+using DuoDesktop.Views.Components;
+using static DuoDesktop.App;
+using DuoDesktop.Views.Pages;
 using System.Threading.Tasks;
 
-namespace Duo.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     public sealed partial class CategoryPage : Page
     {

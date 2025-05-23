@@ -1,18 +1,18 @@
-using Duo;
-using Duo.Services.Interfaces;
-using Duo.Services;
-using Duo.ViewModels;
-using DuolingoNou.Views;
-using DuolingoNou.Views.Pages;
+using DuoDesktop;
+using DuoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services;
+using DuoDesktop.ViewModels;
+using DuoDesktop.Views;
+using DuoDesktop.Views.Pages;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
-namespace Duo.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     /// <summary>
     /// Login page for user authentication.
