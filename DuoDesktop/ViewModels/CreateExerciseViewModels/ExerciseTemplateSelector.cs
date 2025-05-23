@@ -1,8 +1,8 @@
-﻿using Duo.ViewModels.ExerciseViewModels;
+﻿using DuoDesktop.ViewModels.ExerciseViewModels;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Duo.ViewModels.CreateExerciseViewModels
+namespace DuoDesktop.ViewModels.CreateExerciseViewModels
 {
     public class ExerciseTemplateSelector : DataTemplateSelector
     {

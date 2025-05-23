@@ -1,7 +1,7 @@
 ﻿using System;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// A ViewModel base class for admin-specific functionality like navigation and error handling.

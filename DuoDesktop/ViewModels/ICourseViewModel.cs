@@ -2,9 +2,8 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DuoClassLibrary.Models;
-using static Duo.ViewModels.CourseViewModel;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// Interface defining the view model for course management in the application.

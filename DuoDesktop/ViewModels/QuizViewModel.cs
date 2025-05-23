@@ -1,6 +1,7 @@
-﻿using DuolingoClassLibrary.Entities;
-using DuolingoClassLibrary.Services;
-using DuolingoClassLibrary.Services.Interfaces;
+﻿using DuoClassLibrary.Models;
+using DuoClassLibrary.Models.Quizzes;
+using DuoClassLibrary.Services;
+using DuoClassLibrary.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

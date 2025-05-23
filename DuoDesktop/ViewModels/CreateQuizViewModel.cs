@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     internal class CreateQuizViewModel : AdminBaseViewModel
     {

@@ -3,29 +3,23 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
-using Duo.Commands;
-using DuolingoClassLibrary.Entities;
-using Duo.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.Commands;
+using DuoClassLibrary.Models;
+using DuoDesktop.ViewModels.Base;
 using Duo.Views.Components;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
 using static Duo.App;
-using Duo.Services.Interfaces;
-using DuolingoClassLibrary.Entities;
+using DuoClassLibrary.Services.Interfaces;
 using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
-using DuolingoClassLibrary.Services.Interfaces;
+using Post = DuoDesktop.Views.Components.Post;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class PostDetailViewModel : ViewModelBase
     {
         private readonly IPostService _postService;
         private readonly ICommentService _commentService;
         private readonly IUserService _userService;
-        private DuolingoClassLibrary.Entities.Post _post;
+        private Post _post;
         private ObservableCollection<CommentViewModel> _commentViewModels;
         private ObservableCollection<DuolingoClassLibrary.Entities.Comment> _comments;
         private CommentCreationViewModel _commentCreationViewModel;

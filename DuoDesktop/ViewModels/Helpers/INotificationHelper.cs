@@ -1,4 +1,4 @@
-﻿namespace Duo.ViewModels.Helpers
+﻿namespace DuoDesktop.ViewModels.Helpers
 {
     /// <summary>
     /// Interface for managing temporary notifications in the course view.

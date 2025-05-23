@@ -1,10 +1,9 @@
 ﻿using System;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Exercises;
-using Duo.ViewModels.Base;
-using Duo.ViewModels.ExerciseViewModels;
+using DuoDesktop.ViewModels.ExerciseViewModels;
 
-namespace Duo.ViewModels.CreateExerciseViewModels
+namespace DuoDesktop.ViewModels.CreateExerciseViewModels
 {
     partial class CreateFlashcardExerciseViewModel : CreateExerciseViewModelBase
     {

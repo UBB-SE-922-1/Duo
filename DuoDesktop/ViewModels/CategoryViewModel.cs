@@ -1,18 +1,17 @@
 using System;
 using System.Windows.Input;
-using DuolingoClassLibrary.Entities;
+using DuoClassLibrary.Models;
 using Duo.Services;
 using Microsoft.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using System.Collections.Generic;
-using Duo.Services.Interfaces;
 using System.Threading.Tasks;
 using System.Linq;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class CategoryViewModel : INotifyPropertyChanged
     {

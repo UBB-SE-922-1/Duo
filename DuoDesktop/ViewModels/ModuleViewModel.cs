@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,7 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 using Windows.UI.Core;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public partial class ModuleViewModel : BaseViewModel, IModuleViewModel
     {

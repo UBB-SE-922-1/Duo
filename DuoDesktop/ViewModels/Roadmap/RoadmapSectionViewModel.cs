@@ -8,11 +8,11 @@ using System.Windows.Input;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 using DuoClassLibrary.Models;
 using Microsoft.UI.Dispatching;
 
-namespace Duo.ViewModels.Roadmap
+namespace DuoDesktop.ViewModels.Roadmap
 {
     public class RoadmapSectionViewModel : ViewModelBase
     {

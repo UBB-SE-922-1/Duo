@@ -5,14 +5,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     internal class ManageSectionsViewModel : AdminBaseViewModel
     {

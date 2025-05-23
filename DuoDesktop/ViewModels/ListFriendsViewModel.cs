@@ -1,13 +1,11 @@
-﻿using DuolingoClassLibrary.Entities;
+﻿using DuoClassLibrary.Models;
 using Duo.Services;
-using Duo.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using Duo;
 using System.Threading.Tasks;
 
-namespace Duo.UI.ViewModels
+namespace DuoDesktop.UI.ViewModels
 {
     /// <summary>
     /// ViewModel for managing the list of friends

@@ -5,14 +5,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.Generic;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Services;
-using Windows.System.Threading;
 
 #pragma warning disable IDE0028, CS8618, CS8602, CS8601, IDE0060
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// ViewModel responsible for managing the main application logic, including course display, filtering, and user coin balance.

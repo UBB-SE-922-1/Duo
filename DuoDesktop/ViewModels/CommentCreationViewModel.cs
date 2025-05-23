@@ -1,10 +1,10 @@
 using System;
 using System.Windows.Input;
-using Duo.Commands;
-using Duo.ViewModels.Base;
-using Duo.Helpers;
+using DuoDesktop.Commands;
+using DuoDesktop.ViewModels.Base;
+using DuoDesktop.Helpers;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class CommentCreationViewModel : ViewModelBase
     {

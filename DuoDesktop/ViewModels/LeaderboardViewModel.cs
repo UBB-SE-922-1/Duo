@@ -1,13 +1,11 @@
-﻿using DuolingoClassLibrary.Entities;
+﻿using DuoClassLibrary.Models;
 using Duo.Services;
-using Duo.Constants;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// ViewModel for the leaderboard functionality

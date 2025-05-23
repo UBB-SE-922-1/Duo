@@ -1,12 +1,11 @@
 ﻿using System;
 using Duo.Services;
-using DuolingoClassLibrary.Entities;
+using DuoClassLibrary.Models;
 using System.Threading.Tasks;
-using Duo.Services.Interfaces;
 using Duo.Validators;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using DuolingoClassLibrary.Services;
+using DuoClassLibrary.Services;
 
 namespace Duo.ViewModels
 {

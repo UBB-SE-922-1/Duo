@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 
 namespace Duo.ViewModels.ExerciseViewModels
 {

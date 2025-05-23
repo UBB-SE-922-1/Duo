@@ -1,16 +1,15 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;
-using Duo.Commands;
-using DuolingoClassLibrary.Entities;
-using Duo.ViewModels.Base;
+using DuoDesktop.Commands;
+using DuoClassLibrary.Models;
+using DuoDesktop.ViewModels.Base;
 using Microsoft.UI.Xaml.Controls;
 using System.Diagnostics;
-using Duo.Services.Interfaces;
 using System.Threading.Tasks;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class CategoryPageViewModel : ViewModelBase
     {

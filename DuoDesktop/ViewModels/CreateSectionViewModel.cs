@@ -6,15 +6,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 using Microsoft.IdentityModel.Tokens;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     internal partial class CreateSectionViewModel : AdminBaseViewModel
     {

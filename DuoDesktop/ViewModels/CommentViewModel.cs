@@ -1,19 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Duo.Commands;
-using Duo.Helpers;
-using Duo.ViewModels.Base;
-using Duo.Services;
-using static Duo.App;
-using DuolingoClassLibrary.Entities;
-
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
+    using DuoClassLibrary.Models;
+    using DuoDesktop.Commands;
+    using DuoDesktop.ViewModels.Base;
+
     public class CommentViewModel : ViewModelBase
     {
-        private DuolingoClassLibrary.Entities.Comment _comment;
+        private Comment _comment;
         private ObservableCollection<CommentViewModel> _replies;
         private bool _isExpanded = true;
         private string _replyText;

@@ -4,12 +4,12 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 
 namespace Duo.ViewModels.Roadmap
 {

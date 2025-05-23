@@ -1,9 +1,9 @@
 using System;
 using System.Diagnostics;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 using Microsoft.UI.Xaml.Controls;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class MainPageViewModel : ViewModelBase
     {

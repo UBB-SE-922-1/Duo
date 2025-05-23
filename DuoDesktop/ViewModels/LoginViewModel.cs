@@ -1,10 +1,9 @@
-using Duo.Services.Interfaces;
-using DuolingoClassLibrary.Entities;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Models;
 using System;
 using System.Threading.Tasks;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// ViewModel that handles the login logic.

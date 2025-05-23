@@ -1,10 +1,9 @@
-﻿using DuolingoClassLibrary.Entities;
-using Duo.Services;
+﻿using DuoClassLibrary.Models;
+using DuoClassLibrary.Services;
 using System;
 using System.Threading.Tasks;
-using DuolingoClassLibrary.Services;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// ViewModel for the user profile management
@@ -74,7 +73,7 @@ namespace Duo.ViewModels
             {
                 throw new InvalidOperationException("CurrentUser is not set");
             }
-            
+
             return await profileService.GetUserStats(CurrentUser.UserId);
         }
     }

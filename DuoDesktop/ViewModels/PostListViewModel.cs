@@ -1,25 +1,22 @@
 using System;
 using System.Windows.Input;
-using DuolingoClassLibrary.Entities;
-using Duo.Services;
-using Duo.Commands;
-using Microsoft.UI.Xaml;
+using DuoClassLibrary.Models;
+using DuoDesktop.Commands;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
-using Duo.Services.Interfaces;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class PostListViewModel : INotifyPropertyChanged
     {
         private readonly IPostService _postService;
-        
+
         // Constants for validation and defaults
         private const int INVALID_ID = 0;
         private const int DEFAULT_ITEMS_PER_PAGE = 5;

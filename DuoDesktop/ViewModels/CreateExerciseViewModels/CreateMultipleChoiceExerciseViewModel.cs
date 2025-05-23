@@ -1,16 +1,15 @@
-﻿using System;
+﻿using DuoClassLibrary.Models;
+using DuoClassLibrary.Models.Exercises;
+using DuoDesktop.Commands;
+using DuoDesktop.ViewModels.Base;
+using DuoDesktop.ViewModels.ExerciseViewModels;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
-using Duo.Commands;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Models.Exercises;
-using Duo.ViewModels.Base;
-using Duo.ViewModels.ExerciseViewModels;
 
-namespace Duo.ViewModels.CreateExerciseViewModels
+namespace DuoDesktop.ViewModels.CreateExerciseViewModels
 {
     partial class CreateMultipleChoiceExerciseViewModel : CreateExerciseViewModelBase
     {

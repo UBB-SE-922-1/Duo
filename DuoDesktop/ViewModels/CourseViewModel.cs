@@ -1,19 +1,19 @@
-﻿using DuolingoClassLibrary.Entities;
-using DuolingoClassLibrary.Services;
-using DuolingoClassLibrary.Services.Interfaces;
+﻿using DuoClassLibrary.Models;
+using DuoClassLibrary.Services;
+using DuoClassLibrary.Services.Interfaces;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-namespace DuolingoNou.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class CourseViewModel : INotifyPropertyChanged
     {
         private readonly ICourseService _courseService;
-        private ObservableCollection<MyCourse> _enrolledCourses;
+        private ObservableCollection<Course> _enrolledCourses;
 
-        public ObservableCollection<MyCourse> EnrolledCourses
+        public ObservableCollection<Course> EnrolledCourses
         {
             get => _enrolledCourses;
             set

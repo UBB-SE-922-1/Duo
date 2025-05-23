@@ -1,22 +1,22 @@
 using System;
 using System.Windows.Input;
-using DuolingoClassLibrary.Entities;
+using DuoClassLibrary.Models;
 using Duo.Services;
 using Microsoft.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Duo.Commands;
+using DuoDesktop.Commands;
 using System.Collections.Generic;
 using System.Diagnostics;
 using static Duo.App;
 using System.Collections.ObjectModel;
-using Duo.Views.Components;
+using DuoDesktop.Views.Components;
 using System.Threading.Tasks;
-using Duo.Helpers;
-using Duo.Services.Interfaces;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoDesktop.Helpers;
+using DuoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// The PostCreationViewModel is responsible for managing the creation and editing of posts.

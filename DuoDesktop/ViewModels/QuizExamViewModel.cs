@@ -7,9 +7,9 @@ using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
+using DuoDesktop.ViewModels.Base;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     public class QuizExamViewModel : ViewModelBase
     {

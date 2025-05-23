@@ -3,10 +3,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Duo.Services;
-using Duo.Services.Interfaces;
 using Duo.Validators;
-using DuolingoClassLibrary.Entities;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace Duo.ViewModels
 {
