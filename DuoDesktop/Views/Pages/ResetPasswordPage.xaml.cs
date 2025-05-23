@@ -12,14 +12,14 @@ using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
-using Duo.ViewModels;
-using Duo;
-using Duo.Views.Pages;
-using Duo.Services.Interfaces;
+using DuoDesktop.ViewModels;
+using DuoDesktop;
+using DuoDesktop.Views.Pages;
+using DuoClassLibrary.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using Duo.Views;
+using DuoDesktop.Views;
 
-namespace DuolingoNou.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     /// <summary>
     /// Interaction logic for ResetPasswordPage.xaml

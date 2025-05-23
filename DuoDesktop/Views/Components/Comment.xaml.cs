@@ -1,15 +1,15 @@
-using DuolingoClassLibrary.Entities;
-using Duo.Services;
+using DuoClassLibrary.Models;
+using DuoClassLibrary.Services;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Collections.Specialized;
-using Duo.ViewModels;
-using static Duo.App;
+using DuoDesktop.ViewModels;
+using static DuoDesktop.App;
 
-namespace Duo.Views.Components
+namespace DuoDesktop.Views.Components
 {
     public sealed partial class Comment : UserControl
     {

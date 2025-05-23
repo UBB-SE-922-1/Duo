@@ -1,7 +1,7 @@
 using Microsoft.UI.Xaml.Controls;
-using DuolingoNou.ViewModels;
+using DuoDesktop.ViewModels;
 
-namespace DuolingoNou.Views.Pages
+namespace DuoDesktop.Views.Pages
 {
     public sealed partial class CoursePage : Page
     {

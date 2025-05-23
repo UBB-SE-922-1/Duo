@@ -1,9 +1,9 @@
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
-using Duo.Helpers;
+using DuoDesktop.Helpers;
 
-namespace Duo.Views.Components
+namespace DuoDesktop.Views.Components
 {
     public sealed partial class CommentInput : UserControl
     {

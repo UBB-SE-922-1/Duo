@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Duo.Views.Components
+namespace DuoDesktop.Views.Components
 {
     public sealed partial class DialogComponent
     {

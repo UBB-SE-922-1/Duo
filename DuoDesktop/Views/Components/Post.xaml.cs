@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 using CommunityToolkit.WinUI.UI.Controls;
 
 // is this the right way to access userService and its methods?
-using static Duo.App;
-using Duo.Views.Pages;
-using Duo.ViewModels;
-namespace Duo.Views.Components
+using static DuoDesktop.App;
+using DuoDesktop.Views.Pages;
+using DuoDesktop.ViewModels;
+namespace DuoDesktop.Views.Components
 {
     public sealed partial class Post : UserControl
     {
@@ -194,7 +194,7 @@ namespace Duo.Views.Components
             if (frame != null)
             {
                 // Create a Post with the current post's data
-                var post = new DuolingoClassLibrary.Entities.Post
+                var post = new DuoClassLibrary.Models.Post
                 {
                     Title = this.Title ?? string.Empty,
                     Description = this.Content ?? string.Empty,
@@ -450,22 +450,22 @@ namespace Duo.Views.Components
                 var frame = FindParentFrame();
                  if (frame != null)
                  {
-                     if (frame.Content is Duo.Views.Pages.PostDetailPage)
+                     if (frame.Content is DuoDesktop.Views.Pages.PostDetailPage)
                      {
                          if (frame.CanGoBack)
                          {
                              frame.GoBack();
                          }
                      }
-                     else if (frame.Content is Duo.Views.Pages.PostListPage postListPage)
+                     else if (frame.Content is DuoDesktop.Views.Pages.PostListPage postListPage)
                      {
-                         var viewModel = postListPage.DataContext as Duo.ViewModels.PostListViewModel;
+                         var viewModel = postListPage.DataContext as DuoDesktop.ViewModels.PostListViewModel;
                          if (viewModel != null)
                          {
                              await viewModel.LoadPosts();
                          }
                      }
-                     else if (frame.Content is Duo.Views.Pages.CategoryPage categoryPage)
+                     else if (frame.Content is DuoDesktop.Views.Pages.CategoryPage categoryPage)
                      {
                          categoryPage.RefreshCurrentView();
                      }

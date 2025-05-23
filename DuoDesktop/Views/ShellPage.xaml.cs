@@ -1,14 +1,13 @@
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
-using DuolingoNou.Views.Pages;
-using Duo.ViewModels;
-using Duo.Services.Interfaces;
-using Duo.Views.Pages;
-using Duo.Services;
-using Duo;
-using DuolingoClassLibrary.Services.Interfaces;
+using DuoDesktop.Views.Pages;
+using DuoDesktop.ViewModels;
+using DuoClassLibrary.Services.Interfaces;
+using DuoDesktop.Views.Pages;
+using DuoClassLibrary.Services;
+using DuoDesktop;
 
-namespace DuolingoNou.Views
+namespace DuoDesktop.Views
 {
     public sealed partial class ShellPage : Page
     {

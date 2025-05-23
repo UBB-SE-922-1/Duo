@@ -16,23 +16,23 @@ using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Navigation;
 using Microsoft.UI.Xaml.Shapes;
 using System.Diagnostics;
-using Duo.Views;
+using DuoDesktop.Views;
 using Microsoft.Extensions.Configuration;
 using Duo.ViewModels;
 using Duo.Services;
-using DuolingoClassLibrary.Entities;
+using DuoClassLibrary.Models;
 using Duo.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
-using DuolingoClassLibrary.Services.Interfaces;
-using DuolingoClassLibrary.Repositories;
-using DuolingoClassLibrary.Repositories.Interfaces;
-using DuolingoClassLibrary.Repositories.Repos;
-using DuolingoClassLibrary.Repositories.Proxies;
+using DuoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Repositories;
+using DuoClassLibrary.Repositories.Interfaces;
+using DuoClassLibrary.Repositories.Proxies;
 using Microsoft.EntityFrameworkCore;
-using Duo.Services.Interfaces;
-using DuolingoClassLibrary.Services;
+using DuoClassLibrary.Repositories.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Services;
 
-namespace Duo
+namespace DuoDesktop
 {
 
     public partial class App : Application
@@ -84,7 +84,7 @@ namespace Duo
             services.AddSingleton(_configuration!);
 
             // Register DataContext for EF Core
-            services.AddDbContext<DuolingoClassLibrary.Data.DataContext>(options =>
+            services.AddDbContext<DuoClassLibrary.Data.DataContext>(options =>
                 options.UseSqlServer(_configuration.GetConnectionString("DefaultConnection") ?? "Server=(localdb)\\mssqllocaldb;Database=Duo;Trusted_Connection=True;"));
 
             // Register repositories

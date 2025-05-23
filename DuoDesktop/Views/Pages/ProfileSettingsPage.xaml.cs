@@ -5,13 +5,13 @@ using Windows.Storage.Pickers;
 using Windows.Storage.Streams;
 using System;
 using Windows.Storage;
-using Duo;
-using Duo.ViewModels;
-using DuolingoClassLibrary.Entities;
+using DuoDesktop;
+using DuoDesktop.ViewModels;
+using DuoClassLibrary.Models;
 using System.IO;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DuolingoNou.Views.Pages
+namespace Desktop.Views.Pages
 {
     public sealed partial class ProfileSettingsPage : Page
     {

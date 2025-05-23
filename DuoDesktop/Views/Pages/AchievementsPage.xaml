@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Page
-    x:Class="DuolingoNou.Views.Pages.AchievementsPage"
+    x:Class="DuoDesktop.Views.Pages.AchievementsPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-    xmlns:local="using:DuolingoClassLibrary.Entities"
+    xmlns:local="using:DuoClassLibrary.Models"
     Foreground="Black"
     Background="{ThemeResource SubtleFillColorSecondaryBrush}">
 
