@@ -3,10 +3,10 @@ using Duo.Services;
 using DuolingoClassLibrary.Entities;
 using System.Threading.Tasks;
 using Duo.Services.Interfaces;
-using Duo.Validators;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DuolingoClassLibrary.Services;
+using DuoDesktop.Validators;
 
 namespace Duo.ViewModels
 {
