@@ -1,4 +1,8 @@
-﻿namespace DuoDesktop.Helpers.Interfaces
+﻿// <copyright file="IExerciseViewFactory.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
+
+namespace DuoDesktop.Helpers.Interfaces
 {
     /// <summary>
     /// Defines a factory for creating exercise view objects based on exercise type.
