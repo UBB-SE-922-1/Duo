@@ -1,9 +1,9 @@
 {
   "profiles": {
-    "DuoDesktop (Package)": {
+    "Duo (Package)": {
       "commandName": "MsixPackage"
     },
-    "DuoDesktop (Unpackaged)": {
+    "Duo (Unpackaged)": {
       "commandName": "Project"
     }
   }

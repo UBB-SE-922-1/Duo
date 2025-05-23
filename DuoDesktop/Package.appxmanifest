@@ -8,15 +8,15 @@
   IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="76590cab-4f5f-4c39-bfdb-af13e12c4db9"
-    Publisher="CN=dosqas"
+    Name="8d001247-003a-4828-881a-b1ca13ce8ea4"
+    Publisher="CN=crist"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="76590cab-4f5f-4c39-bfdb-af13e12c4db9" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="8d001247-003a-4828-881a-b1ca13ce8ea4" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>DuoDesktop</DisplayName>
-    <PublisherDisplayName>dosqas</PublisherDisplayName>
+    <DisplayName>Duo</DisplayName>
+    <PublisherDisplayName>crist</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -34,8 +34,8 @@
       Executable="$targetnametoken$.exe"
       EntryPoint="$targetentrypoint$">
       <uap:VisualElements
-        DisplayName="DuoDesktop"
-        Description="DuoDesktop"
+        DisplayName="Duo"
+        Description="Duo"
         BackgroundColor="transparent"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png">

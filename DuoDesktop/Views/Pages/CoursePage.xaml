@@ -1,0 +1,60 @@
+<Page
+    x:Class="DuolingoNou.Views.Pages.CoursePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DuolingoClassLibrary.Entities"
+    xmlns:viewmodels="using:DuolingoNou.ViewModels"
+    xmlns:helpers="using:DuolingoNou.Helpers"
+    Foreground="Black"
+    Background="{ThemeResource SubtleFillColorSecondaryBrush}"
+>
+    <Page.Resources>
+        <helpers:PercentageConverter x:Key="PercentageConverter"/>
+    </Page.Resources>
+
+
+
+    <Grid Padding="20">
+        <StackPanel Orientation="Vertical" Spacing="20">
+            <!-- Top Bar with Title -->
+            <TextBlock Text="My Courses" 
+                       HorizontalAlignment="Center" 
+                       FontSize="24" 
+                       FontWeight="Bold"
+                       Foreground="Black"/>
+
+            <Border Height="1" Background="LightGray" Margin="0,-10,0,10"/>
+
+            <!-- Courses ListView -->
+            <ListView x:Name="CoursesList" 
+                      ItemsSource="{x:Bind ViewModel.EnrolledCourses, Mode=OneWay}"
+                      IsItemClickEnabled="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="local:MyCourse">
+                        <Grid Padding="10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Grid.Column="0" Spacing="4">
+                                <TextBlock Text="{x:Bind Name}" 
+                                           FontWeight="Bold" 
+                                           FontSize="18"/>
+                                <TextBlock Text="{x:Bind Language}" 
+                                           FontSize="14" 
+                                           Foreground="Gray"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Column="1" 
+                                       Text="{x:Bind CompletionPercentage, Converter={StaticResource PercentageConverter}}" 
+                                       FontSize="16" 
+                                       Foreground="Green"
+                                       VerticalAlignment="Center"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackPanel>
+    </Grid>
+</Page>
