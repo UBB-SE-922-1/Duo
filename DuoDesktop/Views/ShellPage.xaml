@@ -1,0 +1,68 @@
+﻿<Page
+    x:Class="DuolingoNou.Views.ShellPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:DuolingoNou.Views"
+    xmlns:pages="using:DuolingoNou.Views.Pages"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <NavigationView x:Name="NavView"
+                    IsBackEnabled="False"
+                    IsSettingsVisible="True"
+                    PaneDisplayMode="Left"
+                    PaneTitle="Duo"
+                    OpenPaneLength="213"
+                    CompactPaneLength="32"
+                    SelectionChanged="NavView_SelectionChanged">
+
+        <NavigationView.MenuItems>
+            <NavigationViewItem Content="Profile" Icon="Contact" Tag="Profile">
+                <NavigationViewItem.MenuItems>
+
+                    <!-- SEARCH BAR INSERTED -->
+                    <StackPanel Orientation="Horizontal" Padding="6" Margin="0,4,0,4">
+                        <TextBox x:Name="SearchBox"
+                                 PlaceholderText="Search"
+                                 Width="160"
+                                 VerticalAlignment="Center"
+                                 Margin="0,0,6,0"/>
+                        <Button Click="SearchButton_Click"
+                                Width="36"
+                                Height="36"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                VerticalAlignment="Center">
+                            <FontIcon Glyph="&#xE721;" FontSize="16"/>
+                        </Button>
+                    </StackPanel>
+
+                    <!-- Navigation Items -->
+                    <NavigationViewItem Content="Home Page" Icon="Home" Tag="HomePage" />
+                    <NavigationViewItem Content="Stats" Tag="Stats">
+                        <NavigationViewItem.Icon>
+                            <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE9D2;" />
+                        </NavigationViewItem.Icon>
+                    </NavigationViewItem>
+                    <NavigationViewItem Content="Leaderboards" Icon="People" Tag="Leaderboards" />
+                    <NavigationViewItem Content="Settings" Icon="Setting" Tag="Settings" />
+
+                </NavigationViewItem.MenuItems>
+            </NavigationViewItem>
+
+            <!-- Other Main Items -->
+            <NavigationViewItem Content="MyCourses" Icon="Library" Tag="Course" />
+            <NavigationViewItem Content="MyQuiz" Icon="Help" Tag="Quiz" />
+            <NavigationViewItem Content="Community" Icon="People" Tag="Community">
+                <NavigationViewItem.MenuItems>
+                    <NavigationViewItem Content="Announcements" Icon="Message" Tag="Announcements" />
+                    <NavigationViewItem Content="Discover" Icon="Globe" Tag="Discover" />
+                    <NavigationViewItem Content="General Discussion" Icon="Comment" Tag="GeneralDiscussion" />
+                    <NavigationViewItem Content="Lesson Help" Icon="Help" Tag="LessonHelp" />
+                    <NavigationViewItem Content="Off Topic" Icon="Message" Tag="OffTopic" />
+                </NavigationViewItem.MenuItems>
+            </NavigationViewItem>
+        </NavigationView.MenuItems>
+
+        <Frame x:Name="ContentFrame" />
+    </NavigationView>
+</Page>

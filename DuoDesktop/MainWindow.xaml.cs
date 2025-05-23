@@ -1,36 +1,45 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using Duo.Views.Pages;
+using Duo.ViewModels;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using Duo.Services.Interfaces;
+using DuolingoClassLibrary.Services.Interfaces;
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
-namespace DuoDesktop
+namespace Duo
 {
     /// <summary>
-    /// An empty window that can be used on its own or navigated to within a Frame.
+    /// The main window of the application.
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        private readonly ILoginService loginService;
+
         public MainWindow()
         {
             this.InitializeComponent();
+
+            // Get the login service from the dependency injection container
+            loginService = App.ServiceProvider.GetRequiredService<ILoginService>();
+
+            // Navigate to the login page
+            MainFrame.Navigate(typeof(LoginPage));
+
+            // Handle the Closed event
+            this.Closed += MainWindow_Closed;
         }
 
-        private void myButton_Click(object sender, RoutedEventArgs e)
+        private void MainWindow_Closed(object sender, WindowEventArgs e)
         {
-            myButton.Content = "Clicked";
+            if (App.CurrentUser != null)
+            {
+                // Update the user's status to offline
+                loginService.UpdateUserStatusOnLogout(App.CurrentUser);
+
+                // Write diagnostic information
+                System.Diagnostics.Debug.WriteLine($"{App.CurrentUser.UserName} (ID: {App.CurrentUser.UserId}) has logged out.");
+            }
         }
     }
 }
