@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Duo.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+80ff0452de91ebe351549fd7c0358330243c477b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0696687a0e776b5b3fc941d7aa3d951482c9a312")]
 [assembly: System.Reflection.AssemblyProductAttribute("Duo.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Duo.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
