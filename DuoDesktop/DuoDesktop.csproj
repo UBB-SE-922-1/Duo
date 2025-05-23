@@ -64,9 +64,6 @@
 		</PackageReference>
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Helpers\" />
-	</ItemGroup>
-	<ItemGroup>
 	  <ProjectReference Include="..\DuolingoClassLibrary\DuolingoClassLibrary.csproj" />
 	</ItemGroup>
 	<ItemGroup>
