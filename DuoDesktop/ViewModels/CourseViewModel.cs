@@ -30,7 +30,7 @@ namespace DuoDesktop.ViewModels
         public CourseViewModel(ICourseService courseService = null)
         {
             _courseService = courseService ?? new CourseService();
-            EnrolledCourses = new ObservableCollection<MyCourse>();
+            EnrolledCourses = new ObservableCollection<Course>();
             LoadCoursesAsync();
         }
 
