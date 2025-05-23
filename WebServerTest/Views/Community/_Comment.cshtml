@@ -1,5 +1,5 @@
-@model Duo.Api.Models.Comment
-@inject IHtmlHelper< Duo.Api.Models.Comment> Html
+@model DuoClassLibrary.Models.Comment
+@inject IHtmlHelper<DuoClassLibrary.Models.Comment> Html
 
 @{
     string GetIndentClass(int level)
@@ -18,7 +18,7 @@
     }
 
     var indentClass = GetIndentClass(Model.Level);
-    var comments = ViewBag.Comments as List<Duo.Api.Models.Comment> ?? new List<Duo.Api.Models.Comment>();
+    var comments = ViewBag.Comments as List<DuoClassLibrary.Models.Comment> ?? new List<DuoClassLibrary.Models.Comment>();
     var replies = comments.Where(c => c.ParentCommentId == Model.Id).ToList();
 }
 

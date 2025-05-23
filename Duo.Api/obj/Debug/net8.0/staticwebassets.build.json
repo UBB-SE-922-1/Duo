@@ -1,12 +1,11 @@
 {
   "Version": 1,
-  "Hash": "c2/ISpVXGo3iIntfqKCV1EJCFM29/b/d2uogGC91sLk=",
+  "Hash": "l0+8Ak4Qo+0lF1ePdZDHrMLltpLnLuCVnwPNWSfJ8rs=",
   "Source": "Duo.Api",
   "BasePath": "_content/Duo.Api",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
   "DiscoveryPatterns": [],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": []
 }

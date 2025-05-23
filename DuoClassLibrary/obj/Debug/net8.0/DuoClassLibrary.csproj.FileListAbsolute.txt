@@ -11,3 +11,16 @@ C:\Users\User\Desktop\ISS-final\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLib
 C:\Users\User\Desktop\ISS-final\Duo\DuoClassLibrary\obj\Debug\net8.0\refint\DuoClassLibrary.dll
 C:\Users\User\Desktop\ISS-final\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.pdb
 C:\Users\User\Desktop\ISS-final\Duo\DuoClassLibrary\obj\Debug\net8.0\ref\DuoClassLibrary.dll
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\bin\Debug\net8.0\DuoClassLibrary.deps.json
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\bin\Debug\net8.0\DuoClassLibrary.dll
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\bin\Debug\net8.0\DuoClassLibrary.pdb
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.csproj.AssemblyReference.cache
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.AssemblyInfoInputs.cache
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.AssemblyInfo.cs
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.csproj.CoreCompileInputs.cache
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.sourcelink.json
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.dll
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\refint\DuoClassLibrary.dll
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\DuoClassLibrary.pdb
+C:\Users\Bob\Documents\FMI - YEAR 1\Sem 4\ISS\Duo\DuoClassLibrary\obj\Debug\net8.0\ref\DuoClassLibrary.dll

@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using Duo.Api.Models;
+using DuoClassLibrary.Models;
 
 namespace WebServerTest.Models
 {

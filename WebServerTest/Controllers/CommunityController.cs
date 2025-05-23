@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Duo.Api.Models;
+using DuoClassLibrary.Models;
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Services;
 using WebServerTest.Models;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-using Duo.Api.Repositories.Interfaces;
+using DuoClassLibrary.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -68,28 +68,12 @@ namespace WebServerTest.Controllers
                 ItemsPerPage
             );
 
-            // Convert DuoClassLibrary.Models.Post to Duo.Api.Models.Post
-            viewModel.Posts = libraryPosts.Select(p => new Post
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Description = p.Description,
-                UserID = p.UserID,
-                CategoryID = p.CategoryID,
-                CreatedAt = p.CreatedAt,
-                UpdatedAt = p.UpdatedAt,
-                LikeCount = p.LikeCount,
-                Content = p.Content,
-                Username = p.Username,
-                Date = p.Date,
-                Hashtags = p.Hashtags
-            }).ToList();
-
+            viewModel.Posts = libraryPosts;
             viewModel.TotalPosts = totalCount;
             viewModel.SelectedCategoryId = categoryId;
 
             var libraryCategories = await _categoryService.GetAllCategories();
-            viewModel.Categories = libraryCategories.Select(c => new Category { Id = c.Id, Name = c.Name }).ToList();
+            viewModel.Categories = libraryCategories;
             viewModel.TotalPages = (int)Math.Ceiling(viewModel.TotalPosts / (double)ItemsPerPage);
 
             return View(viewModel);
@@ -97,46 +81,19 @@ namespace WebServerTest.Controllers
 
         public async Task<IActionResult> Post(int id)
         {
-            var libraryPost = await _postService.GetPostDetailsWithMetadata(id);
-            if (libraryPost == null)
+            var post = await _postService.GetPostDetailsWithMetadata(id);
+            if (post == null)
             {
                 return NotFound();
             }
-
-            // Convert to Duo.Api.Models.Post
-            var post = new Post
-            {
-                Id = libraryPost.Id,
-                Title = libraryPost.Title,
-                Description = libraryPost.Description,
-                UserID = libraryPost.UserID,
-                CategoryID = libraryPost.CategoryID,
-                CreatedAt = libraryPost.CreatedAt,
-                UpdatedAt = libraryPost.UpdatedAt,
-                LikeCount = libraryPost.LikeCount,
-                Content = libraryPost.Content,
-                Username = libraryPost.Username,
-                Date = libraryPost.Date,
-                Hashtags = libraryPost.Hashtags
-            };
 
             // Load hashtags for the post
             var libraryHashtags = await _hashtagService.GetHashtagsByPostId(id);
             post.Hashtags = libraryHashtags.Select(h => h.Tag).ToList();
 
             // Load comments for the post
-            var libraryComments = await _commentService.GetCommentsByPostId(id);
-            ViewBag.Comments = libraryComments.Select(c => new Comment
-            {
-                Id = c.Id,
-                Content = c.Content,
-                PostId = c.PostId,
-                UserId = c.UserId,
-                ParentCommentId = c.ParentCommentId,
-                CreatedAt = c.CreatedAt,
-                Level = c.Level,
-                Username = c.Username
-            }).ToList();
+            var comments = await _commentService.GetCommentsByPostId(id);
+            ViewBag.Comments = comments;
             ViewBag.PostId = id;
 
             return View(post);
@@ -164,7 +121,7 @@ namespace WebServerTest.Controllers
                     return RedirectToAction("Post", new { id = postId });
                 }
 
-                // Create the comment using Duo.Api.Models.Comment
+                // Create the comment
                 var comment = new Comment
                 {
                     Content = content,

@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DuoClassLibrary")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0696687a0e776b5b3fc941d7aa3d951482c9a312")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b976eaec5593c8b5aedc6713f190ed8892ed6f8b")]
 [assembly: System.Reflection.AssemblyProductAttribute("DuoClassLibrary")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DuoClassLibrary")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
