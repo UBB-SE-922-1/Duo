@@ -6,6 +6,7 @@ namespace Duo.Converters
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using DuoDesktop.Converters;
     using Microsoft.UI.Xaml.Media;
 
     /// <summary>

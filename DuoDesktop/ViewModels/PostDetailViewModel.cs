@@ -6,8 +6,8 @@ using System.Windows.Input;
 using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
 using DuoDesktop.ViewModels.Base;
-using Duo.Views.Components;
-using static Duo.App;
+using DuoDesktop.Views.Components;
+using static DuoDesktop.App;
 using DuoClassLibrary.Services.Interfaces;
 using System.Threading.Tasks;
 using Post = DuoDesktop.Views.Components.Post;
@@ -21,7 +21,7 @@ namespace DuoDesktop.ViewModels
         private readonly IUserService _userService;
         private Post _post;
         private ObservableCollection<CommentViewModel> _commentViewModels;
-        private ObservableCollection<DuolingoClassLibrary.Entities.Comment> _comments;
+        private ObservableCollection<DuoClassLibrary.Models.Comment> _comments;
         private CommentCreationViewModel _commentCreationViewModel;
         private bool _isLoading;
         private bool _hasComments;
@@ -43,13 +43,13 @@ namespace DuoDesktop.ViewModels
             _commentService = _commentService ?? App._commentService;
             _userService = _userService ?? App.userService;
 
-            _post = new DuolingoClassLibrary.Entities.Post
+            _post = new DuoClassLibrary.Models.Post
             { 
                 Title = "",
                 Description = "",
                 Hashtags = new List<string>()
             };
-            _comments = new ObservableCollection<DuolingoClassLibrary.Entities.Comment>();
+            _comments = new ObservableCollection<DuoClassLibrary.Models.Post.Comment>();
             _commentViewModels = new ObservableCollection<CommentViewModel>();
             _commentCreationViewModel = new CommentCreationViewModel();
             _commentCreationViewModel.CommentSubmitted += CommentCreationViewModel_CommentSubmitted;
@@ -60,13 +60,13 @@ namespace DuoDesktop.ViewModels
             BackCommand = new RelayCommand(GoBack);
         }
 
-        public DuolingoClassLibrary.Entities.Post Post
+        public DuoClassLibrary.Models.Post Post
         {
             get => _post;
             set => SetProperty(ref _post, value);
         }
 
-        public ObservableCollection<DuolingoClassLibrary.Entities.Comment> Comments
+        public ObservableCollection<DuoClassLibrary.Models.Post.> Comments
         {
             get => _comments;
             set => SetProperty(ref _comments, value);
@@ -135,7 +135,7 @@ namespace DuoDesktop.ViewModels
 
                 if (Post == null)
                 {
-                    Post = new DuolingoClassLibrary.Entities.Post { 
+                    Post = new DuoClassLibrary.Models.Post { 
                         Title = "",
                         Description = "",
                         Hashtags = new List<string>()
@@ -278,7 +278,7 @@ namespace DuoDesktop.ViewModels
                     replyText,
                     Post?.Id ?? 0,
                     parentCommentId,
-                    Comments,
+                    (IEnumerable<DuoClassLibrary.Models.Comment>)Comments,
                     _lastProcessedReply);
                     
                 _lastProcessedReply = result.ReplySignature;

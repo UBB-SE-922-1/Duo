@@ -35,5 +35,14 @@ namespace DuoDesktop.ViewModels.Base
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        // Added missing RaiseErrorMessage from ViewModelBase
+
+        public event EventHandler<(string Title, string Message)>? ShowErrorMessageRequested;
+
+        public virtual void RaiseErrorMessage(string title, string message)
+        {
+            ShowErrorMessageRequested?.Invoke(this, (title, message));
+        }
     }
 }

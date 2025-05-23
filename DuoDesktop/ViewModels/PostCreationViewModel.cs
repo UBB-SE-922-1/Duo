@@ -8,13 +8,14 @@ using System.Runtime.CompilerServices;
 using DuoDesktop.Commands;
 using System.Collections.Generic;
 using System.Diagnostics;
-using static Duo.App;
+using static DuoDesktop.App;
 using System.Collections.ObjectModel;
 using DuoDesktop.Views.Components;
 using System.Threading.Tasks;
 using DuoDesktop.Helpers;
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Services.Interfaces;
+using DuoClassLibrary.Helpers;
 
 namespace DuoDesktop.ViewModels
 {
@@ -214,7 +215,7 @@ namespace DuoDesktop.ViewModels
                 var currentUser = _userService.GetCurrentUser();
                 
                 // Create a new Post object
-                var newPost = new DuolingoClassLibrary.Entities.Post
+                var newPost = new DuoClassLibrary.Models.Post
                 {
                     Title = Title,
                     Description = Content,
@@ -301,7 +302,7 @@ namespace DuoDesktop.ViewModels
                 var currentUser = _userService.GetCurrentUser();
                 
                 // Create a new Post object
-                var newPost = new DuolingoClassLibrary.Entities.Post
+                var newPost = new DuoClassLibrary.Models.Post
                 {
                     Title = Title,
                     Description = Content,

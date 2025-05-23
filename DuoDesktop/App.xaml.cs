@@ -21,7 +21,7 @@ using Microsoft.Extensions.Configuration;
 using Duo.ViewModels;
 using Duo.Services;
 using DuoClassLibrary.Models;
-using Duo.UI.ViewModels;
+using DuoDesktop.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Repositories;
@@ -31,6 +31,7 @@ using Microsoft.EntityFrameworkCore;
 using DuoClassLibrary.Repositories.Interfaces;
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Services;
+using DuoDesktop.ViewModels;
 
 namespace DuoDesktop
 {
@@ -89,8 +90,7 @@ namespace DuoDesktop
 
             // Register repositories
             services.AddSingleton<IUserRepository, UserRepositoryProxy>();
-            services.AddSingleton<IFriendsRepository, FriendsRepository>();
-            services.AddSingleton<FriendsRepository>();
+            services.AddSingleton<IFriendsRepository>();
             services.AddSingleton<IPostRepository, PostRepositoryProxi>();
             services.AddSingleton<ICommentRepository, CommentRepositoryProxi>();
 

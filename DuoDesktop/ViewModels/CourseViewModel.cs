@@ -10,6 +10,10 @@ namespace DuoDesktop.ViewModels
 {
     public class CourseViewModel : INotifyPropertyChanged
     {
+        internal const int NotificationDisplayDurationInSeconds = 3;
+        private string notificationMessageText = string.Empty;
+        private bool shouldShowNotification = false;
+
         private readonly ICourseService _courseService;
         private ObservableCollection<Course> _enrolledCourses;
 
@@ -43,6 +47,26 @@ namespace DuoDesktop.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        public virtual string NotificationMessage
+        {
+            get => notificationMessageText;
+            set
+            {
+                notificationMessageText = value;
+                OnPropertyChanged(nameof(NotificationMessage));
+            }
+        }
+
+        public virtual bool ShowNotification
+        {
+            get => shouldShowNotification;
+            set
+            {
+                shouldShowNotification = value;
+                OnPropertyChanged(nameof(ShowNotification));
+            }
         }
     }
 }

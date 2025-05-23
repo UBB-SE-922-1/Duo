@@ -2,14 +2,13 @@
 using Duo.Services;
 using DuoClassLibrary.Models;
 using System.Threading.Tasks;
-using Duo.Validators;
+using DuoDesktop.Validators;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using DuoClassLibrary.Services;
-using Duo.Services.Interfaces;
+using DuoClassLibrary.Services.Interfaces;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using DuolingoClassLibrary.Services;
 using DuoDesktop.Validators;
 
 namespace Duo.ViewModels
@@ -166,7 +165,7 @@ namespace Duo.ViewModels
         /// <returns>True if the username is valid; otherwise, false</returns>
         public bool ValidateUsername(string username)
         {
-            bool isValid = validator.IsValidUsername(username);
+            bool isValid = SignUpValidator.IsValidUsername(username);
             UsernameValidationMessage = isValid ? string.Empty : "Username must be 5-20 characters and contain only letters, digits, or underscores.";
             return isValid;
         }
@@ -177,7 +176,7 @@ namespace Duo.ViewModels
         /// <param name="password">The password to evaluate</param>
         public void UpdatePasswordStrength(string password)
         {
-            PasswordStrength = validator.GetPasswordStrength(password);
+            PasswordStrength = SignUpValidator.GetPasswordStrength(password);
 
             if (PasswordStrength == "Weak")
             {
@@ -196,7 +195,7 @@ namespace Duo.ViewModels
         /// <returns>True if the password is medium or strong; otherwise, false</returns>
         public bool ValidatePasswordStrength(string password)
         {
-            string strength = validator.GetPasswordStrength(password);
+            string strength = SignUpValidator.GetPasswordStrength(password);
             return strength != "Weak";
         }
 
@@ -206,7 +205,7 @@ namespace Duo.ViewModels
         /// <returns>True if the passwords match; otherwise, false</returns>
         public bool ValidatePasswordMatch()
         {
-            bool match = validator.DoPasswordsMatch(NewUser.Password, ConfirmPassword);
+            bool match = SignUpValidator.DoPasswordsMatch(NewUser.Password, ConfirmPassword);
             ConfirmPasswordValidationMessage = match ? string.Empty : "Passwords do not match.";
             return match;
         }

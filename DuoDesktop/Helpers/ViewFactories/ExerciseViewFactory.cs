@@ -4,7 +4,7 @@
 
 namespace DuoDesktop.Helpers.ViewFactories
 {
-    using Duo.Views.Components.CreateExerciseComponents;
+    using DuoDesktop.Views.Components.CreateExerciseComponents;
     using DuoDesktop.Helpers.Interfaces;
     using Microsoft.UI.Xaml.Controls;
 

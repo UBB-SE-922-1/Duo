@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
 using Windows.UI.Core;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace DuoDesktop.ViewModels
 {
@@ -144,7 +145,7 @@ namespace DuoDesktop.ViewModels
         {
             try
             {
-                var user = await userService.GetByIdAsync(UserId);
+                var user = await userService.GetUserById(UserId);
                 if (user == null)
                 {
                     Console.WriteLine($"User with ID {UserId} not found. Creating...");

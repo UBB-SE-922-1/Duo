@@ -6,6 +6,7 @@ using System;
 using System.Threading.Tasks;
 using DuoDesktop.Views;
 using Microsoft.Extensions.DependencyInjection;
+using Duo.ViewModels;
 
 namespace DuoDesktop.Views.Pages
 {

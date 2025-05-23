@@ -2,6 +2,7 @@
 {
     using System;
     using DuoClassLibrary.Services;
+    using DuoClassLibrary.Helpers;
     using DuoDesktop.ViewModels;
 
     /// <summary>

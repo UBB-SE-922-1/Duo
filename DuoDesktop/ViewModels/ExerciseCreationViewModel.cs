@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DuoDesktop.Commands;
 using DuoDesktop.Helpers;
+using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Services;
 using DuoDesktop.ViewModels.Base;
@@ -18,8 +19,10 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using DuoClassLibrary.Models;
+using DuoDesktop.Helpers.Interfaces;
+using DuoDesktop.ViewModels;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     internal partial class ExerciseCreationViewModel : AdminBaseViewModel
     {
@@ -52,8 +55,8 @@ namespace Duo.ViewModels
             CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
             SaveButtonCommand = new RelayCommand((_) => _ = CreateExercise());
-            ExerciseTypes = new ObservableCollection<string>(Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
-            Difficulties = new ObservableCollection<string>(Models.DifficultyList.DIFFICULTIES);
+            ExerciseTypes = new ObservableCollection<string>(DuoClassLibrary.Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
+            Difficulties = new ObservableCollection<string>(DifficultyList.Difficulties);
             SelectedExerciseContent = "Select an exercise type.";
             currentExerciseViewModel = CreateAssociationExerciseViewModel;
         }
@@ -71,9 +74,9 @@ namespace Duo.ViewModels
 
                 SaveButtonCommand = new RelayCommand((_) => _ = CreateExercise());
 
-                ExerciseTypes = new ObservableCollection<string>(Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
+                ExerciseTypes = new ObservableCollection<string>(DuoClassLibrary.Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
 
-                Difficulties = new ObservableCollection<string>(Models.DifficultyList.DIFFICULTIES);
+                Difficulties = new ObservableCollection<string>(DuoClassLibrary.Models.DifficultyList.Difficulties);
 
                 SelectedExerciseContent = new TextBlock { Text = "Select an exercise type." };
                 currentExerciseViewModel = CreateAssociationExerciseViewModel;

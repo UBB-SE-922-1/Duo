@@ -10,13 +10,16 @@ using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
 using DuoClassLibrary.Services;
 using DuoDesktop.ViewModels.Base;
+using DuoClassLibrary.Services.Interfaces;
+using DuoDesktop.ViewModels.Roadmap;
+using DuoDesktop;
 
 namespace Duo.ViewModels.Roadmap
 {
     public class RoadmapMainPageViewModel : ViewModelBase
     {
         private IRoadmapService roadmapService;
-        private DuoClassLibrary.Models.Roadmap.Roadmap roadmap;
+        private DuoClassLibrary.Models.Roadmap.Roadmaps roadmap;
         private IUserService userService;
         private User user;
         private BaseQuiz selectedQuiz;
@@ -52,7 +55,7 @@ namespace Duo.ViewModels.Roadmap
             try
             {
                 roadmap = await roadmapService.GetByIdAsync(1);
-                user = await userService.GetByIdAsync(1);
+                user = await userService.GetUserById(1);
 
                 ISectionService sectionService = (ISectionService)App.ServiceProvider.GetService(typeof(ISectionService));
                 List<Section> sections = null;
