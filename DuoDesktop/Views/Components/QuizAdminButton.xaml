@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <UserControl
-    x:Class="DuoDesktop.Views.Components.CommentButton"
+    x:Class="DuoDesktop.Views.Components.QuizAdminButton"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:DuoDesktop.Views.Components"
@@ -10,18 +10,14 @@
 
     <Button 
         Background="Transparent"
-        BorderThickness="0"
-        Padding="0"
-        Click="CommentButton_Click">
+        BorderThickness="1"
+        Padding="12"
+        Click="QuizAdminButton_Click">
         <StackPanel Orientation="Horizontal" Spacing="6">
-            <FontIcon 
-                FontFamily="Segoe MDL2 Assets" 
-                Glyph="&#xE8F2;" 
-                FontSize="16"/>
             <TextBlock 
-                Text="Comment" 
+                Text="{x:Bind Text, Mode=OneWay}"
                 FontSize="14" 
                 VerticalAlignment="Center"/>
         </StackPanel>
     </Button>
-</UserControl> 
+</UserControl>

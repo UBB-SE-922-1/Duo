@@ -5,16 +5,16 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System;
-using Duo.Helpers;
-using DuolingoClassLibrary.Entities;
-using static Duo.App;
+using DuoDesktop.Helpers;
+using DuoClassLibrary.Models;
+using static DuoDesktop.App;
 using System.Collections.Generic;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI;
 using Microsoft.UI.Xaml.Data;
-using Duo.ViewModels;
+using DuoDesktop.ViewModels;
 
-namespace Duo.Views.Components
+namespace DuoDesktop.Views.Components
 {
     // Community item class with selection state
     public class CommunityItem : INotifyPropertyChanged

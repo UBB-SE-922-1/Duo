@@ -2,7 +2,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System;
 
-namespace Duo.Views.Components
+namespace DuoDesktop.Views.Components
 {
     public sealed partial class CreatePostButton : UserControl
     {

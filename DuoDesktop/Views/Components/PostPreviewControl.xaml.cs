@@ -1,6 +1,6 @@
 using Microsoft.UI.Xaml.Controls;
 
-namespace Duo.Views.Components
+namespace DuoDesktop.Views.Components
 {
     public sealed partial class PostPreviewControl : UserControl
     {
