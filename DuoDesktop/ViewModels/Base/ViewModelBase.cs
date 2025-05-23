@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace Duo.ViewModels.Base
+namespace DuoDesktop.ViewModels.Base
 {
     public abstract class ViewModelBase : INotifyPropertyChanged
     {
