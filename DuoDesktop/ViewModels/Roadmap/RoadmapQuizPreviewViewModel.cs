@@ -10,7 +10,7 @@ using DuoDesktop.ViewModels.Base;
 using Microsoft.UI.Dispatching;
 using Microsoft.UI.Xaml;
 
-namespace Duo.ViewModels.Roadmap
+namespace DuoDesktop.ViewModels.Roadmap
 {
     public class RoadmapQuizPreviewViewModel : ViewModelBase
     {

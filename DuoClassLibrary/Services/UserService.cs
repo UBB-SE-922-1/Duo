@@ -4,7 +4,7 @@ using DuoClassLibrary.Models;
 using DuoClassLibrary.Services;
 
 
-namespace Duo.Services
+namespace DuoClassLibrary.Services
 {
     public class UserService : IUserService
     {

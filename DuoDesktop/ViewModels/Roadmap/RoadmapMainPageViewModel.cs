@@ -14,7 +14,7 @@ using DuoClassLibrary.Services.Interfaces;
 using DuoDesktop.ViewModels.Roadmap;
 using DuoDesktop;
 
-namespace Duo.ViewModels.Roadmap
+namespace DuoDesktop.ViewModels.Roadmap
 {
     public class RoadmapMainPageViewModel : ViewModelBase
     {

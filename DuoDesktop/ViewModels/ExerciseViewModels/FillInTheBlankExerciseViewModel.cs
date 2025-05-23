@@ -7,7 +7,7 @@ using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Services;
 using DuoDesktop.ViewModels.Base;
 
-namespace Duo.ViewModels.ExerciseViewModels
+namespace DuoDesktop.ViewModels.ExerciseViewModels
 {
     public class FillInTheBlankExerciseViewModel : ViewModelBase
     {

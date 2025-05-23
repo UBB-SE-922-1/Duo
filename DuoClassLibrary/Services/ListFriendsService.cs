@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 
 //TODO: comentat ca s a zis ca nu merge
-namespace Duo.Services
+namespace DuoClassLibrary.Services
 {
     /// <summary>
     /// Service for managing friend relationships between users.

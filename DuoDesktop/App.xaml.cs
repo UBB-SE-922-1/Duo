@@ -18,8 +18,8 @@ using Microsoft.UI.Xaml.Shapes;
 using System.Diagnostics;
 using DuoDesktop.Views;
 using Microsoft.Extensions.Configuration;
-using Duo.ViewModels;
-using Duo.Services;
+using DuoDesktop.ViewModels;
+using DuoClassLibrary.Services;
 using DuoClassLibrary.Models;
 using DuoDesktop.UI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +32,8 @@ using DuoClassLibrary.Repositories.Interfaces;
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Services;
 using DuoDesktop.ViewModels;
+using Duo.Services;
+using DuoDesktop.Services;
 
 namespace DuoDesktop
 {

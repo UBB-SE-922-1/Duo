@@ -4,6 +4,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using DuoDesktop.Services;
+using DuoClassLibrary.Constants;
 
 namespace DuoDesktop.ViewModels
 {

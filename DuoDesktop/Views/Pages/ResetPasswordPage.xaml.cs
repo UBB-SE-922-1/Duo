@@ -18,7 +18,7 @@ using DuoDesktop.Views.Pages;
 using DuoClassLibrary.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using DuoDesktop.Views;
-using Duo.ViewModels;
+using DuoDesktop.ViewModels;
 
 namespace DuoDesktop.Views.Pages
 {

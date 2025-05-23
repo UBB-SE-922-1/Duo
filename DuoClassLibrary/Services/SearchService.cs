@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using DuoClassLibrary.Services.Interfaces;
 
-namespace Duo.Services
+namespace DuoClassLibrary.Services
 {
     public class SearchService : ISearchService
     {

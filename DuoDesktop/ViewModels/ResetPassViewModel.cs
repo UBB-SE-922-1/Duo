@@ -7,7 +7,7 @@ using DuoDesktop.Validators;
 using DuoClassLibrary.Services.Interfaces;
 using Duo.Services;
 
-namespace Duo.ViewModels
+namespace DuoDesktop.ViewModels
 {
     /// <summary>
     /// ViewModel for password reset functionality.

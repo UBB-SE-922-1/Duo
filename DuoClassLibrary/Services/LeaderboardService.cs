@@ -2,7 +2,7 @@
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Constants;
 
-namespace Duo.Services;
+namespace DuoDesktop.Services;
 
 public class LeaderboardService
 {
