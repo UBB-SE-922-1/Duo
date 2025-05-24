@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Exercises;
-using Duo.Models.Quizzes;
+using DuoClassLibrary.Models.Quizzes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 

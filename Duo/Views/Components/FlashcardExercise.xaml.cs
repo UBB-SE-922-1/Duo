@@ -31,21 +31,21 @@ namespace Duo.Views.Components
         private TimeSpan remainingTime; // Time remaining
         private TimeSpan elapsedTime; // Time elapsed for statistics
         private bool isRunning;
-        private Models.Exercises.FlashcardExercise exerciseData;
+        private DuoClassLibrary.Models.Exercises.FlashcardExercise exerciseData;
 
         private const double OPACITY = 0.5;
         private const string BLANK_PLACEHOLDER = "___"; // Placeholder for fill-in-the-blank
 
         // Total time for timer (in seconds) based on difficulty
-        private int GetTimerDurationByDifficulty(Duo.Models.Difficulty difficulty)
+        private int GetTimerDurationByDifficulty(DuoClassLibrary.Models.Difficulty difficulty)
         {
             switch (difficulty)
             {
-                case Duo.Models.Difficulty.Easy:
+                case DuoClassLibrary.Models.Difficulty.Easy:
                     return 15; // 15 seconds for easy
-                case Duo.Models.Difficulty.Hard:
+                case DuoClassLibrary.Models.Difficulty.Hard:
                     return 45; // 45 seconds for hard
-                case Duo.Models.Difficulty.Normal:
+                case DuoClassLibrary.Models.Difficulty.Normal:
                 default:
                     return 30; // 30 seconds for normal
             }
@@ -223,7 +223,7 @@ namespace Duo.Views.Components
         private void SetupTimer()
         {
             // Get duration in seconds for this difficulty
-            timerDuration = GetTimerDurationByDifficulty(exerciseData?.Difficulty ?? Duo.Models.Difficulty.Normal);
+            timerDuration = GetTimerDurationByDifficulty(exerciseData?.Difficulty ?? DuoClassLibrary.Models.Difficulty.Normal);
 
             // Initialize remaining time to full duration
             remainingTime = TimeSpan.FromSeconds(timerDuration);
@@ -416,7 +416,7 @@ namespace Duo.Views.Components
             }
         }
 
-        public void Initialize(Models.Exercises.FlashcardExercise exercise)
+        public void Initialize(DuoClassLibrary.Models.Exercises.FlashcardExercise exercise)
         {
             exerciseData = exercise;
 
@@ -597,7 +597,7 @@ namespace Duo.Views.Components
         }
 
         // Update UI to show difficulty level
-        private void UpdateDifficultyIndicator(Duo.Models.Difficulty difficulty)
+        private void UpdateDifficultyIndicator(DuoClassLibrary.Models.Difficulty difficulty)
         {
             // Get duration in seconds for this difficulty
             int seconds = GetTimerDurationByDifficulty(difficulty);
@@ -646,14 +646,14 @@ namespace Duo.Views.Components
                         // Highlight appropriate bars based on difficulty
                         switch (difficulty)
                         {
-                            case Duo.Models.Difficulty.Easy:
+                            case DuoClassLibrary.Models.Difficulty.Easy:
                                 easyBar.Opacity = 1.0;
                                 break;
-                            case Duo.Models.Difficulty.Normal:
+                            case DuoClassLibrary.Models.Difficulty.Normal:
                                 easyBar.Opacity = 1.0;
                                 normalBar.Opacity = 1.0;
                                 break;
-                            case Duo.Models.Difficulty.Hard:
+                            case DuoClassLibrary.Models.Difficulty.Hard:
                                 easyBar.Opacity = 1.0;
                                 normalBar.Opacity = 1.0;
                                 hardBar.Opacity = 1.0;

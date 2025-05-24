@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Duo.Models.Quizzes;
+using DuoClassLibrary.Models.Quizzes;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 
