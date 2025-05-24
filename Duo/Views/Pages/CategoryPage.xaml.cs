@@ -117,28 +117,7 @@ namespace Duo.Views.Pages
                         break;
                     case "HomePage":
                         contentFrame.Navigate(typeof(MainPage));
-                        break;
-                    case "Leaderboards":
-                        contentFrame.Navigate(typeof(LeaderboardPage));
-                        break;
-                    case "Stats":
-                        contentFrame.Navigate(typeof(AchievementsPage));
-                        break;
-                    case "Announcements":
-                        contentFrame.Navigate(typeof(PostListPage), "Announcements");
-                        break;
-                    case "Discover":
-                        contentFrame.Navigate(typeof(PostListPage), "Discover");
-                        break;
-                    case "GeneralDiscussion":
-                        contentFrame.Navigate(typeof(PostListPage), "General-Discussion");
-                        break;
-                    case "LessonHelp":
-                        contentFrame.Navigate(typeof(PostListPage), "Lesson-Help");
-                        break;
-                    case "OffTopic":
-                        contentFrame.Navigate(typeof(PostListPage), "Off-topic");
-                        break;
+                        break;      
                     default:
                         if (selectedItem.Tag is string categoryName)
                         {

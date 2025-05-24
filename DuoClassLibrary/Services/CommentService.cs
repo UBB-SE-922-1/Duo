@@ -119,11 +119,15 @@ namespace DuoClassLibrary.Services
                     level = parentComment.Level + 1;
                 }
 
+                User user = _userService.GetCurrentUser();
+
+
                 // Create the comment without relying on UserService
                 var comment = new Comment
                 {
                     Content = content,
                     PostId = postId,
+                    UserId = user.UserId,
                     ParentCommentId = parentCommentId,
                     CreatedAt = DateTime.Now,
                     Level = level
