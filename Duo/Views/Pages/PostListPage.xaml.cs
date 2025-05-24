@@ -57,7 +57,11 @@ namespace Duo.Views.Pages
                     var categoryInfo = await _categoryService.GetCategoryByName(categoryName);
                     if (categoryInfo != null)
                     {
-                        _viewModel.CategoryID = categoryInfo.Id;
+                        if (categoryName == "Community")
+                            _viewModel.CategoryID = 0;
+                        else
+                            _viewModel.CategoryID = categoryInfo.Id;
+
                         // Write CategoryID to the debugger
                         System.Diagnostics.Debug.WriteLine($"CategoryID: {_viewModel.CategoryID}");
                     }

@@ -185,7 +185,7 @@ namespace Duo.ViewModels
         /// <returns>True if the email is valid; otherwise, false.</returns>
         public bool ValidateEmail(string email)
         {
-            bool isValid = _validator.IsValidEmail(email);
+            bool isValid = PasswordResetValidator.IsValidEmail(email);
             if (!isValid)
             {
                 StatusMessage = "Please enter a valid email address.";
@@ -244,7 +244,7 @@ namespace Duo.ViewModels
         /// <returns>True if the code is valid; otherwise, false.</returns>
         public bool ValidateCodeFormat(string code)
         {
-            bool isValid = _validator.IsValidVerificationCode(code);
+            bool isValid = PasswordResetValidator.IsValidVerificationCode(code);
             if (!isValid)
             {
                 StatusMessage = "Please enter the verification code.";
@@ -287,7 +287,7 @@ namespace Duo.ViewModels
         /// <returns>True if the passwords match; otherwise, false.</returns>
         public bool ValidatePasswordsMatch()
         {
-            bool match = _validator.DoPasswordsMatch(NewPassword, ConfirmPassword);
+            bool match = PasswordResetValidator.DoPasswordsMatch(NewPassword, ConfirmPassword);
             if (!match)
             {
                 StatusMessage = "Passwords don't match!";
@@ -302,7 +302,7 @@ namespace Duo.ViewModels
         /// <returns>True if the password is valid; otherwise, false.</returns>
         public bool ValidateNewPassword(string password)
         {
-            bool isValid = _validator.IsValidNewPassword(password);
+            bool isValid = PasswordResetValidator.IsValidNewPassword(password);
             if (!isValid)
             {
                 StatusMessage = "Please enter a valid password.";

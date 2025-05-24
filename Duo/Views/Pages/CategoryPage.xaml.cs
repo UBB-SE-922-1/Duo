@@ -117,7 +117,7 @@ namespace Duo.Views.Pages
                         break;
                     case "HomePage":
                         contentFrame.Navigate(typeof(MainPage));
-                        break;      
+                        break;
                     default:
                         if (selectedItem.Tag is string categoryName)
                         {
