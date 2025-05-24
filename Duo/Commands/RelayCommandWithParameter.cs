@@ -39,7 +39,6 @@ namespace Duo.Commands
         {
             if (canExecute == null)
             {
-            if (_canExecute == null)
                 return true;
             }
 

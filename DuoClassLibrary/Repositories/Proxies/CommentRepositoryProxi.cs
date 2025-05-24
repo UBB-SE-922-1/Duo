@@ -15,7 +15,7 @@ public class CommentRepositoryProxi : ICommentRepository, IDisposable
 
     public async Task<Comment?> GetCommentById(int commentId)
     {
-        var response = await _httpClient.GetAsync(Enviroment.BaseUrl + $"api/comment/{commentId}");
+        var response = await _httpClient.GetAsync(Enviroment.BaseUrl + $"api/Comment/{commentId}");
         if (!response.IsSuccessStatusCode)
             throw new Exception($"Failed to fetch comment. Status code: {response.StatusCode}");
         var jsonResponse = await response.Content.ReadAsStringAsync();

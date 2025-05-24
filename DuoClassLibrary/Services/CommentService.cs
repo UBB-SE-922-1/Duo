@@ -41,11 +41,11 @@ namespace DuoClassLibrary.Services
                         try
                         {
                             User user = await _userService.GetUserById(comment.UserId);
-                            comment.Username = user.UserName;
+                            comment.Username = user?.UserName ?? "Unknown User";
                         }
-                        catch (Exception ex)
+                        catch (Exception)
                         {
-                            throw new Exception(ex.Message);
+                            comment.Username = "Unknown User";
                         }
                     }
                 }
