@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Exercises;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace DuoClassLibrary.Services
 {

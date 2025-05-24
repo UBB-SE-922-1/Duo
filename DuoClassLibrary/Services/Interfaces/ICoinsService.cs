@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace DuoClassLibrary.Services
+namespace DuoClassLibrary.Services.Interfaces
 {
     /// <summary>
     /// Interface for coin-related operations

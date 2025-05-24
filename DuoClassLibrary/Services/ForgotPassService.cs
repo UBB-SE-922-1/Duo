@@ -4,7 +4,7 @@ using DuoClassLibrary.Models;
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Constants;
 
-namespace Duo.Services
+namespace DuoClassLibrary.Services
 {
     /// <summary>
     /// Service for handling password reset functionality.

@@ -3,35 +3,38 @@ using DuoClassLibrary.Repositories.Interfaces;
 using System.Text.Json;
 using DuoClassLibrary.Constants;
 
-public class CategoryRepositoryProxi : ICategoryRepository, IDisposable
+namespace DuoClassLibrary.Repositories.Proxies
 {
-    private readonly HttpClient _httpClient;
-
-    public CategoryRepositoryProxi()
+    public class CategoryRepositoryProxi : ICategoryRepository, IDisposable
     {
-        _httpClient = new HttpClient();
-    }
+        private readonly HttpClient _httpClient;
 
-    public async Task<List<Category>> GetCategoriesAsync()
-    {
-        var response = await _httpClient.GetAsync(Enviroment.BaseUrl + "category");
-
-        if (!response.IsSuccessStatusCode)
+        public CategoryRepositoryProxi()
         {
-            throw new Exception($"Failed to fetch categories. Status code: {response.StatusCode}");
+            _httpClient = new HttpClient();
         }
 
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<List<Category>>(jsonResponse, new JsonSerializerOptions
+        public async Task<List<Category>> GetCategoriesAsync()
         {
-            PropertyNameCaseInsensitive = true
-        });
+            var response = await _httpClient.GetAsync(Enviroment.BaseUrl + "category");
 
-        return result;
-    }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch categories. Status code: {response.StatusCode}");
+            }
 
-    public void Dispose()
-    {
-        _httpClient.Dispose();
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<List<Category>>(jsonResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            return result;
+        }
+
+        public void Dispose()
+        {
+            _httpClient.Dispose();
+        }
     }
 }

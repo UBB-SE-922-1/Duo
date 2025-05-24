@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using DuoClassLibrary.Helpers;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Models.Exercises.DTO;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace DuoClassLibrary.Services
 {

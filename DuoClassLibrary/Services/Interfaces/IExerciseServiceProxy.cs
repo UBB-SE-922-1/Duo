@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DuoClassLibrary.Services
+namespace DuoClassLibrary.Services.Interfaces
 {
     public interface IExerciseServiceProxy
     {

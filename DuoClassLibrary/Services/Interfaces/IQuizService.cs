@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Models.Quizzes;
 
-namespace DuoClassLibrary.Services
+namespace DuoClassLibrary.Services.Interfaces
 {
     public interface IQuizService
     {

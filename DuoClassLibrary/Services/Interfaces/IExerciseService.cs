@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using DuoClassLibrary.Models.Exercises;
 
-namespace DuoClassLibrary.Services
+namespace DuoClassLibrary.Services.Interfaces
 {
     public interface IExerciseService
     {

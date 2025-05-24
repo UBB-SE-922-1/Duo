@@ -4,70 +4,73 @@ using System.Text.Json;
 using System.Text;
 using DuoClassLibrary.Constants;
 
-public class PostRepositoryProxi : IPostRepository, IDisposable
+namespace DuoClassLibrary.Repositories.Proxies
 {
-    private readonly HttpClient _httpClient;
-
-    public PostRepositoryProxi()
+    public class PostRepositoryProxi : IPostRepository, IDisposable
     {
-        _httpClient = new HttpClient();
-    }
+        private readonly HttpClient _httpClient;
 
-    public async Task<List<Post>> GetPosts()
-    {
-        var response = await _httpClient.GetAsync(Enviroment.BaseUrl + "post");
-
-        if (!response.IsSuccessStatusCode)
+        public PostRepositoryProxi()
         {
-            throw new Exception($"Failed to fetch posts. Status code: {response.StatusCode}");
+            _httpClient = new HttpClient();
         }
 
-        var jsonResponse = await response.Content.ReadAsStringAsync();
-        var result = JsonSerializer.Deserialize<List<Post>>(jsonResponse, new JsonSerializerOptions
+        public async Task<List<Post>> GetPosts()
         {
-            PropertyNameCaseInsensitive = true
-        });
+            var response = await _httpClient.GetAsync(Enviroment.BaseUrl + "post");
 
-        return result ?? new List<Post>();
-    }
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to fetch posts. Status code: {response.StatusCode}");
+            }
 
-    public async Task<int> CreatePost(Post post)
-    {
-        var jsonContent = new StringContent(JsonSerializer.Serialize(post), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PostAsync(Enviroment.BaseUrl + "post", jsonContent);
+            var jsonResponse = await response.Content.ReadAsStringAsync();
+            var result = JsonSerializer.Deserialize<List<Post>>(jsonResponse, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
 
-        if (!response.IsSuccessStatusCode)
-        {
-            throw new Exception($"Failed to create post. Status code: {response.StatusCode}");
+            return result ?? new List<Post>();
         }
 
-        var result = await response.Content.ReadAsStringAsync();
-        return int.TryParse(result, out int postId) ? postId : 0;
-    }
-
-    public async Task UpdatePost(Post post)
-    {
-        var jsonContent = new StringContent(JsonSerializer.Serialize(post), Encoding.UTF8, "application/json");
-        var response = await _httpClient.PutAsync($"{Enviroment.BaseUrl}post/{post.Id}", jsonContent);
-
-        if (!response.IsSuccessStatusCode)
+        public async Task<int> CreatePost(Post post)
         {
-            throw new Exception($"Failed to update post. Status code: {response.StatusCode}");
+            var jsonContent = new StringContent(JsonSerializer.Serialize(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(Enviroment.BaseUrl + "post", jsonContent);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to create post. Status code: {response.StatusCode}");
+            }
+
+            var result = await response.Content.ReadAsStringAsync();
+            return int.TryParse(result, out int postId) ? postId : 0;
         }
-    }
 
-    public async Task DeletePost(int id)
-    {
-        var response = await _httpClient.DeleteAsync($"{Enviroment.BaseUrl}post/{id}");
-
-        if (!response.IsSuccessStatusCode)
+        public async Task UpdatePost(Post post)
         {
-            throw new Exception($"Failed to delete post. Status code: {response.StatusCode}");
-        }
-    }
+            var jsonContent = new StringContent(JsonSerializer.Serialize(post), Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync($"{Enviroment.BaseUrl}post/{post.Id}", jsonContent);
 
-    public void Dispose()
-    {
-        _httpClient.Dispose();
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update post. Status code: {response.StatusCode}");
+            }
+        }
+
+        public async Task DeletePost(int id)
+        {
+            var response = await _httpClient.DeleteAsync($"{Enviroment.BaseUrl}post/{id}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to delete post. Status code: {response.StatusCode}");
+            }
+        }
+
+        public void Dispose()
+        {
+            _httpClient.Dispose();
+        }
     }
 }

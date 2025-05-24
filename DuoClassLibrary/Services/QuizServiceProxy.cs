@@ -13,6 +13,7 @@ using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Helpers;
 using DuoClassLibrary.Models.Quizzes.API;
 using DuoClassLibrary.Models;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace DuoClassLibrary.Services
 {
