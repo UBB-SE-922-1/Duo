@@ -1,24 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Duo.Commands;
-using Duo.Helpers;
+﻿using Duo.Commands;
+using Duo.Helpers.Interfaces;
+using Duo.ViewModels.CreateExerciseViewModels;
+using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
-using Duo.ViewModels.CreateExerciseViewModels;
-using Duo.Views.Components;
-using Duo.Views.Components.CreateExerciseComponents;
-using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Duo.Helpers.Interfaces;
-using DuoClassLibrary.Models;
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Duo.ViewModels
 {
@@ -52,7 +43,7 @@ namespace Duo.ViewModels
             CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
             CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
-            SaveButtonCommand = new RelayCommand(() => _ = CreateExercise());
+            SaveButtonCommand = new RelayCommand( _ => CreateExercise());
             ExerciseTypes = new ObservableCollection<string>();
             Difficulties = new ObservableCollection<string>(DuoClassLibrary.Models.DifficultyList.Difficulties);
             SelectedExerciseContent = "Select an exercise type.";
@@ -70,7 +61,7 @@ namespace Duo.ViewModels
                 CreateAssociationExerciseViewModel = new CreateAssociationExerciseViewModel(this);
                 CreateFillInTheBlankExerciseViewModel = new CreateFillInTheBlankExerciseViewModel(this);
 
-                SaveButtonCommand = new RelayCommand(() => _ = CreateExercise());
+                SaveButtonCommand = new RelayCommand( _ =>  CreateExercise());
 
                 ExerciseTypes = new ObservableCollection<string>(DuoClassLibrary.Models.Exercises.ExerciseTypes.EXERCISE_TYPES);
 

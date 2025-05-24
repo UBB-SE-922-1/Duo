@@ -8,6 +8,7 @@ using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
 using DuoClassLibrary.Services;
 using Duo.ViewModels.Base;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace Duo.ViewModels
 {
@@ -516,7 +517,7 @@ namespace Duo.ViewModels
                 ISectionService sectionService = (ISectionService)App.ServiceProvider.GetService(typeof(ISectionService))
                     ?? throw new InvalidOperationException("ISectionService not found.");
 
-                User user = await userService.GetByIdAsync(1)
+                User user = await userService.GetUserById(1)
                     ?? throw new InvalidOperationException("User not found.");
                 List<Section> sections = await sectionService.GetByRoadmapId(1)
                     ?? throw new InvalidOperationException("Sections not found.");
@@ -557,7 +558,6 @@ namespace Duo.ViewModels
                         return;
                     }
 
-                    await userService.IncrementSectionProgressAsync(1);
                     if (CurrentExam.SectionId == null)
                     {
                         RaiseErrorMessage("Error", "Exam has no section Id");
@@ -596,7 +596,6 @@ namespace Duo.ViewModels
                         return;
                     }
                     await quizService.CompleteQuiz(user.UserId, QuizId);
-                    await userService.IncrementUserProgressAsync(1);
                 }
             }
             catch (Exception ex)

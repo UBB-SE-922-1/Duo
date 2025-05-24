@@ -11,6 +11,7 @@ using DuoClassLibrary.Services;
 using Duo.ViewModels.Base;
 using DuoClassLibrary.Models;
 using Microsoft.UI.Dispatching;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace Duo.ViewModels.Roadmap
 {
@@ -80,7 +81,7 @@ namespace Duo.ViewModels.Roadmap
 
                 IQuizService quizService = (IQuizService)App.ServiceProvider.GetService(typeof(IQuizService));
                 IUserService userService = (IUserService)App.ServiceProvider.GetService(typeof(IUserService));
-                this.user = await userService.GetByIdAsync(1);
+                this.user = await userService.GetUserById(1);
                 section.Quizzes = await quizService.GetAllQuizzesFromSection(this.sectionId);
                 section.Exam = await quizService.GetExamFromSection(this.sectionId);
 

@@ -7,6 +7,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Duo.Commands;
+using Duo.Helpers.Interfaces;
+using Duo.Helpers.Timers;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Services;
 using Duo.ViewModels.Helpers;
@@ -41,7 +43,7 @@ namespace Duo.ViewModels
         #endregion
 
         #region Fields
-        private Services.IDispatcherTimerService? courseProgressTimer;
+        private IDispatcherTimerHelper? courseProgressTimer;
         private int totalSecondsSpentOnCourse;
         private int courseCompletionTimeLimitInSeconds;
         private string? formattedTimeRemaining;
@@ -265,8 +267,8 @@ namespace Duo.ViewModels
         /// <param name="notificationTimerService">The timer service for notifications (optional)</param>
         /// <exception cref="ArgumentNullException">Thrown when course is null</exception>
         public CourseViewModel(Course course, int currentUserId = 1, ICourseService? courseService = null,
-            ICoinsService? coinsService = null, Services.IDispatcherTimerService? timerService = null,
-            Services.IDispatcherTimerService? notificationTimerService = null, INotificationHelper? notificationHelper = null,
+            ICoinsService? coinsService = null, IDispatcherTimerHelper? timerService = null,
+            IDispatcherTimerHelper? notificationTimerService = null, INotificationHelper? notificationHelper = null,
             CourseServiceProxy? serviceProxy = null)
         {
             CurrentCourse = course ?? throw new ArgumentNullException(nameof(course));
@@ -319,11 +321,11 @@ namespace Duo.ViewModels
         /// <param name="notificationTimerService">Optional dispatcher timer service for notifications.</param>
         /// <param name="notificationHelper">Optional notification helper instance.</param>
         [ExcludeFromCodeCoverage]
-        private void InitializeTimersAndNotificationHelper(Services.IDispatcherTimerService? timerService,
-            Services.IDispatcherTimerService? notificationTimerService, INotificationHelper? notificationHelper)
+        private void InitializeTimersAndNotificationHelper(IDispatcherTimerHelper? timerService,
+            IDispatcherTimerHelper? notificationTimerService, INotificationHelper? notificationHelper)
         {
-            courseProgressTimer = timerService ?? new Services.DispatcherTimerService();
-            var notificationTimer = notificationTimerService ?? new Services.DispatcherTimerService();
+            courseProgressTimer = timerService ?? new DispatcherTimerHelper();
+            var notificationTimer = notificationTimerService ?? new DispatcherTimerHelper();
 
             this.notificationHelper = notificationHelper ?? new NotificationHelper(this, notificationTimer);
 

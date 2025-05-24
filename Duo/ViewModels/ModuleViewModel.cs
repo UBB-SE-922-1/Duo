@@ -6,6 +6,7 @@ using System.Windows.Input;
 using Duo.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Services;
+using DuoClassLibrary.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.UI.Xaml.Controls;
 using Windows.System;
@@ -144,17 +145,17 @@ namespace Duo.ViewModels
         {
             try
             {
-                var user = await userService.GetByIdAsync(UserId);
+                var user = await userService.GetUserById(UserId);
                 if (user == null)
                 {
                     Console.WriteLine($"User with ID {UserId} not found. Creating...");
-                    await userService.CreateUserAsync(new DuoClassLibrary.Models.User(UserId, $"DefaultUser{UserId}"));
+                    //await userService.CreateUserAsync(new DuoClassLibrary.Models.User(UserId, $"DefaultUser{UserId}"));
                 }
             }
             catch (KeyNotFoundException)
             {
                 Console.WriteLine($"User with ID {UserId} not found (exception). Creating...");
-                await userService.CreateUserAsync(new DuoClassLibrary.Models.User(UserId, $"DefaultUser{UserId}"));
+                //await userService.CreateUserAsync(new DuoClassLibrary.Models.User(UserId, $"DefaultUser{UserId}"));
             }
             catch (Exception ex)
             {
