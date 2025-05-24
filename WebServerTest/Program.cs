@@ -56,6 +56,7 @@ builder.Services.AddScoped<ISectionServiceProxy, SectionServiceProxy>();
 builder.Services.AddScoped<IQuizServiceProxy, QuizServiceProxy>();
 builder.Services.AddScoped<IExerciseServiceProxy, ExerciseServiceProxy>();
 
+
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<DataContext>();
 builder.Services.AddControllersWithViews();
