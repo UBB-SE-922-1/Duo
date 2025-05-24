@@ -1,5 +1,4 @@
 ﻿using DuoClassLibrary.Models;
-using Duo.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;

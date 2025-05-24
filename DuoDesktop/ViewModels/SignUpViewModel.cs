@@ -1,5 +1,4 @@
 ﻿using System;
-using Duo.Services;
 using DuoClassLibrary.Models;
 using System.Threading.Tasks;
 using DuoDesktop.Validators;

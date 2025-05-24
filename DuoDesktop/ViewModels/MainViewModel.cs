@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Collections.Generic;
 using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
+using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Services;
 
 #pragma warning disable IDE0028, CS8618, CS8602, CS8601, IDE0060

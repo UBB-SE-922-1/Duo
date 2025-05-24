@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 using DuoClassLibrary.Models;
+using DuoClassLibrary.Models.Exercises;
 
 namespace DuoDesktop.ViewModels
 {

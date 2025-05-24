@@ -19,7 +19,7 @@ namespace DuoDesktop.ViewModels
         private readonly IPostService _postService;
         private readonly ICommentService _commentService;
         private readonly IUserService _userService;
-        private Post _post;
+        private DuoClassLibrary.Models.Post _post;
         private ObservableCollection<CommentViewModel> _commentViewModels;
         private ObservableCollection<DuoClassLibrary.Models.Comment> _comments;
         private CommentCreationViewModel _commentCreationViewModel;
@@ -49,7 +49,7 @@ namespace DuoDesktop.ViewModels
                 Description = "",
                 Hashtags = new List<string>()
             };
-            _comments = new ObservableCollection<DuoClassLibrary.Models.Post.Comment>();
+            _comments = new ObservableCollection<DuoClassLibrary.Models.Comment>();
             _commentViewModels = new ObservableCollection<CommentViewModel>();
             _commentCreationViewModel = new CommentCreationViewModel();
             _commentCreationViewModel.CommentSubmitted += CommentCreationViewModel_CommentSubmitted;
@@ -66,7 +66,7 @@ namespace DuoDesktop.ViewModels
             set => SetProperty(ref _post, value);
         }
 
-        public ObservableCollection<DuoClassLibrary.Models.Post.> Comments
+        public ObservableCollection<DuoClassLibrary.Models.Comment> Comments
         {
             get => _comments;
             set => SetProperty(ref _comments, value);

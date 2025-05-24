@@ -21,6 +21,7 @@ using Microsoft.UI.Xaml.Media;
 using DuoClassLibrary.Models;
 using DuoDesktop.Helpers.Interfaces;
 using DuoDesktop.ViewModels;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace DuoDesktop.ViewModels
 {

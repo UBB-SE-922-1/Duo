@@ -1,5 +1,4 @@
-﻿using Duo;
-using DuoClassLibrary.Models;
+﻿using DuoClassLibrary.Models;
 using DuoClassLibrary.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;

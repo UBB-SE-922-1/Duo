@@ -32,8 +32,6 @@ using DuoClassLibrary.Repositories.Interfaces;
 using DuoClassLibrary.Services.Interfaces;
 using DuoClassLibrary.Services;
 using DuoDesktop.ViewModels;
-using Duo.Services;
-using DuoDesktop.Services;
 
 namespace DuoDesktop
 {

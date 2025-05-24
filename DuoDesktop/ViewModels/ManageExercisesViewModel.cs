@@ -9,7 +9,7 @@ using System.Windows.Input;
 using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Exercises;
-using DuoClassLibrary.Services;
+using DuoClassLibrary.Services.Interfaces;
 using DuoDesktop.ViewModels.Base;
 using Microsoft.UI.Dispatching;
 

@@ -69,11 +69,6 @@
 	  <ProjectReference Include="..\DuoClassLibrary\DuoClassLibrary.csproj" />
 	</ItemGroup>
 	<ItemGroup>
-	  <Reference Include="DuoClassLibrary">
-	    <HintPath>..\DuoClassLibrary\bin\Debug\net8.0\DuoClassLibrary.dll</HintPath>
-	  </Reference>
-	</ItemGroup>
-	<ItemGroup>
 		<Compile Update="MainWindow.xaml.cs">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Compile>

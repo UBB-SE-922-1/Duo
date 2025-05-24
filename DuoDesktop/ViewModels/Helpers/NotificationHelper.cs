@@ -1,8 +1,8 @@
 ﻿namespace DuoDesktop.ViewModels.Helpers
 {
     using System;
-    using DuoClassLibrary.Services;
-    using DuoClassLibrary.Helpers;
+    using DuoDesktop.Helpers;
+    using DuoDesktop.Helpers.Interfaces;
     using DuoDesktop.ViewModels;
 
     /// <summary>
@@ -21,7 +21,7 @@
         private readonly CourseViewModel parentViewModel;
 
         /// <summary>Timer service for managing notification display duration</summary>
-        private readonly Services.IDispatcherTimerService timer;
+        private readonly IDispatcherTimerHelper timer;
 
         #endregion
 
@@ -35,7 +35,7 @@
         /// <exception cref="ArgumentNullException">
         /// Thrown when either parentViewModel or timerService is null
         /// </exception>
-        public NotificationHelper(CourseViewModel parentViewModel, Services.IDispatcherTimerService timerService)
+        public NotificationHelper(CourseViewModel parentViewModel, IDispatcherTimerHelper timerService)
         {
             this.parentViewModel = parentViewModel ?? throw new ArgumentNullException(nameof(parentViewModel));
             this.timer = timerService ?? throw new ArgumentNullException(nameof(timerService));

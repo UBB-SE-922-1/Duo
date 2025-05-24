@@ -1,7 +1,5 @@
 using System;
 using System.Windows.Input;
-using DuoClassLibrary.Models;
-using Duo.Services;
 using Microsoft.UI.Xaml;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

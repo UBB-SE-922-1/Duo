@@ -10,7 +10,7 @@ using DuoDesktop.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Models.Exercises;
 using DuoClassLibrary.Models.Quizzes;
-using DuoClassLibrary.Services;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace DuoDesktop.ViewModels
 {

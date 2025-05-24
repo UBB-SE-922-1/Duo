@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using DuoClassLibrary.Services;
 using DuoDesktop.Validators;
 using DuoClassLibrary.Services.Interfaces;
-using Duo.Services;
 
 namespace DuoDesktop.ViewModels
 {

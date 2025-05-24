@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using DuoClassLibrary.Models.Quizzes;
 using DuoClassLibrary.Models.Sections;
-using DuoClassLibrary.Services;
+using DuoClassLibrary.Services.Interfaces;
 using DuoDesktop.ViewModels.Base;
 using DuoClassLibrary.Models;
 using Microsoft.UI.Dispatching;
