@@ -139,6 +139,15 @@ namespace Duo.Views.Pages
                     case "OffTopic":
                         contentFrame.Navigate(typeof(PostListPage), "Off-topic");
                         break;
+                    case "QuizParent":
+                        contentFrame.Navigate(typeof(Views.Pages.RoadmapMainPage), "Roadmap");
+                        break;
+                    case "QuizAdminParent":
+                        contentFrame.Navigate(typeof(Views.Pages.AdminMainPage), "Admin");
+                        break;
+                    case "CoursesParent":
+                        contentFrame.Navigate(typeof(Duo.Views.MainPage), "Main");
+                        break;
                     default:
                         if (selectedItem.Tag is string categoryName)
                         {
