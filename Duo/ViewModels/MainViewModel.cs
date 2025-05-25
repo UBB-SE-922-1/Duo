@@ -9,6 +9,7 @@ using Duo.Commands;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Services;
 using Windows.System.Threading;
+using DuoClassLibrary.Services.Interfaces;
 
 #pragma warning disable IDE0028, CS8618, CS8602, CS8601, IDE0060
 
@@ -19,7 +20,7 @@ namespace Duo.ViewModels
     /// </summary>
     public partial class MainViewModel : BaseViewModel, IMainViewModel
     {
-        private int CurrentUserId { get; init; } = 1;
+        private int CurrentUserId { get; init; }
 
         private readonly ICourseService courseService;
         private readonly ICoinsService coinsService;
@@ -58,8 +59,26 @@ namespace Duo.ViewModels
             {
                 if (availableTags != value)
                 {
+                    // Unsubscribe from old tags
+                    if (availableTags != null)
+                    {
+                        foreach (var tag in availableTags)
+                        {
+                            tag.PropertyChanged -= Tag_PropertyChanged;
+                        }
+                    }
+
                     availableTags = value;
                     OnPropertyChanged(nameof(AvailableTags));
+
+                    // Subscribe to new tags
+                    if (availableTags != null)
+                    {
+                        foreach (var tag in availableTags)
+                        {
+                            tag.PropertyChanged += Tag_PropertyChanged;
+                        }
+                    }
                 }
             }
         }
@@ -181,9 +200,14 @@ namespace Duo.ViewModels
         public ICommand ResetAllFiltersCommand { get; private set; }
 
         /// <summary>
+        /// Flag to indicate if filters are being updated in a batch process to prevent unnecessary re-filtering during updates.
+        /// </summary>
+        private bool isUpdatingFiltersBatch = false;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
         /// </summary>
-        public MainViewModel(CoinsServiceProxy serviceProxy, CourseServiceProxy courseServiceProxy, int currentUserId = 1,
+        public MainViewModel(CoinsServiceProxy serviceProxy, CourseServiceProxy courseServiceProxy, int currentUserId,
             ICourseService? courseService = null, ICoinsService? coinsService = null)
         {
             this.CurrentUserId = currentUserId;
@@ -208,10 +232,6 @@ namespace Duo.ViewModels
                 }
                 DisplayedCourses = new ObservableCollection<Course>(courseList);
                 AvailableTags = new ObservableCollection<Tag>(await this.courseService.GetTagsAsync());
-                foreach (var tag in AvailableTags)
-                {
-                    tag.PropertyChanged += OnTagSelectionChanged;
-                }
 
                 await RefreshUserCoinBalanceAsync();
             }
@@ -239,14 +259,6 @@ namespace Duo.ViewModels
             }
         }
 
-        private void OnTagSelectionChanged(object? sender, PropertyChangedEventArgs eventArgs)
-        {
-            if (eventArgs.PropertyName == nameof(Tag.IsSelected))
-            {
-                ApplyAllFilters();
-            }
-        }
-
         /// <summary>
         /// Resets all the filters and clears the search query.
         /// </summary>
@@ -254,6 +266,7 @@ namespace Duo.ViewModels
         {
             try
             {
+                this.isUpdatingFiltersBatch = true;
                 SearchQuery = string.Empty;
                 FilterByPremium = false;
                 FilterByFree = false;
@@ -264,7 +277,7 @@ namespace Duo.ViewModels
                 {
                     tag.IsSelected = false;
                 }
-
+                this.isUpdatingFiltersBatch = false;
                 ApplyAllFilters();
             }
             catch (Exception ex)
@@ -342,6 +355,23 @@ namespace Duo.ViewModels
                 }
 
                 DisplayedCourses.Add(course);
+            }
+        }
+
+        /// <summary>
+        /// Handles property changes for tags to reapply filters when a tag's selection state changes.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Tag_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(Tag.IsSelected))
+            {
+                if(!isUpdatingFiltersBatch)
+                {
+                    // If not in batch update mode, apply filters immediately
+                    ApplyAllFilters();
+                }
             }
         }
 

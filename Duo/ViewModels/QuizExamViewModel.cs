@@ -517,7 +517,7 @@ namespace Duo.ViewModels
                 ISectionService sectionService = (ISectionService)App.ServiceProvider.GetService(typeof(ISectionService))
                     ?? throw new InvalidOperationException("ISectionService not found.");
 
-                User user = await userService.GetUserById(1)
+                User user = userService.GetCurrentUser()
                     ?? throw new InvalidOperationException("User not found.");
                 List<Section> sections = await sectionService.GetByRoadmapId(1)
                     ?? throw new InvalidOperationException("Sections not found.");
@@ -555,6 +555,12 @@ namespace Duo.ViewModels
                     if (currentUserSection.GetFinalExam().Id != ExamId)
                     {
                         RaiseErrorMessage("Progression Error", "Exam ID does not match section's final exam.");
+                        return;
+                    }
+                    bool isExamCompleted = await quizService.IsExamCompleted(user.UserId, ExamId);
+                    if (isExamCompleted)
+                    {
+                        RaiseErrorMessage("Progression Error", "Exam already completed.");
                         return;
                     }
 
