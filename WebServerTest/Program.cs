@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Duo.Services;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Duo.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +65,6 @@ builder.Services.AddScoped<IQuizServiceProxy, QuizServiceProxy>();
 builder.Services.AddScoped<IExerciseServiceProxy, ExerciseServiceProxy>();
 
 
-
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<DataContext>();
 builder.Services.AddControllersWithViews();
@@ -95,9 +95,18 @@ app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "exam",
+    pattern: "Exam/{action=Index}/{id?}",
+    defaults: new { controller = "Exam" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+app.MapControllerRoute(
+    name: "quiz",
+    pattern: "Quiz/{action}/{id}",
+    defaults: new { controller = "Quiz" });
 
 app.MapRazorPages();
 
