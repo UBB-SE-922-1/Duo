@@ -107,6 +107,10 @@ namespace Duo.Api
 
             // Configure the database context with a connection string.
             var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__WebApiDatabase");
+            if (string.IsNullOrEmpty(connectionString))
+            {
+                connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+            }
             Console.WriteLine("Connection string: " + connectionString);
 
             builder.Services.AddDbContext<DataContext>(options =>
