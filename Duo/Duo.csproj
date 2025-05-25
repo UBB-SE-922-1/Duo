@@ -121,4 +121,10 @@
 	<ItemGroup>
 	  <PRIResource Remove="Repositories\**" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Content Update="Assets\userIcon.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
 </Project>
