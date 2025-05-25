@@ -9,9 +9,14 @@
     mc:Ignorable="d">
 
     <Grid>
-        <TextBlock Text="Main Page" 
+        <TextBlock Text="Welcome to Duo!"
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"
                    FontSize="24"/>
+        <Button Content="Logout"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Margin="10"
+                Click="LogoutButton_Click"/>
     </Grid>
 </Page>
