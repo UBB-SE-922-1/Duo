@@ -22,6 +22,7 @@ namespace Duo.Views.Pages
             try
             {
                 this.InitializeComponent();
+                this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
                 _ = InitializeAsync();
             }
             catch (Exception ex)
