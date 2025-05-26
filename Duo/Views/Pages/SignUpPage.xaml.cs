@@ -77,7 +77,7 @@ namespace Duo.Views.Pages
                 App.CurrentUser = ViewModel.NewUser;
 
                 await ShowDialog("Account Created", "Your account has been successfully created!");
-                await App.userService.SetUser(App.CurrentUser.UserName);
+                await App.UserService.SetUser(App.CurrentUser.UserName);
 
                 Frame.Navigate(typeof(CategoryPage));
             }

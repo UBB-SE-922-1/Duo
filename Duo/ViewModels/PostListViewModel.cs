@@ -1,262 +1,353 @@
-using System;
-using System.Windows.Input;
-using DuoClassLibrary.Models;
-using Duo.Services;
-using Duo.Commands;
-using Microsoft.UI.Xaml;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using DuoClassLibrary.Services.Interfaces;
+// <copyright file="PostListViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using Duo.Services;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Services.Interfaces;
+    using Microsoft.UI.Xaml;
+
+    /// <summary>
+    /// ViewModel for listing and filtering posts with pagination and hashtag support.
+    /// </summary>
     public class PostListViewModel : INotifyPropertyChanged
     {
-        private readonly IPostService _postService;
-        
         // Constants for validation and defaults
-        private const int INVALID_ID = 0;
-        private const int DEFAULT_ITEMS_PER_PAGE = 5;
-        private const int DEFAULT_PAGE_NUMBER = 1;
-        private const int DEFAULT_TOTAL_PAGES = 1;
-        private const int DEFAULT_COUNT = 0;
-        private const string ALL_HASHTAGS_FILTER = "All";
-
-        private int? _categoryID;
-        private string _categoryName;
-        private string _filterText;
-        private ObservableCollection<Post> _posts;
-        private int _currentPage;
-        private HashSet<string> _selectedHashtags = new HashSet<string>();
+        private const int InvalidId = 0;
+        private const int DefaultItemsPerPage = 5;
+        private const int DefaultPageNumber = 1;
+        private const int DefaultTotalPages = 1;
+        private const int DefaultCount = 0;
+        private const string AllHashtagsFilter = "All";
         private const int ItemsPerPage = 5;
-        private int _totalPages = 1;
-        private List<string> _allHashtags = new List<string>();
-        private int _totalPostCount = 0;
-        private bool _isLoading;
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        private readonly IPostService postService;
 
+        private int? categoryId;
+        private string categoryName = string.Empty;
+        private string filterText = string.Empty;
+        private ObservableCollection<Post> posts;
+        private int currentPage;
+        private HashSet<string> selectedHashtags = new HashSet<string>();
+        private int totalPages = 1;
+        private List<string> allHashtags = new List<string>();
+        private int totalPostCount = 0;
+        private bool isLoading;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostListViewModel"/> class.
+        /// </summary>
+        /// <param name="postService">The post service.</param>
+        /// <param name="categoryService">The category service (optional).</param>
         public PostListViewModel(IPostService postService, ICategoryService? categoryService = null)
         {
-            _postService = postService ?? App._postService;
-            _posts = new ObservableCollection<Post>();
-            _currentPage = DEFAULT_PAGE_NUMBER;
-            _selectedHashtags.Add(ALL_HASHTAGS_FILTER);
+            this.postService = postService ?? App.PostService;
+            this.posts = new ObservableCollection<Post>();
+            this.currentPage = DefaultPageNumber;
+            this.selectedHashtags.Add(AllHashtagsFilter);
 
-            LoadPostsCommand = new RelayCommand(async _ => await LoadPosts());
-            NextPageCommand = new RelayCommand(async _ => await NextPage());
-            PreviousPageCommand = new RelayCommand(async _ => await PreviousPage());
-            FilterPostsCommand = new RelayCommand(async _ => await FilterPosts());
-            ClearFiltersCommand = new RelayCommand(async _ => await ClearFilters());
+            this.LoadPostsCommand = new RelayCommand(async _ => await this.LoadPosts());
+            this.NextPageCommand = new RelayCommand(async _ => await this.NextPage());
+            this.PreviousPageCommand = new RelayCommand(async _ => await this.PreviousPage());
+            this.FilterPostsCommand = new RelayCommand(async _ => await this.FilterPosts());
+            this.ClearFiltersCommand = new RelayCommand(async _ => await this.ClearFilters());
         }
 
+        /// <inheritdoc/>
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        /// Initializes the view model asynchronously.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task InitializeAsync()
         {
-            await LoadAllHashtagsAsync();
-            await LoadPosts();
+            await this.LoadAllHashtagsAsync();
+            await this.LoadPosts();
         }
 
+        /// <summary>
+        /// Gets or sets the collection of posts.
+        /// </summary>
         public ObservableCollection<Post> Posts
         {
-            get => _posts;
+            get => this.posts;
             set
             {
-                _posts = value;
-                OnPropertyChanged();
+                this.posts = value;
+                this.OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the current page number.
+        /// </summary>
         public int CurrentPage
         {
-            get => _currentPage;
+            get => this.currentPage;
             set
             {
-                _currentPage = value;
-                OnPropertyChanged();
+                this.currentPage = value;
+                this.OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the filter text.
+        /// </summary>
         public string FilterText
         {
-            get => _filterText;
+            get => this.filterText;
             set
             {
-                _filterText = value;
-                OnPropertyChanged();
-                _ = FilterPosts();
+                this.filterText = value;
+                this.OnPropertyChanged();
+                _ = this.FilterPosts();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the category ID.
+        /// </summary>
         public int CategoryID
         {
-            get => _categoryID ?? INVALID_ID;
+            get => this.categoryId ?? InvalidId;
             set
             {
-                _categoryID = value;
-                OnPropertyChanged();
-                _ = LoadAllHashtagsAsync();
+                this.categoryId = value;
+                this.OnPropertyChanged();
+                _ = this.LoadAllHashtagsAsync();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the category name.
+        /// </summary>
         public string CategoryName
         {
-            get => _categoryName;
+            get => this.categoryName;
             set
             {
-                _categoryName = value;
-                OnPropertyChanged();
+                this.categoryName = value;
+                this.OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets the total number of pages.
+        /// </summary>
         public int TotalPages
         {
-            get => _totalPages;
+            get => this.totalPages;
             set
             {
-                _totalPages = value;
-                OnPropertyChanged();
+                this.totalPages = value;
+                this.OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the view model is loading.
+        /// </summary>
         public bool IsLoading
         {
-            get => _isLoading;
+            get => this.isLoading;
             set
             {
-                _isLoading = value;
-                OnPropertyChanged();
+                this.isLoading = value;
+                this.OnPropertyChanged();
             }
         }
 
-        public HashSet<string> SelectedHashtags => _selectedHashtags;
+        /// <summary>
+        /// Gets the selected hashtags.
+        /// </summary>
+        public HashSet<string> SelectedHashtags => this.selectedHashtags;
 
-        public List<string> AllHashtags 
+        /// <summary>
+        /// Gets or sets all available hashtags.
+        /// </summary>
+        public List<string> AllHashtags
         {
-            get => _allHashtags;
+            get => this.allHashtags;
             set
             {
-                _allHashtags = value;
-                OnPropertyChanged();
+                this.allHashtags = value;
+                this.OnPropertyChanged();
             }
         }
 
+        /// <summary>
+        /// Gets the command to load posts.
+        /// </summary>
         public ICommand LoadPostsCommand { get; }
+
+        /// <summary>
+        /// Gets the command to go to the next page.
+        /// </summary>
         public ICommand NextPageCommand { get; }
+
+        /// <summary>
+        /// Gets the command to go to the previous page.
+        /// </summary>
         public ICommand PreviousPageCommand { get; }
+
+        /// <summary>
+        /// Gets the command to filter posts.
+        /// </summary>
         public ICommand FilterPostsCommand { get; }
+
+        /// <summary>
+        /// Gets the command to clear filters.
+        /// </summary>
         public ICommand ClearFiltersCommand { get; }
 
-        private async Task LoadAllHashtagsAsync()
-        {
-            try
-            {
-                _allHashtags.Clear();
-                _allHashtags.Add(ALL_HASHTAGS_FILTER);
-
-                var hashtags = await _postService.GetHashtags(_categoryID);
-                foreach (var hashtag in hashtags)
-                {
-                    if (!_allHashtags.Contains(hashtag.Tag))
-                    {
-                        _allHashtags.Add(hashtag.Tag);
-                    }
-                }
-
-                OnPropertyChanged(nameof(AllHashtags));
-            }
-            catch (Exception ex)
-            {
-                // Log the error or show a message to the user
-                Debug.WriteLine($"Error loading hashtags: {ex.Message}");
-            }
-        }
-
+        /// <summary>
+        /// Loads posts asynchronously.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task LoadPosts()
         {
             try
             {
-                IsLoading = true;
-                var result = await _postService.GetFilteredAndFormattedPosts(
-                   _categoryID,
-                    _selectedHashtags.ToList(),
-                    _filterText,
-                    _currentPage,
+                this.IsLoading = true;
+                var result = await this.postService.GetFilteredAndFormattedPosts(
+                    this.categoryId,
+                    this.selectedHashtags.ToList(),
+                    this.filterText,
+                    this.currentPage,
                     ItemsPerPage);
 
                 var posts = result.Posts;
                 var totalCount = result.TotalCount;
 
-                Posts.Clear();
+                this.Posts.Clear();
                 foreach (var post in posts)
                 {
-                    Posts.Add(post);
+                    this.Posts.Add(post);
                 }
 
-                _totalPostCount = totalCount;
-                TotalPages = Math.Max(DEFAULT_TOTAL_PAGES, (int)Math.Ceiling(_totalPostCount / (double)ItemsPerPage));
-                OnPropertyChanged(nameof(TotalPages));
+                this.totalPostCount = totalCount;
+                this.TotalPages = Math.Max(DefaultTotalPages, (int)Math.Ceiling(this.totalPostCount / (double)ItemsPerPage));
+                this.OnPropertyChanged(nameof(this.TotalPages));
             }
             catch (Exception ex)
             {
-                // Log the error or show a message to the user
                 Debug.WriteLine($"Error loading posts: {ex.Message}");
             }
             finally
             {
-                IsLoading = false;
+                this.IsLoading = false;
             }
         }
 
-        private async Task NextPage()
-        {
-            if (CurrentPage < TotalPages)
-            {
-                CurrentPage++;
-                await LoadPosts();
-            }
-        }
-
-        private async Task PreviousPage()
-        {
-            if (CurrentPage > DEFAULT_PAGE_NUMBER)
-            {
-                CurrentPage--;
-                await LoadPosts();
-            }
-        }
-
+        /// <summary>
+        /// Toggles a hashtag filter and reloads posts.
+        /// </summary>
+        /// <param name="hashtag">The hashtag to toggle.</param>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task ToggleHashtag(string hashtag)
         {
-            _selectedHashtags = _postService.ToggleHashtagSelection(_selectedHashtags, hashtag, ALL_HASHTAGS_FILTER);
-            CurrentPage = DEFAULT_PAGE_NUMBER;
-            OnPropertyChanged(nameof(SelectedHashtags));
-            await LoadPosts();
+            this.selectedHashtags = this.postService.ToggleHashtagSelection(this.selectedHashtags, hashtag, AllHashtagsFilter);
+            this.CurrentPage = DefaultPageNumber;
+            this.OnPropertyChanged(nameof(this.SelectedHashtags));
+            await this.LoadPosts();
         }
 
+        /// <summary>
+        /// Filters posts based on the current filter text.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task FilterPosts()
-        { 
-            CurrentPage = DEFAULT_PAGE_NUMBER;
-            await LoadPosts();
+        {
+            this.CurrentPage = DefaultPageNumber;
+            await this.LoadPosts();
         }
 
+        /// <summary>
+        /// Clears all filters and reloads posts.
+        /// </summary>
+        /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
         public async Task ClearFilters()
         {
-            FilterText = string.Empty;
-            _selectedHashtags.Clear();
-            _selectedHashtags.Add(ALL_HASHTAGS_FILTER);
-            CurrentPage = DEFAULT_PAGE_NUMBER;
-            await LoadPosts();
-            OnPropertyChanged(nameof(SelectedHashtags));
+            this.FilterText = string.Empty;
+            this.selectedHashtags.Clear();
+            this.selectedHashtags.Add(AllHashtagsFilter);
+            this.CurrentPage = DefaultPageNumber;
+            await this.LoadPosts();
+            this.OnPropertyChanged(nameof(this.SelectedHashtags));
         }
 
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        /// <summary>
+        /// Loads all hashtags asynchronously.
+        /// </summary>
+        private async Task LoadAllHashtagsAsync()
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            try
+            {
+                this.allHashtags.Clear();
+                this.allHashtags.Add(AllHashtagsFilter);
+
+                var hashtags = await this.postService.GetHashtags(this.categoryId);
+                foreach (var hashtag in hashtags)
+                {
+                    if (!this.allHashtags.Contains(hashtag.Tag))
+                    {
+                        this.allHashtags.Add(hashtag.Tag);
+                    }
+                }
+
+                this.OnPropertyChanged(nameof(this.AllHashtags));
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading hashtags: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Goes to the next page.
+        /// </summary>
+        private async Task NextPage()
+        {
+            if (this.CurrentPage < this.TotalPages)
+            {
+                this.CurrentPage++;
+                await this.LoadPosts();
+            }
+        }
+
+        /// <summary>
+        /// Goes to the previous page.
+        /// </summary>
+        private async Task PreviousPage()
+        {
+            if (this.CurrentPage > DefaultPageNumber)
+            {
+                this.CurrentPage--;
+                await this.LoadPosts();
+            }
+        }
+
+        /// <summary>
+        /// Raises the PropertyChanged event.
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

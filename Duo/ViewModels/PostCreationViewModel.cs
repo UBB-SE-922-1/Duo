@@ -1,285 +1,333 @@
-using System;
-using System.Windows.Input;
-using DuoClassLibrary.Models;
-using Duo.Services;
-using Microsoft.UI.Xaml;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using Duo.Commands;
-using System.Collections.Generic;
-using System.Diagnostics;
-using static Duo.App;
-using System.Collections.ObjectModel;
-using Duo.Views.Components;
-using System.Threading.Tasks;
-using DuoClassLibrary.Services.Interfaces;
-using DuoClassLibrary.Helpers;
+// <copyright file="PostCreationViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Diagnostics;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using Duo.Services;
+    using Duo.Views.Components;
+    using DuoClassLibrary.Helpers;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Services.Interfaces;
+    using static Duo.App;
+
     /// <summary>
     /// The PostCreationViewModel is responsible for managing the creation and editing of posts.
     /// It provides properties and methods for interacting with the post creation UI,
     /// and handles the communication with the database through the PostService.
-    /// 
     /// Features:
-    /// - Managing post title and content
-    /// - Handling hashtags (add, remove)
-    /// - Community selection
-    /// - Post creation with validation
-    /// - Error handling
+    /// - Managing post title and content.
+    /// - Handling hashtags (add, remove).
+    /// - Community selection.
+    /// - Post creation with validation.
+    /// - Error handling.
     /// </summary>
     public class PostCreationViewModel : INotifyPropertyChanged
     {
         // Constants for validation and defaults
-        private const int INVALID_ID = 0;
-        private const int DEFAULT_COUNT = 0;
-        private const string EMPTY_STRING = "";
-        
+        private const int InvalidId = 0;
+        private const int DefaultCount = 0;
+        private const string EmptyString = "";
+
         // Services
-        private readonly IPostService _postService;
-        private readonly ICategoryService _categoryService;
-        private readonly IUserService _userService;
+        private readonly IPostService postService;
+        private readonly ICategoryService categoryService;
+        private readonly IUserService userService;
 
         // Properties
-        private string _postTitle = string.Empty;
-        private string _postContent = string.Empty;
-        private int _selectedCategoryId;
-        private ObservableCollection<string> _postHashtags = new ObservableCollection<string>();
-        private ObservableCollection<CommunityItem> _postCommunities = new ObservableCollection<CommunityItem>();
-        private string _lastError = string.Empty;
-        private bool _isLoading;
-        private bool _isSuccess;
+        private string postTitle = string.Empty;
+        private string postContent = string.Empty;
+        private int selectedCategoryId;
+        private ObservableCollection<string> postHashtags = new ObservableCollection<string>();
+        private ObservableCollection<CommunityItem> postCommunities = new ObservableCollection<CommunityItem>();
+        private string lastError = string.Empty;
+        private bool isLoading;
+        private bool isSuccess;
 
-        // Commands
+        /// <summary>
+        /// Occurs when a property value changes.
+        /// </summary>
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        /// Occurs when post creation is successful.
+        /// </summary>
+        public event EventHandler? PostCreationSuccessful;
+
+        /// <summary>
+        /// Gets the command to create a post.
+        /// </summary>
         public ICommand CreatePostCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to add a hashtag.
+        /// </summary>
         public ICommand AddHashtagCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to remove a hashtag.
+        /// </summary>
         public ICommand RemoveHashtagCommand { get; private set; }
+
+        /// <summary>
+        /// Gets the command to select a community.
+        /// </summary>
         public ICommand SelectCommunityCommand { get; private set; }
 
-        // Property changed event
-        public event PropertyChangedEventHandler PropertyChanged;
-        public event EventHandler PostCreationSuccessful;
-
-
+        /// <summary>
+        /// Gets or sets the post title.
+        /// </summary>
         public string Title
         {
-            get => _postTitle;
+            get => this.postTitle;
             set
             {
-                if (_postTitle != value)
+                if (this.postTitle != value)
                 {
-                    _postTitle = value;
+                    this.postTitle = value;
                     var (isValid, errorMessage) = ValidationHelper.ValidatePostTitle(value);
                     if (!isValid)
                     {
-                        LastError = errorMessage;
+                        this.LastError = errorMessage;
                     }
                     else
                     {
-                        LastError = EMPTY_STRING;
+                        this.LastError = EmptyString;
                     }
-                    OnPropertyChanged();
+
+                    this.OnPropertyChanged();
                 }
             }
         }
 
+        /// <summary>
+        /// Gets or sets the post content.
+        /// </summary>
         public string Content
         {
-            get => _postContent;
+            get => this.postContent;
             set
             {
-                if (_postContent != value)
+                if (this.postContent != value)
                 {
-                    _postContent = value;
+                    this.postContent = value;
                     var (isValid, errorMessage) = ValidationHelper.ValidatePostContent(value);
                     if (!isValid)
                     {
-                        LastError = errorMessage;
+                        this.LastError = errorMessage;
                     }
                     else
                     {
-                        LastError = EMPTY_STRING;
+                        this.LastError = EmptyString;
                     }
-                    OnPropertyChanged();
+
+                    this.OnPropertyChanged();
                 }
             }
         }
 
+        /// <summary>
+        /// Gets or sets the selected category ID.
+        /// </summary>
         public int SelectedCategoryId
         {
-            get => _selectedCategoryId;
+            get => this.selectedCategoryId;
             set
             {
-                if (_selectedCategoryId != value)
+                if (this.selectedCategoryId != value)
                 {
-                    _selectedCategoryId = value;
-                    OnPropertyChanged();
-                    UpdateSelectedCommunity();
+                    this.selectedCategoryId = value;
+                    this.OnPropertyChanged();
+                    this.UpdateSelectedCommunity();
                 }
             }
         }
 
-        public ObservableCollection<string> Hashtags => _postHashtags;
+        /// <summary>
+        /// Gets the collection of hashtags.
+        /// </summary>
+        public ObservableCollection<string> Hashtags => this.postHashtags;
 
-        public ObservableCollection<CommunityItem> Communities => _postCommunities;
+        /// <summary>
+        /// Gets the collection of communities.
+        /// </summary>
+        public ObservableCollection<CommunityItem> Communities => this.postCommunities;
 
+        /// <summary>
+        /// Gets or sets the last error message.
+        /// </summary>
         public string LastError
         {
-            get => _lastError;
+            get => this.lastError;
             set
             {
-                if (_lastError != value)
+                if (this.lastError != value)
                 {
-                    _lastError = value;
-                    OnPropertyChanged();
+                    this.lastError = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the view model is loading.
+        /// </summary>
         public bool IsLoading
         {
-            get => _isLoading;
+            get => this.isLoading;
             set
             {
-                if (_isLoading != value)
+                if (this.isLoading != value)
                 {
-                    _isLoading = value;
-                    OnPropertyChanged();
+                    this.isLoading = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the operation was successful.
+        /// </summary>
         public bool IsSuccess
         {
-            get => _isSuccess;
+            get => this.isSuccess;
             set
             {
-                if (_isSuccess != value)
+                if (this.isSuccess != value)
                 {
-                    _isSuccess = value;
-                    OnPropertyChanged();
+                    this.isSuccess = value;
+                    this.OnPropertyChanged();
                 }
             }
         }
 
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PostCreationViewModel"/> class.
+        /// </summary>
         public PostCreationViewModel()
         {
-            // Get services from App
-            _postService = _postService ?? App._postService;
-            _categoryService = _categoryService ?? App._categoryService;
-            _userService = _userService ?? App.userService;
+            this.postService = App.PostService;
+            this.categoryService = App.CategoryService;
+            this.userService = App.UserService;
 
-            // Initialize commands
-            CreatePostCommand = new RelayCommand(async _ => await CreatePostAsync());
-            AddHashtagCommand = new RelayCommandWithParameter<string>(AddHashtag);
-            RemoveHashtagCommand = new RelayCommandWithParameter<string>(RemoveHashtag);
-            SelectCommunityCommand = new RelayCommandWithParameter<int>(SelectCommunity);
+            this.CreatePostCommand = new RelayCommand(async _ => await this.CreatePostAsync());
+            this.AddHashtagCommand = new RelayCommandWithParameter<string>(this.AddHashtag);
+            this.RemoveHashtagCommand = new RelayCommandWithParameter<string>(this.RemoveHashtag);
+            this.SelectCommunityCommand = new RelayCommandWithParameter<int>(this.SelectCommunity);
 
-            // Load initial data
-            LoadCommunities();
+            this.LoadCommunities();
         }
 
-        #region Public Methods
-
+        /// <summary>
+        /// Creates a post asynchronously.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task CreatePostAsync()
         {
-            if (string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Content))
+            if (string.IsNullOrWhiteSpace(this.Title) || string.IsNullOrWhiteSpace(this.Content))
             {
-                LastError = "Title and content are required.";
+                this.LastError = "Title and content are required.";
                 return;
             }
 
-            var (isTitleValid, titleError) = ValidationHelper.ValidatePostTitle(Title);
+            var (isTitleValid, titleError) = ValidationHelper.ValidatePostTitle(this.Title);
             if (!isTitleValid)
             {
-                LastError = titleError;
+                this.LastError = titleError;
                 return;
             }
 
-            if (SelectedCategoryId <= INVALID_ID)
+            if (this.SelectedCategoryId <= InvalidId)
             {
-                LastError = "Please select a community for your post.";
+                this.LastError = "Please select a community for your post.";
                 return;
             }
 
-            IsLoading = true;
-            LastError = EMPTY_STRING;
+            this.IsLoading = true;
+            this.LastError = EmptyString;
 
             try
             {
-                // Get current user ID
-                var currentUser = _userService.GetCurrentUser();
-                
-                // Create a new Post object
+                var currentUser = this.userService.GetCurrentUser();
+
                 var newPost = new DuoClassLibrary.Models.Post
                 {
-                    Title = Title,
-                    Description = Content,
+                    Title = this.Title,
+                    Description = this.Content,
                     UserID = currentUser.UserId,
-                    CategoryID = SelectedCategoryId,
+                    CategoryID = this.SelectedCategoryId,
                     CreatedAt = DateTimeHelper.EnsureUtcKind(DateTime.UtcNow),
-                    UpdatedAt = DateTimeHelper.EnsureUtcKind(DateTime.UtcNow)
+                    UpdatedAt = DateTimeHelper.EnsureUtcKind(DateTime.UtcNow),
                 };
-                
-                // Create post in database using the original CreatePost method
-                int createdPostId = await _postService.CreatePost(newPost);
-                
-                // Add hashtags if any
-                if (Hashtags.Count > DEFAULT_COUNT)
+
+                int createdPostId = await this.postService.CreatePost(newPost);
+
+                if (this.Hashtags.Count > DefaultCount)
                 {
-                    foreach (var hashtagText in Hashtags)
+                    foreach (var hashtagText in this.Hashtags)
                     {
                         try
                         {
-                            await _postService.AddHashtagToPost(createdPostId, hashtagText, currentUser.UserId);
+                            await this.postService.AddHashtagToPost(createdPostId, hashtagText, currentUser.UserId);
                         }
                         catch (Exception hashtagException)
                         {
                             Debug.WriteLine($"Error adding hashtag '{hashtagText}' to post: {hashtagException.Message}");
+
                             // Continue with other hashtags even if one fails
                         }
                     }
                 }
 
-                // Handle success
-                IsSuccess = true;
-                PostCreationSuccessful?.Invoke(this, EventArgs.Empty);
+                this.IsSuccess = true;
+                this.PostCreationSuccessful?.Invoke(this, EventArgs.Empty);
 
-                // Clear form
-                ClearForm();
+                this.ClearForm();
             }
             catch (Exception postCreationException)
             {
                 Debug.WriteLine($"Error creating post: {postCreationException.Message}");
-                LastError = $"Failed to create post: {postCreationException.Message}";
-                IsSuccess = false;
+                this.LastError = $"Failed to create post: {postCreationException.Message}";
+                this.IsSuccess = false;
             }
             finally
             {
-                IsLoading = false;
+                this.IsLoading = false;
             }
         }
 
-        public async Task<bool> CreatePostAsync(string title, string content, int categoryId, List<string> hashtags = null)
+        /// <summary>
+        /// Creates a post asynchronously with parameters.
+        /// </summary>
+        /// <param name="title">The post title.</param>
+        /// <param name="content">The post content.</param>
+        /// <param name="categoryId">The category ID.</param>
+        /// <param name="hashtags">The list of hashtags.</param>
+        /// <returns>A task representing the asynchronous operation, with a result indicating success.</returns>
+        public async Task<bool> CreatePostAsync(string title, string content, int categoryId, List<string>? hashtags = null)
         {
-            // Set properties
-            Title = title;
-            Content = content;
-            SelectedCategoryId = categoryId;
-            
-            // Additional detailed debugging
-            System.Diagnostics.Debug.WriteLine($"CreatePostAsync - START - Title: '{title}', Content length: {content?.Length ?? 0}, CategoryID: {categoryId}");
-            System.Diagnostics.Debug.WriteLine($"CreatePostAsync - Received hashtags: {hashtags?.Count ?? 0}");
-            if (hashtags != null && hashtags.Count > DEFAULT_COUNT)
+            this.Title = title;
+            this.Content = content;
+            this.SelectedCategoryId = categoryId;
+
+            Debug.WriteLine($"CreatePostAsync - START - Title: '{title}', Content length: {content?.Length ?? 0}, CategoryID: {categoryId}");
+            Debug.WriteLine($"CreatePostAsync - Received hashtags: {hashtags?.Count ?? 0}");
+            if (hashtags != null && hashtags.Count > DefaultCount)
             {
-                System.Diagnostics.Debug.WriteLine($"CreatePostAsync - Hashtags to add: {string.Join(", ", hashtags)}");
+                Debug.WriteLine($"CreatePostAsync - Hashtags to add: {string.Join(", ", hashtags)}");
             }
-            
-            // Process hashtags
+
             List<string> processedHashtags = new List<string>();
-            if (hashtags != null && hashtags.Count > DEFAULT_COUNT)
+            if (hashtags != null && hashtags.Count > DefaultCount)
             {
                 foreach (var hashtagText in hashtags)
                 {
@@ -289,153 +337,156 @@ namespace Duo.ViewModels
                     }
                 }
             }
-            
-            // Create the post
-            IsLoading = true;
-            LastError = EMPTY_STRING;
+
+            this.IsLoading = true;
+            this.LastError = EmptyString;
 
             try
             {
-                // Get current user ID
-                var currentUser = _userService.GetCurrentUser();
-                
-                // Create a new Post object
+                var currentUser = this.userService.GetCurrentUser();
+
                 var newPost = new DuoClassLibrary.Models.Post
                 {
-                    Title = Title,
-                    Description = Content,
+                    Title = this.Title,
+                    Description = this.Content,
                     UserID = currentUser.UserId,
-                    CategoryID = SelectedCategoryId,
+                    CategoryID = this.SelectedCategoryId,
                     CreatedAt = DateTimeHelper.EnsureUtcKind(DateTime.UtcNow),
-                    UpdatedAt = DateTimeHelper.EnsureUtcKind(DateTime.UtcNow)
+                    UpdatedAt = DateTimeHelper.EnsureUtcKind(DateTime.UtcNow),
                 };
-                
-                // Create post and add hashtags in a single operation
-                int createdPostId = await _postService.CreatePostWithHashtags(newPost, processedHashtags, currentUser.UserId);
-                
-                // Now that we have a valid post ID, update our hashtags collection
-                Hashtags.Clear();
+
+                int createdPostId = await this.postService.CreatePostWithHashtags(newPost, processedHashtags, currentUser.UserId);
+
+                this.Hashtags.Clear();
                 foreach (var hashtagText in processedHashtags)
                 {
-                    _postHashtags.Add(hashtagText);
+                    this.postHashtags.Add(hashtagText);
                 }
-                
-                // Handle success
-                IsSuccess = true;
-                PostCreationSuccessful?.Invoke(this, EventArgs.Empty);
-                
+
+                this.IsSuccess = true;
+                this.PostCreationSuccessful?.Invoke(this, EventArgs.Empty);
+
                 return true;
             }
             catch (Exception postCreationException)
             {
-                System.Diagnostics.Debug.WriteLine($"Error creating post: {postCreationException.Message}");
-                LastError = $"Failed to create post: {postCreationException.Message}";
-                IsSuccess = false;
+                Debug.WriteLine($"Error creating post: {postCreationException.Message}");
+                this.LastError = $"Failed to create post: {postCreationException.Message}";
+                this.IsSuccess = false;
                 return false;
             }
             finally
             {
-                IsLoading = false;
+                this.IsLoading = false;
             }
         }
 
+        /// <summary>
+        /// Adds a hashtag to the collection.
+        /// </summary>
+        /// <param name="hashtag">The hashtag to add.</param>
         public void AddHashtag(string hashtag)
         {
             if (string.IsNullOrWhiteSpace(hashtag))
             {
-                System.Diagnostics.Debug.WriteLine("AddHashtag - Empty hashtag provided, ignoring");
+                Debug.WriteLine("AddHashtag - Empty hashtag provided, ignoring");
                 return;
             }
 
             string trimmedHashtag = hashtag.Trim();
-            
-            // Add the hashtag if it doesn't already exist
-            if (!Hashtags.Contains(trimmedHashtag))
+
+            if (!this.Hashtags.Contains(trimmedHashtag))
             {
-                // Add directly to the collection
-                _postHashtags.Add(trimmedHashtag);
-                
-                // Debug output
-                System.Diagnostics.Debug.WriteLine($"Added hashtag to ViewModel: {trimmedHashtag}, Count now: {Hashtags.Count}");
-                
-                // Explicitly notify that the Hashtags collection has changed
-                OnPropertyChanged(nameof(Hashtags));
+                this.postHashtags.Add(trimmedHashtag);
+
+                Debug.WriteLine($"Added hashtag to ViewModel: {trimmedHashtag}, Count now: {this.Hashtags.Count}");
+
+                this.OnPropertyChanged(nameof(this.Hashtags));
             }
             else
             {
-                System.Diagnostics.Debug.WriteLine($"Hashtag '{trimmedHashtag}' already exists in collection, not adding duplicate");
+                Debug.WriteLine($"Hashtag '{trimmedHashtag}' already exists in collection, not adding duplicate");
             }
         }
 
+        /// <summary>
+        /// Removes a hashtag from the collection.
+        /// </summary>
+        /// <param name="hashtag">The hashtag to remove.</param>
         public void RemoveHashtag(string hashtag)
         {
-            if (!string.IsNullOrWhiteSpace(hashtag) && Hashtags.Contains(hashtag))
+            if (!string.IsNullOrWhiteSpace(hashtag) && this.Hashtags.Contains(hashtag))
             {
-                Hashtags.Remove(hashtag);
-                
-                // Debug output
-                System.Diagnostics.Debug.WriteLine($"Removed hashtag from ViewModel: {hashtag}, Count now: {Hashtags.Count}");
-                
-                // Explicitly notify that the Hashtags collection has changed
-                OnPropertyChanged(nameof(Hashtags));
+                this.Hashtags.Remove(hashtag);
+
+                Debug.WriteLine($"Removed hashtag from ViewModel: {hashtag}, Count now: {this.Hashtags.Count}");
+
+                this.OnPropertyChanged(nameof(this.Hashtags));
             }
         }
 
+        /// <summary>
+        /// Selects a community by its ID.
+        /// </summary>
+        /// <param name="communityId">The community ID.</param>
         public void SelectCommunity(int communityId)
         {
-            SelectedCategoryId = communityId;
+            this.SelectedCategoryId = communityId;
         }
 
+        /// <summary>
+        /// Clears the form fields.
+        /// </summary>
         public void ClearForm()
         {
-            Title = EMPTY_STRING;
-            Content = EMPTY_STRING;
-            SelectedCategoryId = INVALID_ID;
-            Hashtags.Clear();
-            UpdateSelectedCommunity();
-            LastError = EMPTY_STRING;
-            IsSuccess = false;
+            this.Title = EmptyString;
+            this.Content = EmptyString;
+            this.SelectedCategoryId = InvalidId;
+            this.Hashtags.Clear();
+            this.UpdateSelectedCommunity();
+            this.LastError = EmptyString;
+            this.IsSuccess = false;
         }
 
-        #endregion
-
+        /// <summary>
+        /// Raises the PropertyChanged event.
+        /// </summary>
+        /// <param name="propertyName">The property name.</param>
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
 
         private async void LoadCommunities()
         {
             try
             {
-                var allCategories = await _categoryService.GetAllCategories();
-                
-                Communities.Clear();
+                var allCategories = await this.categoryService.GetAllCategories();
+
+                this.Communities.Clear();
                 foreach (var category in allCategories)
                 {
-                    Communities.Add(new CommunityItem
+                    this.Communities.Add(new CommunityItem
                     {
                         Id = category.Id,
                         Name = category.Name,
-                        IsSelected = (category.Id == SelectedCategoryId)
+                        IsSelected = category.Id == this.SelectedCategoryId,
                     });
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error loading communities: {ex.Message}");
-                LastError = $"Failed to load communities: {ex.Message}";
+                this.LastError = $"Failed to load communities: {ex.Message}";
             }
         }
 
         private void UpdateSelectedCommunity()
         {
-            foreach (var community in Communities)
+            foreach (var community in this.Communities)
             {
-                community.IsSelected = (community.Id == SelectedCategoryId);
+                community.IsSelected = community.Id == this.SelectedCategoryId;
             }
         }
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
     }
 }

@@ -17,17 +17,17 @@ namespace Duo.ViewModels
         /// Gets or sets the username entered by the user.
         /// </summary>
         public string Username { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// Gets or sets the password entered by the user.
         /// </summary>
         public string Password { get; set; } = string.Empty;
-        
+
         /// <summary>
         /// Gets a value indicating whether the login was successful.
         /// </summary>
         public bool LoginStatus { get; private set; }
-        
+
         /// <summary>
         /// Gets the logged-in user after a successful login.
         /// </summary>
@@ -52,30 +52,30 @@ namespace Duo.ViewModels
         {
             if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
             {
-                LoginStatus = false;
+                this.LoginStatus = false;
                 return false;
             }
 
-            Username = username;
-            Password = password;
+            this.Username = username;
+            this.Password = password;
 
             try
             {
                 // Try to get the user
-                LoggedInUser = await loginService.GetUserByCredentials(Username, Password);
-                LoginStatus = LoggedInUser != null;
+                this.LoggedInUser = await this.loginService.GetUserByCredentials(this.Username, this.Password);
+                this.LoginStatus = this.LoggedInUser != null;
 
-                if (LoginStatus)
+                if (this.LoginStatus)
                 {
-                    App.CurrentUser = LoggedInUser;
-                    App.userService.SetUser(App.CurrentUser.UserName);
+                    App.CurrentUser = this.LoggedInUser;
+                    App.UserService.SetUser(App.CurrentUser.UserName);
                 }
 
-                return LoginStatus;
+                return this.LoginStatus;
             }
             catch (Exception)
             {
-                LoginStatus = false;
+                this.LoginStatus = false;
                 return false;
             }
         }

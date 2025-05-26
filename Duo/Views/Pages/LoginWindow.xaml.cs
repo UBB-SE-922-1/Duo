@@ -1,31 +1,33 @@
-using Duo;
-
-using Duo.Services;
-using Duo.ViewModels;
-using DuolingoNou.Views;
-using DuolingoNou.Views.Pages;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using DuoClassLibrary.Services.Interfaces;
-using Microsoft.UI.Xaml.Navigation;
+// <copyright file="LoginWindow.xaml.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using Duo.Services;
+    using Duo.ViewModels;
+    using DuoClassLibrary.Services.Interfaces;
+    using DuolingoNou.Views;
+    using DuolingoNou.Views.Pages;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Navigation;
+
     /// <summary>
     /// Login page for user authentication.
     /// </summary>
     public sealed partial class LoginPage : Page
     {
+        private readonly IUserService userService;
+
         /// <summary>
         /// Gets the ViewModel for this page.
         /// </summary>
         public LoginViewModel ViewModel { get; private set; }
-
-        private readonly IUserService _userService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LoginPage"/> class.
@@ -36,35 +38,15 @@ namespace Duo.Views.Pages
 
             // Get services from DI container
             var loginService = App.ServiceProvider.GetRequiredService<ILoginService>();
-            _userService = App.ServiceProvider.GetRequiredService<IUserService>();
+            this.userService = App.ServiceProvider.GetRequiredService<IUserService>();
 
             // Create ViewModel with injected service
-            ViewModel = new LoginViewModel(loginService);
+            this.ViewModel = new LoginViewModel(loginService);
 
-            this.DataContext = ViewModel;
+            this.DataContext = this.ViewModel;
         }
 
-        /// <summary>
-        /// Handles the password reveal mode checkbox change.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        private void RevealModeCheckbox_Changed(object sender, RoutedEventArgs e)
-        {
-            PasswordBoxWithRevealMode.PasswordRevealMode =
-                RevealModeCheckBox.IsChecked == true ? PasswordRevealMode.Visible : PasswordRevealMode.Hidden;
-        }
-
-        /// <summary>
-        /// Navigates to the sign-up page.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event arguments.</param>
-        private void NavigateToSignUpPage(object sender, RoutedEventArgs e)
-        {
-            Frame.Navigate(typeof(SignUpPage));
-        }
-
+        /// <inheritdoc/>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
@@ -74,8 +56,31 @@ namespace Duo.Views.Pages
             for (int i = navFrame.BackStack.Count - 1; i >= 0; i--)
             {
                 if (navFrame.BackStack[i].SourcePageType == typeof(CategoryPage))
+                {
                     navFrame.BackStack.RemoveAt(i);
+                }
             }
+        }
+
+        /// <summary>
+        /// Handles the password reveal mode checkbox change.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void RevealModeCheckbox_Changed(object sender, RoutedEventArgs e)
+        {
+            this.PasswordBoxWithRevealMode.PasswordRevealMode =
+                this.RevealModeCheckBox.IsChecked == true ? PasswordRevealMode.Visible : PasswordRevealMode.Hidden;
+        }
+
+        /// <summary>
+        /// Navigates to the sign-up page.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event arguments.</param>
+        private void NavigateToSignUpPage(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(SignUpPage));
         }
 
         /// <summary>
@@ -85,27 +90,27 @@ namespace Duo.Views.Pages
         /// <param name="e">The event arguments.</param>
         private async void OnLoginButtonClick(object sender, RoutedEventArgs e)
         {
-            string username = UsernameTextBox.Text;
-            string password = PasswordBoxWithRevealMode.Password;
+            string username = this.UsernameTextBox.Text;
+            string password = this.PasswordBoxWithRevealMode.Password;
 
-            bool loginSuccess = await ViewModel.AttemptLogin(username, password);
+            bool loginSuccess = await this.ViewModel.AttemptLogin(username, password);
 
             if (loginSuccess)
             {
-                App.CurrentUser = ViewModel.LoggedInUser;
-                LoginStatusMessage.Text = "You have successfully logged in!";
-                LoginStatusMessage.Visibility = Visibility.Visible;
-                
-                // Set the current user in the user service
-                await _userService.SetUser(ViewModel.LoggedInUser.UserName);
-                await App.userService.SetUser(ViewModel.LoggedInUser.UserName);
+                App.CurrentUser = this.ViewModel.LoggedInUser;
+                this.LoginStatusMessage.Text = "You have successfully logged in!";
+                this.LoginStatusMessage.Visibility = Visibility.Visible;
 
-                App.MainAppWindow.Content = new Duo.Views.Pages.CategoryPage();
+                // Set the current user in the user service
+                await this.userService.SetUser(this.ViewModel.LoggedInUser.UserName);
+                await App.UserService.SetUser(this.ViewModel.LoggedInUser.UserName);
+
+                App.MainAppWindow.Content = new CategoryPage();
             }
             else
             {
-                LoginStatusMessage.Text = "Invalid username or password.";
-                LoginStatusMessage.Visibility = Visibility.Visible;
+                this.LoginStatusMessage.Text = "Invalid username or password.";
+                this.LoginStatusMessage.Visibility = Visibility.Visible;
             }
         }
 
@@ -116,7 +121,7 @@ namespace Duo.Views.Pages
         /// <param name="e">The event arguments.</param>
         private void OnForgotPasswordClick(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(ResetPasswordPage));
+            this.Frame.Navigate(typeof(ResetPasswordPage));
         }
 
         /// <summary>
@@ -132,7 +137,7 @@ namespace Duo.Views.Pages
                 Title = title,
                 Content = content,
                 CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
 
             await dialog.ShowAsync();

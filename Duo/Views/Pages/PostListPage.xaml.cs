@@ -30,8 +30,8 @@ namespace Duo.Views.Pages
         {
             this.InitializeComponent();
 
-            var postService = App._postService;
-            var categoryService = App._categoryService;
+            var postService = App.PostService;
+            var categoryService = App.CategoryService;
 
             _viewModel = new PostListViewModel(postService, categoryService);
 
@@ -54,7 +54,7 @@ namespace Duo.Views.Pages
 
                 try
                 {
-                    var categoryInfo = await _categoryService.GetCategoryByName(categoryName);
+                    var categoryInfo = await CategoryService.GetCategoryByName(categoryName);
                     if (categoryInfo != null)
                     {
                         if (categoryName == "Community")
