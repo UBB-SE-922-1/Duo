@@ -1,115 +1,154 @@
-using System;
-using System.Windows.Input;
-using Duo.Commands;
-using Duo.ViewModels.Base;
-using DuoClassLibrary.Helpers;
-
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CommentCreationViewModel.cs" company="YourCompanyName">
+//   Copyright (c) YourCompanyName. All rights reserved.
+// </copyright>
+// <summary>
+//   ViewModel for creating comments.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using Duo.ViewModels.Base;
+    using DuoClassLibrary.Helpers;
+
+    /// <summary>
+    /// ViewModel for creating comments.
+    /// </summary>
     public class CommentCreationViewModel : ViewModelBase
     {
-        private string _commentText;
-        private string _errorMessage;
-        private bool _isSubmitting;
+        private string commentText = string.Empty;
+        private string errorMessage = string.Empty;
+        private bool isSubmitting;
 
-        public event EventHandler CommentSubmitted;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommentCreationViewModel"/> class.
+        /// </summary>
         public CommentCreationViewModel()
         {
-            SubmitCommentCommand = new RelayCommand(
-                _ => SubmitComment(),
-                _ => CanSubmitComment()
-            );
+            this.SubmitCommentCommand = new RelayCommand(
+                _ => this.SubmitComment(),
+                _ => this.CanSubmitComment());
         }
 
+        /// <summary>
+        /// Occurs when a comment is successfully submitted.
+        /// </summary>
+        public event EventHandler? CommentSubmitted;
+
+        /// <summary>
+        /// Gets or sets the text of the comment being created.
+        /// </summary>
         public string CommentText
         {
-            get => _commentText;
-            set 
+            get => this.commentText;
+            set
             {
-                if (SetProperty(ref _commentText, value))
+                if (this.SetProperty(ref this.commentText, value))
                 {
-                    try 
+                    try
                     {
                         if (!string.IsNullOrWhiteSpace(value))
                         {
                             ValidationHelper.ValidateComment(value);
-                            ErrorMessage = string.Empty;
+                            this.ErrorMessage = string.Empty;
                         }
                         else
                         {
-                            ErrorMessage = "Comment cannot be empty.";
+                            this.ErrorMessage = "Comment cannot be empty.";
                         }
                     }
                     catch (ArgumentException ex)
                     {
-                        ErrorMessage = ex.Message;
+                        this.ErrorMessage = ex.Message;
                     }
-                    
-                    (SubmitCommentCommand as RelayCommand)?.RaiseCanExecuteChanged();
+
+                    (this.SubmitCommentCommand as RelayCommand)?.RaiseCanExecuteChanged();
                 }
             }
         }
 
+        /// <summary>
+        /// Gets or sets the error message to display if validation fails.
+        /// </summary>
         public string ErrorMessage
         {
-            get => _errorMessage;
-            set => SetProperty(ref _errorMessage, value);
+            get => this.errorMessage;
+            set => this.SetProperty(ref this.errorMessage, value);
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether a comment is currently being submitted.
+        /// </summary>
         public bool IsSubmitting
         {
-            get => _isSubmitting;
-            set => SetProperty(ref _isSubmitting, value);
+            get => this.isSubmitting;
+            set => this.SetProperty(ref this.isSubmitting, value);
         }
 
+        /// <summary>
+        /// Gets the command to submit a comment.
+        /// </summary>
         public ICommand SubmitCommentCommand { get; }
 
-        private bool CanSubmitComment()
+        /// <summary>
+        /// Clears the comment text and error message.
+        /// </summary>
+        public void ClearComment()
         {
-            return !string.IsNullOrWhiteSpace(CommentText) && !IsSubmitting && string.IsNullOrEmpty(ErrorMessage);
+            this.CommentText = string.Empty;
+            this.ErrorMessage = string.Empty;
         }
 
+        /// <summary>
+        /// Determines whether the comment can be submitted.
+        /// </summary>
+        /// <returns>True if the comment can be submitted; otherwise, false.</returns>
+        private bool CanSubmitComment()
+        {
+            return !string.IsNullOrWhiteSpace(this.CommentText) && !this.IsSubmitting && string.IsNullOrEmpty(this.ErrorMessage);
+        }
+
+        /// <summary>
+        /// Submits the comment if it passes validation.
+        /// </summary>
         private void SubmitComment()
         {
-            if (!CanSubmitComment())
+            if (!this.CanSubmitComment())
+            {
                 return;
+            }
 
-            IsSubmitting = true;
-            
+            this.IsSubmitting = true;
             try
             {
                 try
                 {
-                    ValidationHelper.ValidateComment(CommentText);
+                    ValidationHelper.ValidateComment(this.CommentText);
                 }
                 catch (ArgumentException ex)
                 {
-                    ErrorMessage = ex.Message;
+                    this.ErrorMessage = ex.Message;
                     return;
                 }
 
                 // Notify subscribers that a comment has been submitted
-                CommentSubmitted?.Invoke(this, EventArgs.Empty);
-                
+                this.CommentSubmitted?.Invoke(this, EventArgs.Empty);
+
                 // Clear the comment text
-                ClearComment();
+                this.ClearComment();
             }
             catch (Exception ex)
             {
-                ErrorMessage = $"Error submitting comment: {ex.Message}";
+                this.ErrorMessage = $"Error submitting comment: {ex.Message}";
             }
             finally
             {
-                IsSubmitting = false;
+                this.IsSubmitting = false;
             }
-        }
-
-        public void ClearComment()
-        {
-            CommentText = string.Empty;
-            ErrorMessage = string.Empty;
         }
     }
 }

@@ -1,135 +1,229 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Windows.Input;
-using Duo.Commands;
-
-using Duo.ViewModels.Base;
-using Duo.Services;
-using static Duo.App;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Helpers;
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CommentViewModel.cs" company="YourCompanyName">
+//   Copyright (c) YourCompanyName. All rights reserved.
+// </copyright>
+// <summary>
+//   ViewModel for managing comments and their replies.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using Duo.Services;
+    using Duo.ViewModels.Base;
+    using DuoClassLibrary.Helpers;
+    using DuoClassLibrary.Models;
+    using static Duo.App;
+
+    /// <summary>
+    /// ViewModel for managing comments and their replies.
+    /// </summary>
     public class CommentViewModel : ViewModelBase
     {
-        private DuoClassLibrary.Models.Comment _comment;
-        private ObservableCollection<CommentViewModel> _replies;
-        private bool _isExpanded = true;
-        private string _replyText;
-        private bool _isReplyVisible;
-        private int _likeCount;
-        private bool _isDeleteButtonVisible;
-        private bool _isReplyButtonVisible;
-        private bool _isToggleButtonVisible;
-        private string _toggleIconGlyph = "\uE109"; // Plus icon by default
-        private const int MAX_NESTING_LEVEL = 3;
+        private const int MAXNESTINGLEVEL = 3;
+        private DuoClassLibrary.Models.Comment comment;
+        private ObservableCollection<CommentViewModel> replies;
+        private bool isExpanded = true;
+        private string replyText;
+        private bool isReplyVisible;
+        private int likeCount;
+        private bool isDeleteButtonVisible;
+        private bool isReplyButtonVisible;
+        private bool isToggleButtonVisible;
+        private string toggleIconGlyph = "\uE109"; // Plus icon by default
 
-        // Events
-        public event EventHandler<Tuple<int, string>> ?ReplySubmitted;
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommentViewModel"/> class.
+        /// </summary>
+        /// <param name="comment">The comment model associated with this ViewModel.</param>
+        /// <param name="repliesByParentId">A dictionary mapping parent comment IDs to their replies.</param>
         public CommentViewModel(Comment comment, Dictionary<int, List<Comment>> repliesByParentId)
         {
-            _comment = comment ?? throw new ArgumentNullException(nameof(comment));
-            _replies = new ObservableCollection<CommentViewModel>();
-            _likeCount = comment.LikeCount;
-            _replyText = "";
-            
+            this.comment = comment ?? throw new ArgumentNullException(nameof(comment));
+            this.replies = new ObservableCollection<CommentViewModel>();
+            this.likeCount = comment.LikeCount;
+            this.replyText = string.Empty;
+
             // Load any child comments/replies
             if (repliesByParentId != null && repliesByParentId.TryGetValue(comment.Id, out var childComments))
             {
                 foreach (var reply in childComments)
                 {
-                    _replies.Add(new CommentViewModel(reply, repliesByParentId));
+                    this.replies.Add(new CommentViewModel(reply, repliesByParentId));
                 }
             }
-            
-            ToggleRepliesCommand = new RelayCommand(_ => ToggleReplies());
-            ShowReplyFormCommand = new RelayCommand(_ => ShowReplyForm());
-            CancelReplyCommand = new RelayCommand(_ => CancelReply());
-            LikeCommentCommand = new RelayCommand(_ => OnLikeComment());
+
+            this.ToggleRepliesCommand = new RelayCommand(_ => this.ToggleReplies());
+            this.ShowReplyFormCommand = new RelayCommand(_ => this.ShowReplyForm());
+            this.CancelReplyCommand = new RelayCommand(_ => this.CancelReply());
+            this.LikeCommentCommand = new RelayCommand(_ => this.OnLikeComment());
         }
 
-        public int Id => _comment.Id;
-        public int UserId => _comment.UserId;
-        public int? ParentCommentId => _comment.ParentCommentId;
-        public string Content => _comment.Content;
-        public string Username => _comment.Username;
-        public string Date => DateTimeHelper.FormatDate(_comment.CreatedAt);
-        public int Level => _comment.Level;
-        
+        /// <summary>
+        /// Occurs when a reply is submitted for this comment.
+        /// The event provides the comment ID and the reply text as a tuple.
+        /// </summary>
+        public event EventHandler<Tuple<int, string>>? ReplySubmitted;
+
+        /// <summary>
+        /// Gets the unique identifier of the comment.
+        /// </summary>
+        public int Id => this.comment.Id;
+
+        /// <summary>
+        /// Gets the user ID of the comment's author.
+        /// </summary>
+        public int UserId => this.comment.UserId;
+
+        /// <summary>
+        /// Gets the parent comment ID, if any.
+        /// </summary>
+        public int? ParentCommentId => this.comment.ParentCommentId;
+
+        /// <summary>
+        /// Gets the content of the comment.
+        /// </summary>
+        public string Content => this.comment.Content;
+
+        /// <summary>
+        /// Gets the username of the comment's author.
+        /// </summary>
+        public string Username => this.comment.Username;
+
+        /// <summary>
+        /// Gets the formatted creation date of the comment.
+        /// </summary>
+        public string Date => DateTimeHelper.FormatDate(this.comment.CreatedAt);
+
+        /// <summary>
+        /// Gets the nesting level of the comment.
+        /// </summary>
+        public int Level => this.comment.Level;
+
+        /// <summary>
+        /// Gets or sets the like count of the comment.
+        /// </summary>
         public int LikeCount
         {
-            get => _likeCount;
-            set => SetProperty(ref _likeCount, value);
+            get => this.likeCount;
+            set => this.SetProperty(ref this.likeCount, value);
         }
 
+        /// <summary>
+        /// Gets or sets the collection of replies to this comment.
+        /// </summary>
         public ObservableCollection<CommentViewModel> Replies
         {
-            get => _replies;
-            set => SetProperty(ref _replies, value);
+            get => this.replies;
+            set => this.SetProperty(ref this.replies, value);
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the comment's replies are expanded.
+        /// </summary>
         public bool IsExpanded
         {
-            get => _isExpanded;
-            set => SetProperty(ref _isExpanded, value);
+            get => this.isExpanded;
+            set => this.SetProperty(ref this.isExpanded, value);
         }
 
+        /// <summary>
+        /// Gets or sets the text of the reply being composed.
+        /// </summary>
         public string ReplyText
         {
-            get => _replyText;
-            set => SetProperty(ref _replyText, value);
+            get => this.replyText;
+            set => this.SetProperty(ref this.replyText, value);
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the reply form is visible.
+        /// </summary>
         public bool IsReplyVisible
         {
-            get => _isReplyVisible;
-            set => SetProperty(ref _isReplyVisible, value);
+            get => this.isReplyVisible;
+            set => this.SetProperty(ref this.isReplyVisible, value);
         }
 
+        /// <summary>
+        /// Increments the like count for this comment and updates the LikeCount property.
+        /// </summary>
         public void LikeComment()
         {
-            _comment.IncrementLikeCount();
-            LikeCount = _comment.LikeCount;
+            this.comment.IncrementLikeCount();
+            this.LikeCount = this.comment.LikeCount;
         }
 
+        /// <summary>
+        /// Gets the command to toggle the visibility of the comment's replies.
+        /// </summary>
         public ICommand ToggleRepliesCommand { get; }
+
+        /// <summary>
+        /// Gets the command to show the reply form for this comment.
+        /// </summary>
         public ICommand ShowReplyFormCommand { get; }
+
+        /// <summary>
+        /// Gets the command to cancel the reply being composed.
+        /// </summary>
         public ICommand CancelReplyCommand { get; }
+
+        /// <summary>
+        /// Gets the command to like the comment.
+        /// </summary>
         public ICommand LikeCommentCommand { get; }
 
+        /// <summary>
+        /// Toggles the visibility of the comment's replies.
+        /// </summary>
         private void ToggleReplies()
         {
-            IsExpanded = !IsExpanded;
+            this.IsExpanded = !this.IsExpanded;
         }
 
+        /// <summary>
+        /// Shows the reply form for this comment.
+        /// </summary>
         private void ShowReplyForm()
         {
-            IsReplyVisible = true;
-            ReplyText = string.Empty;
+            this.IsReplyVisible = true;
+            this.ReplyText = string.Empty;
         }
 
+        /// <summary>
+        /// Cancels the reply being composed.
+        /// </summary>
         private void CancelReply()
         {
-            IsReplyVisible = false;
-            ReplyText = string.Empty;
+            this.IsReplyVisible = false;
+            this.ReplyText = string.Empty;
         }
 
+        /// <summary>
+        /// Submits a reply to this comment.
+        /// </summary>
         private void SubmitReply()
         {
-            if (!string.IsNullOrWhiteSpace(ReplyText))
+            if (!string.IsNullOrWhiteSpace(this.ReplyText))
             {
-                ReplySubmitted?.Invoke(this, new Tuple<int, string>(Id, ReplyText));
-                IsReplyVisible = false;
-                ReplyText = string.Empty;
+                this.ReplySubmitted?.Invoke(this, new Tuple<int, string>(this.Id, this.ReplyText));
+                this.IsReplyVisible = false;
+                this.ReplyText = string.Empty;
             }
         }
 
+        /// <summary>
+        /// Increments the like count for this comment.
+        /// </summary>
         private void OnLikeComment()
         {
-            _comment.IncrementLikeCount();
+            this.comment.IncrementLikeCount();
         }
     }
 }
