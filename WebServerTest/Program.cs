@@ -6,8 +6,17 @@ using DuoClassLibrary.Repositories.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Duo.Services;
+using Microsoft.AspNetCore.Mvc.Razor;
+using Duo.Api.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Load API base URL from configuration
+var apiBase = builder.Configuration["Api:BaseUrl"];
+if (string.IsNullOrWhiteSpace(apiBase))
+{
+    throw new InvalidOperationException("Missing Api:BaseUrl in appsettings.json");
+}
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
@@ -15,7 +24,6 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(connectionString));
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Add HttpClient
 builder.Services.AddHttpClient();
 
 // Configure session
@@ -33,6 +41,7 @@ builder.Services.AddScoped<ICategoryRepository, CategoryRepositoryProxi>();
 builder.Services.AddScoped<IPostRepository, PostRepositoryProxi>();
 builder.Services.AddScoped<IHashtagRepository, HashtagRepositoryProxi>();
 builder.Services.AddScoped<ICommentRepository, CommentRepositoryProxi>();
+builder.Services.AddScoped<Duo.Api.Repositories.IRepository, Duo.Api.Repositories.Repository>();
 
 // Register services
 builder.Services.AddScoped<IUserHelperService, UserHelperService>();
@@ -49,12 +58,16 @@ builder.Services.AddScoped<IRoadmapService, RoadmapService>();
 builder.Services.AddScoped<ISectionService, SectionService>();
 builder.Services.AddScoped<IQuizService, QuizService>();
 builder.Services.AddScoped<IExerciseService, ExerciseService>();
+builder.Services.AddScoped<ICourseService, CourseService>();
+builder.Services.AddScoped<ICoinsService, CoinsService>();
 
 // Register service proxies
 builder.Services.AddScoped<IRoadmapServiceProxy, RoadmapServiceProxy>();
 builder.Services.AddScoped<ISectionServiceProxy, SectionServiceProxy>();
 builder.Services.AddScoped<IQuizServiceProxy, QuizServiceProxy>();
 builder.Services.AddScoped<IExerciseServiceProxy, ExerciseServiceProxy>();
+builder.Services.AddScoped<ICourseServiceProxy, CourseServiceProxy>();
+builder.Services.AddScoped<ICoinsServiceProxy, CoinsServiceProxy>();
 
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
@@ -75,6 +88,7 @@ else
     app.UseHsts();
 }
 
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -86,8 +100,29 @@ app.UseSession();
 app.UseAuthorization();
 
 app.MapControllerRoute(
+    name: "exam",
+    pattern: "Exam/{action=Index}/{id?}",
+    defaults: new { controller = "Exam" });
+
+app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "quiz",
+    pattern: "Quiz/{action}/{id}",
+    defaults: new { controller = "Quiz" });
+
+app.MapControllerRoute(
+    name: "coursePreview",
+    pattern: "Course/{id}",
+    defaults: new { controller = "Course", action = "CoursePreview" });
+
+app.MapControllerRoute(
+    name: "course",
+    pattern: "Course/{action=ViewCourses}/{id?}",
+    defaults: new { controller = "Course" });
+
 app.MapRazorPages();
 
 app.Run();
