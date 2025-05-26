@@ -46,16 +46,14 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetAllExercises_ProxyThrowsException_ReturnsEmptyList()
+        public async Task GetAllExercises_ProxyThrowsException()
         {
             // Arrange
             _mockProxy.Setup(p => p.GetAllExercises()).ThrowsAsync(new Exception("error"));
 
             // Act
-            var result = await _service.GetAllExercises();
+             await Assert.ThrowsExceptionAsync<Exception>(() => _service.GetAllExercises());
 
-            // Assert
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
@@ -74,16 +72,14 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetExerciseById_ProxyThrowsException_ReturnsNull()
+        public async Task GetExerciseById_ProxyThrowsException()
         {
             // Arrange
             _mockProxy.Setup(p => p.GetExerciseById(1)).ThrowsAsync(new Exception());
 
             // Act
-            var result = await _service.GetExerciseById(1);
+            var result = await Assert.ThrowsExceptionAsync<Exception>(() => _service.GetExerciseById(1));
 
-            // Assert
-            Assert.IsNull(result);
         }
 
         [TestMethod]
@@ -101,16 +97,14 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetAllExercisesFromQuiz_ProxyThrowsException_ReturnsEmptyList()
+        public async Task GetAllExercisesFromQuiz_ProxyThrowsException()
         {
             // Arrange
             _mockProxy.Setup(p => p.GetAllExercisesFromQuiz(5)).ThrowsAsync(new Exception());
 
             // Act
-            var result = await _service.GetAllExercisesFromQuiz(5);
+            await Assert.ThrowsExceptionAsync<Exception>(() => _service.GetAllExercisesFromQuiz(5));
 
-            // Assert
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
@@ -128,16 +122,14 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetAllExercisesFromExam_ProxyThrowsException_ReturnsEmptyList()
+        public async Task GetAllExercisesFromExam_ProxyThrowsException()
         {
             // Arrange
             _mockProxy.Setup(p => p.GetAllExercisesFromExam(3)).ThrowsAsync(new Exception());
 
             // Act
-            var result = await _service.GetAllExercisesFromExam(3);
+             await Assert.ThrowsExceptionAsync<Exception>(() => _service.GetAllExercisesFromExam(3));
 
-            // Assert
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
@@ -151,13 +143,13 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task DeleteExercise_ProxyThrowsException_DoesNotThrow()
+        public async Task DeleteExercise_ProxyThrowsException()
         {
             // Arrange
             _mockProxy.Setup(p => p.DeleteExercise(It.IsAny<int>())).ThrowsAsync(new Exception());
 
             // Act
-            await _service.DeleteExercise(7);
+            await Assert.ThrowsExceptionAsync<Exception>(() => _service.DeleteExercise(7));
 
             // Assert
             _mockProxy.Verify(p => p.DeleteExercise(7), Times.Once);
@@ -178,7 +170,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task CreateExercise_ProxyThrowsException_DoesNotThrow()
+        public async Task CreateExercise_ProxyThrowsException()
         {
             // Arrange
             var exercise = new AssociationExercise(
@@ -186,7 +178,7 @@ namespace Duo.Tests.Services
             _mockProxy.Setup(p => p.CreateExercise(exercise)).ThrowsAsync(new Exception());
 
             // Act
-            await _service.CreateExercise(exercise);
+            await Assert.ThrowsExceptionAsync<Exception>(() => _service.CreateExercise(exercise));
 
             // Assert
             _mockProxy.Verify(p => p.CreateExercise(exercise), Times.Once);

@@ -29,11 +29,11 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exception))]
         public async Task GetBalanceAsync_WhenProxyThrows_ReturnsZero()
         {
-            _mockProxy.Setup(p => p.GetUserCoinBalanceAsync(It.IsAny<int>())).ThrowsAsync(new Exception());
+            _mockProxy.Setup(p => p.GetUserCoinBalanceAsync(99)).ThrowsAsync(new Exception());
             var result = await _service.GetCoinBalanceAsync(99);
-            Assert.AreEqual(0, result);
         }
 
         [TestMethod]
@@ -53,12 +53,15 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task SpendAsync_WhenProxyThrows_ReturnsFalse()
+        public async Task SpendAsync_WhenProxyThrows_ThrowsException()
         {
-            _mockProxy.Setup(p => p.TrySpendingCoinsAsync(It.IsAny<int>(), It.IsAny<int>())).ThrowsAsync(new Exception());
-            var result = await _service.TrySpendingCoinsAsync(5, 10);
-            Assert.IsFalse(result);
+            _mockProxy.Setup(p => p.TrySpendingCoinsAsync(5, 10))
+                      .ThrowsAsync(new Exception());
+
+            await Assert.ThrowsExceptionAsync<Exception>(() =>
+                _service.TrySpendingCoinsAsync(5, 10));
         }
+
 
         [TestMethod]
         public async Task AddAsync_CallsProxy()
@@ -68,11 +71,11 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exception))]
         public async Task AddAsync_WhenProxyThrows_Returns()
         {
-            _mockProxy.Setup(p => p.AddCoinsAsync(It.IsAny<int>(), It.IsAny<int>())).ThrowsAsync(new Exception());
+            _mockProxy.Setup(p => p.AddCoinsAsync(1, 50)).ThrowsAsync(new Exception());
             await _service.AddCoinsAsync(1, 50);
-            Assert.IsTrue(true);
         }
 
         [TestMethod]
@@ -92,12 +95,15 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GiveDailyBonusAsync_WhenProxyThrows_ReturnsFalse()
+        public async Task GiveDailyBonusAsync_WhenProxyThrows_ThrowsException()
         {
-            _mockProxy.Setup(p => p.ApplyDailyLoginBonusAsync(It.IsAny<int>())).ThrowsAsync(new Exception());
-            var result = await _service.ApplyDailyLoginBonusAsync(3);
-            Assert.IsFalse(result);
+            _mockProxy.Setup(p => p.ApplyDailyLoginBonusAsync(5))
+                      .ThrowsAsync(new Exception());
+
+            await Assert.ThrowsExceptionAsync<Exception>(() =>
+                _service.ApplyDailyLoginBonusAsync(5));
         }
+
 
         [TestMethod]
         public async Task AddCoinsAsync_WithZeroAmount_CallsProxy()
@@ -115,6 +121,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
+        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public async Task GetBalanceAsync_WithNegativeUserId_ReturnsZero()
         {
             _mockProxy.Setup(p => p.GetUserCoinBalanceAsync(It.IsAny<int>())).ThrowsAsync(new ArgumentOutOfRangeException());

@@ -278,45 +278,42 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetCoursesAsync_ReturnsEmptyListOnException()
+        public async Task GetCoursesAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetAllCourses()).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetCoursesAsync();
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetCoursesAsync());
 
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
-        public async Task GetTagsAsync_ReturnsEmptyListOnException()
+        public async Task GetTagsAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetAllTags()).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetTagsAsync();
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetTagsAsync());
 
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
-        public async Task GetCourseTagsAsync_ReturnsEmptyListOnException()
+        public async Task GetCourseTagsAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetTagsForCourse(It.IsAny<int>())).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetCourseTagsAsync(1);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetCourseTagsAsync(1));
 
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
-        public async Task OpenModuleAsync_HandlesExceptionGracefully()
+        public async Task OpenModuleAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsModuleOpen(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            await courseService.OpenModuleAsync(1, 2); // Should not throw
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.OpenModuleAsync(1, 2)); 
         }
 
         [TestMethod]
-        public async Task GetModulesAsync_ReturnsEmptyListOnException()
+        public async Task GetModulesAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetModulesByCourseId(It.IsAny<int>())).ThrowsAsync(new Exception("Test exception"));
 
@@ -326,13 +323,12 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetNormalModulesAsync_ReturnsEmptyListOnException()
+        public async Task GetNormalModulesAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetModulesByCourseId(It.IsAny<int>())).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetNormalModulesAsync(1);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetNormalModulesAsync(1));
 
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
@@ -347,21 +343,20 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task EnrollInCourseAsync_ReturnsFalseOnException()
+        public async Task EnrollInCourseAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsUserEnrolled(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.EnrollInCourseAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.EnrollInCourseAsync(1, 2));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task CompleteModuleAsync_HandlesExceptionGracefully()
+        public async Task CompleteModuleAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.CompleteModule(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            await courseService.CompleteModuleAsync(1, 2, 3); // Should not throw
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.CompleteModuleAsync(1, 2, 3)); 
         }
 
         [TestMethod]
@@ -444,51 +439,47 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task GetFilteredCoursesAsync_ReturnsEmptyListOnException()
+        public async Task GetFilteredCoursesAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetAllCourses()).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetFilteredCoursesAsync("", false, false, false, false, new List<int>(), 1);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetFilteredCoursesAsync("", false, false, false, false, new List<int>(), 1));
 
-            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
-        public async Task IsUserEnrolledAsync_ReturnsFalseOnException()
+        public async Task IsUserEnrolledAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsUserEnrolled(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.IsUserEnrolledAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.IsUserEnrolledAsync(1, 2));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task IsModuleCompletedAsync_ReturnsFalseOnException()
+        public async Task IsModuleCompletedAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsModuleCompleted(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.IsModuleCompletedAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.IsModuleCompletedAsync(1, 2));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task UpdateTimeSpentAsync_HandlesExceptionGracefully()
+        public async Task UpdateTimeSpentAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.UpdateTimeSpent(1, 2, 100)).ThrowsAsync(new Exception("Test exception"));
 
-            await courseService.UpdateTimeSpentAsync(1, 2, 100); // Should not throw
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.UpdateTimeSpentAsync(1, 2, 100)); 
         }
 
         [TestMethod]
-        public async Task GetTimeSpentAsync_ReturnsZeroOnException()
+        public async Task GetTimeSpentAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetTimeSpent(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetTimeSpentAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetTimeSpentAsync(1, 2));
 
-            Assert.AreEqual(0, result);
         }
 
         [TestMethod]
@@ -503,103 +494,92 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        public async Task ClickModuleImageAsync_ReturnsFalseOnException()
+        public async Task ClickModuleImageAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsModuleImageClicked(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.ClickModuleImageAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.ClickModuleImageAsync(1, 2));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task IsModuleInProgressAsync_ReturnsFalseOnException()
+        public async Task IsModuleInProgressAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsModuleOpen(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.IsModuleInProgressAsync(1, 2);
-
-            Assert.IsFalse(result);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.IsModuleInProgressAsync(1, 2));
         }
 
         [TestMethod]
-        public async Task IsModuleAvailableAsync_ReturnsFalseOnException()
+        public async Task IsModuleAvailableAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsModuleAvailable(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.IsModuleAvailableAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.IsModuleAvailableAsync(1, 2));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task IsCourseCompletedAsync_ReturnsFalseOnException()
+        public async Task IsCourseCompletedAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.IsCourseCompleted(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.IsCourseCompletedAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.IsCourseCompletedAsync(1, 2));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task GetCompletedModulesCountAsync_ReturnsZeroOnException()
+        public async Task GetCompletedModulesCountAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetCompletedModulesCount(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetCompletedModulesCountAsync(1, 2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetCompletedModulesCountAsync(1, 2));
 
-            Assert.AreEqual(0, result);
         }
 
         [TestMethod]
-        public async Task GetRequiredModulesCountAsync_ReturnsZeroOnException()
+        public async Task GetRequiredModulesCountAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetRequiredModulesCount(2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetRequiredModulesCountAsync(2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetRequiredModulesCountAsync(2));
 
-            Assert.AreEqual(0, result);
         }
 
         [TestMethod]
-        public async Task ClaimCompletionRewardAsync_ReturnsFalseOnException()
+        public async Task ClaimCompletionRewardAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.ClaimCompletionReward(1, 2, 0)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.ClaimCompletionRewardAsync(1, 2, 0);
+             await Assert.ThrowsExceptionAsync<Exception>(() =>  courseService.ClaimCompletionRewardAsync(1, 2, 0));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task ClaimTimedRewardAsync_ReturnsFalseOnException()
+        public async Task ClaimTimedRewardAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.ClaimTimedReward(1, 2, 0, 1000)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.ClaimTimedRewardAsync(1, 2, 0, 1000);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.ClaimTimedRewardAsync(1, 2, 0, 1000));
 
-            Assert.IsFalse(result);
         }
 
         [TestMethod]
-        public async Task GetCourseTimeLimitAsync_ReturnsZeroOnException()
+        public async Task GetCourseTimeLimitAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.GetCourseTimeLimit(2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.GetCourseTimeLimitAsync(2);
+            await Assert.ThrowsExceptionAsync<Exception>(() => courseService.GetCourseTimeLimitAsync(2));
 
-            Assert.AreEqual(0, result);
         }
 
         [TestMethod]
-        public async Task BuyBonusModuleAsync_ReturnsFalseOnException()
+        public async Task BuyBonusModuleAsync_ThrowsException()
         {
             mockProxy.Setup(p => p.BuyBonusModule(1, 2)).ThrowsAsync(new Exception("Test exception"));
 
-            var result = await courseService.BuyBonusModuleAsync(1, 2);
+             await  Assert.ThrowsExceptionAsync<Exception>(()=> courseService.BuyBonusModuleAsync(1, 2));
 
-            Assert.IsFalse(result);
         }
     }
 }

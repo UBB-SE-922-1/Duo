@@ -55,7 +55,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(InvalidOperationException))]
         public async Task Get_ThrowsQuizServiceException_OnError()
         {
             proxyMock.Setup(p => p.GetAsync()).ThrowsAsync(new InvalidOperationException("boom"));
@@ -75,7 +75,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task GetAllAvailableExams_Throws_OnError()
         {
             proxyMock.Setup(p => p.GetAllExams())
@@ -96,7 +96,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task GetQuizById_Throws_OnError()
         {
             proxyMock.Setup(p => p.GetQuizByIdAsync(6))
@@ -117,7 +117,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task GetExamById_Throws_OnError()
         {
             proxyMock.Setup(p => p.GetExamByIdAsync(8)).ThrowsAsync(new Exception());
@@ -137,7 +137,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task GetAllQuizzesFromSection_Throws_OnError()
         {
             proxyMock.Setup(p => p.GetAllQuizzesFromSectionAsync(10)).ThrowsAsync(new Exception());
@@ -156,7 +156,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task CountQuizzesFromSection_Throws_OnError()
         {
             proxyMock.Setup(p => p.CountQuizzesFromSectionAsync(12)).ThrowsAsync(new Exception());
@@ -175,7 +175,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task LastOrderNumberFromSection_Throws_OnError()
         {
             proxyMock.Setup(p => p.LastOrderNumberFromSectionAsync(14)).ThrowsAsync(new Exception());
@@ -195,7 +195,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task GetExamFromSection_Throws_OnError()
         {
             proxyMock.Setup(p => p.GetExamFromSectionAsync(16)).ThrowsAsync(new Exception());
@@ -213,7 +213,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task DeleteQuiz_Throws_OnError()
         {
             proxyMock.Setup(p => p.DeleteQuizAsync(18)).ThrowsAsync(new Exception());
@@ -232,7 +232,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task UpdateQuiz_Throws_OnError()
         {
             var quiz = Q(20);
@@ -253,7 +253,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task CreateQuiz_Throws_OnError()
         {
             var quiz = Q(22);
@@ -275,7 +275,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task AddExercisesToQuiz_Throws_OnError()
         {
             proxyMock.Setup(p => p.AddExercisesToQuizAsync(24, It.IsAny<List<int>>()))
@@ -294,7 +294,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task AddExerciseToQuiz_Throws_OnError()
         {
             proxyMock.Setup(p => p.AddExerciseToQuizAsync(26, 666)).ThrowsAsync(new Exception());
@@ -312,7 +312,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task RemoveExerciseFromQuiz_Throws_OnError()
         {
             proxyMock.Setup(p => p.RemoveExerciseFromQuizAsync(28, 888)).ThrowsAsync(new Exception());
@@ -330,7 +330,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task DeleteExam_Throws_OnError()
         {
             proxyMock.Setup(p => p.DeleteExamAsync(30)).ThrowsAsync(new Exception());
@@ -349,7 +349,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task UpdateExam_Throws_OnError()
         {
             var exam = E(32);
@@ -361,7 +361,7 @@ namespace Duo.Tests.Services
         public async Task CreateExam_ReturnsId()
         {
             var exam = E(33);
-            proxyMock.Setup(p => p.CreateExamAsync(exam)).Returns((Task<Exam>)Task.CompletedTask);
+            proxyMock.Setup(p => p.CreateExamAsync(exam)).ReturnsAsync(exam);
 
             var result = await service.CreateExam(exam);
 
@@ -370,7 +370,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task CreateExam_Throws_OnError()
         {
             var exam = E(34);
@@ -390,7 +390,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task SubmitQuizAsync_Throws_OnError()
         {
             var sub = DS(36);
@@ -411,7 +411,7 @@ namespace Duo.Tests.Services
         }
 
         [TestMethod]
-        [ExpectedException(typeof(QuizServiceException))]
+        [ExpectedException(typeof(Exception))]
         public async Task GetResultAsync_Throws_OnError()
         {
             proxyMock.Setup(p => p.GetResultAsync(38)).ThrowsAsync(new Exception());

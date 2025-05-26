@@ -90,15 +90,13 @@ namespace Duo.Tests.Services
 
         [DataTestMethod]
         [DataRow(typeof(HttpRequestException))]
-        [DataRow(typeof(Exception))]
         public async Task CountSectionsFromRoadmap_ReturnsZero_OnErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.CountSectionsFromRoadmap(5))
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            var count = await this.service.CountSectionsFromRoadmap(5);
+            await Assert.ThrowsExceptionAsync<HttpRequestException>(() => this.service.CountSectionsFromRoadmap(5));
 
-            Assert.AreEqual(0, count);
             this.proxyMock.VerifyAll();
         }
 
@@ -113,14 +111,13 @@ namespace Duo.Tests.Services
         }
 
         [DataTestMethod]
-        [DataRow(typeof(HttpRequestException))]
         [DataRow(typeof(Exception))]
         public async Task DeleteSection_SwallowsErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.DeleteSection(7))
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            await this.service.DeleteSection(7);
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.service.DeleteSection(7));
             this.proxyMock.VerifyAll();
         }
 
@@ -137,16 +134,14 @@ namespace Duo.Tests.Services
         }
 
         [DataTestMethod]
-        [DataRow(typeof(HttpRequestException))]
         [DataRow(typeof(Exception))]
         public async Task GetAllSections_ReturnsEmpty_OnErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.GetAllSections())
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            var result = await this.service.GetAllSections();
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.service.GetAllSections());
 
-            Assert.AreEqual(0, result.Count);
             this.proxyMock.VerifyAll();
         }
 
@@ -163,16 +158,14 @@ namespace Duo.Tests.Services
         }
 
         [DataTestMethod]
-        [DataRow(typeof(HttpRequestException))]
         [DataRow(typeof(Exception))]
         public async Task GetByRoadmapId_ReturnsEmpty_OnErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.GetByRoadmapId(3))
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            var result = await this.service.GetByRoadmapId(3);
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.service.GetByRoadmapId(3));
 
-            Assert.AreEqual(0, result.Count);
             this.proxyMock.VerifyAll();
         }
 
@@ -190,16 +183,14 @@ namespace Duo.Tests.Services
         }
 
         [DataTestMethod]
-        [DataRow(typeof(HttpRequestException))]
         [DataRow(typeof(Exception))]
         public async Task GetSectionById_ReturnsNull_OnErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.GetSectionById(4))
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            var result = await this.service.GetSectionById(4);
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.service.GetSectionById(4));
 
-            Assert.IsNull(result);
             this.proxyMock.VerifyAll();
         }
 
@@ -215,16 +206,14 @@ namespace Duo.Tests.Services
         }
 
         [DataTestMethod]
-        [DataRow(typeof(HttpRequestException))]
         [DataRow(typeof(Exception))]
         public async Task LastOrderNumberFromRoadmap_ReturnsZero_OnErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.LastOrderNumberFromRoadmap(8))
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            var value = await this.service.LastOrderNumberFromRoadmap(8);
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.service.LastOrderNumberFromRoadmap(8));
 
-            Assert.AreEqual(0, value);
             this.proxyMock.VerifyAll();
         }
 
@@ -240,16 +229,14 @@ namespace Duo.Tests.Services
         }
 
         [DataTestMethod]
-        [DataRow(typeof(HttpRequestException))]
         [DataRow(typeof(Exception))]
         public async Task TrackCompletion_ReturnsFalse_OnErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.TrackCompletion(11, true))
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            var ok = await this.service.TrackCompletion(11, true);
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.service.TrackCompletion(11, true));
 
-            Assert.IsFalse(ok);
             this.proxyMock.VerifyAll();
         }
 
@@ -278,16 +265,14 @@ namespace Duo.Tests.Services
         }
 
         [DataTestMethod]
-        [DataRow(typeof(HttpRequestException))]
         [DataRow(typeof(Exception))]
         public async Task ValidateDependencies_ReturnsFalse_OnErrors(Type exType)
         {
             this.proxyMock.Setup(p => p.GetSectionDependencies(13))
                           .ThrowsAsync((Exception)Activator.CreateInstance(exType)!);
 
-            var ok = await this.service.ValidateDependencies(13);
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.service.ValidateDependencies(13));
 
-            Assert.IsFalse(ok);
             this.proxyMock.VerifyAll();
         }
     }

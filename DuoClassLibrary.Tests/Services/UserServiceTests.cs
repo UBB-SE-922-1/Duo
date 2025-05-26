@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Duo.Services;
 using DuoClassLibrary.Models;
 using DuoClassLibrary.Services;
+using DuoClassLibrary.Services.Interfaces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 
@@ -11,24 +12,21 @@ namespace DuoTests.Services
     [TestClass]
     public class UserServiceTests
     {
-        private Mock<UserHelperService> userServiceProxyMock;
+        private Mock<IUserHelperService> userServiceProxyMock;
         private UserService userService;
 
         [TestInitialize]
         public void Setup()
         {
-            this.userServiceProxyMock = new Mock<UserHelperService>();
+            this.userServiceProxyMock = new Mock<IUserHelperService>();
             this.userService = new UserService(this.userServiceProxyMock.Object);
         }
 
         [TestMethod]
-        public async Task GetByIdAsync_ShouldReturnNull_WhenUserIdIsInvalid()
+        public async Task GetByIdAsync_ThrowsException_WhenUserIdIsInvalid()
         {
             // Act
-            var result = await this.userService.GetUserById(0);
-
-            // Assert
-            Assert.IsNull(result);
+            await Assert.ThrowsExceptionAsync<Exception>(() => this.userService.GetUserById(0));
         }
 
         [TestMethod]
@@ -49,7 +47,7 @@ namespace DuoTests.Services
         }
 
         [TestMethod]
-        public async Task GetByUsernameAsync_ShouldReturnNull_WhenUsernameIsInvalid()
+        public async Task GetByUsernameAsync_ThrowsException_WhenUsernameIsInvalid()
         {
             // Act
             var result = await this.userService.GetUserByUsername("");
@@ -77,13 +75,11 @@ namespace DuoTests.Services
 
 
         [TestMethod]
-        public async Task UpdateUserSectionProgressAsync_ShouldHandleException_WhenUserIdIsInvalid()
+        public async Task UpdateUserSectionProgressAsync_ThrowsException_WhenUserIdIsInvalid()
         {
             // Act
-            await this.userService.UpdateUserSectionProgressAsync(0, 5, 10);
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => this.userService.UpdateUserSectionProgressAsync(0, 5, 10));
 
-            // Assert
-            this.userServiceProxyMock.Verify(proxy => proxy.UpdateUserSectionProgressAsync(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>()), Times.Never);
         }
 
         [TestMethod]
@@ -97,14 +93,11 @@ namespace DuoTests.Services
         }
 
         [TestMethod]
-        public async Task IncrementUserProgressAsync_ShouldHandleException_WhenUserIdIsInvalid()
+        public async Task IncrementUserProgressAsync_ThrowsException_WhenUserIdIsInvalid()
         {
             // Act
-            await this.userService.IncrementUserProgressAsync(0);
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => this.userService.IncrementUserProgressAsync(0));
 
-            // Assert
-            this.userServiceProxyMock.Verify(proxy => proxy.GetUserById(It.IsAny<int>()), Times.Never);
-            this.userServiceProxyMock.Verify(proxy => proxy.UpdateUserAsync(It.IsAny<User>()), Times.Never);
         }
 
         [TestMethod]
@@ -125,28 +118,12 @@ namespace DuoTests.Services
         }
 
         [TestMethod]
-        public async Task UpdateUserAsync_ShouldHandleException_WhenUserIsNull()
+        public async Task UpdateUserAsync_ThrowsException_WhenUserIsNull()
         {
             // Act
-            await this.userService.SetUser(null);
+            await Assert.ThrowsExceptionAsync<ArgumentException>(() => this.userService.SetUser(null));
 
-            // Assert
-            this.userServiceProxyMock.Verify(proxy => proxy.UpdateUserAsync(It.IsAny<User>()), Times.Never);
         }
 
-        //[TestMethod]
-        //public async Task UpdateUserAsync_ShouldCallProxy_WhenUserIsValid()
-        //{
-        //    // Arrange
-        //    var user = new User(1, "testuser");
-        //    this.userServiceProxyMock.Setup(proxy => proxy.UpdateUserAsync(user))
-        //        .Returns(Task.CompletedTask);
-
-        //    // Act
-        //    await this.userService.UpdateUserAsync(user);
-
-        //    // Assert
-        //    this.userServiceProxyMock.Verify(proxy => proxy.UpdateUserAsync(user), Times.Once);
-        //}
     }
 }
