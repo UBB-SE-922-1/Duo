@@ -1,94 +1,98 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Duo.ViewModels;
-using DuoClassLibrary.Models;
-using System;
-using System.Threading.Tasks;
-using DuolingoNou.Views;
-using Microsoft.Extensions.DependencyInjection;
+// <copyright file="SignUpPage.xaml.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Threading.Tasks;
+    using Duo.ViewModels;
+    using DuoClassLibrary.Models;
+    using DuolingoNou.Views;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
     /// <summary>
-    /// Page for user sign-up functionality
+    /// Page for user sign-up functionality.
     /// </summary>
     public sealed partial class SignUpPage : Page
     {
         /// <summary>
-        /// Gets the ViewModel for this page
+        /// Gets the ViewModel for this page.
         /// </summary>
         public SignUpViewModel ViewModel { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SignUpPage"/> class
+        /// Initializes a new instance of the <see cref="SignUpPage"/> class.
         /// </summary>
         public SignUpPage()
         {
             this.InitializeComponent();
-            ViewModel = App.ServiceProvider.GetRequiredService<SignUpViewModel>();
-            this.DataContext = ViewModel;
+            this.ViewModel = App.ServiceProvider.GetRequiredService<SignUpViewModel>();
+            this.DataContext = this.ViewModel;
         }
 
         /// <summary>
-        /// Handles the create user button click event
+        /// Handles the create user button click event.
         /// </summary>
         private async void OnCreateUserClick(object sender, RoutedEventArgs e)
         {
-            ViewModel.NewUser.UserName = UsernameTextBox.Text;
-            ViewModel.NewUser.Email = EmailTextBox.Text;
-            ViewModel.NewUser.Password = PasswordBoxWithRevealMode.Password;
-            ViewModel.ConfirmPassword = ConfirmPasswordBox.Password;
+            this.ViewModel.NewUser.UserName = this.UsernameTextBox.Text;
+            this.ViewModel.NewUser.Email = this.EmailTextBox.Text;
+            this.ViewModel.NewUser.Password = this.PasswordBoxWithRevealMode.Password;
+            this.ViewModel.ConfirmPassword = this.ConfirmPasswordBox.Password;
 
             // Validate username format
-            if (!ViewModel.ValidateUsername(ViewModel.NewUser.UserName))
+            if (!this.ViewModel.ValidateUsername(this.ViewModel.NewUser.UserName))
             {
-                UsernameValidationTextBlock.Text = ViewModel.UsernameValidationMessage;
+                this.UsernameValidationTextBlock.Text = this.ViewModel.UsernameValidationMessage;
                 return;
             }
 
             // Check if username is already taken
-            if (await ViewModel.IsUsernameTaken(ViewModel.NewUser.UserName))
+            if (await this.ViewModel.IsUsernameTaken(this.ViewModel.NewUser.UserName))
             {
-                await ShowDialog("Username Taken", "This username is already in use. Please choose another.");
+                await this.ShowDialog("Username Taken", "This username is already in use. Please choose another.");
                 return;
             }
 
             // Update and validate password strength
-            ViewModel.UpdatePasswordStrength(ViewModel.NewUser.Password);
-            if (ViewModel.PasswordStrength == "Weak")
+            this.ViewModel.UpdatePasswordStrength(this.ViewModel.NewUser.Password);
+            if (this.ViewModel.PasswordStrength == "Weak")
             {
-                await ShowDialog("Weak Password", "Password must be at least Medium strength. Include an uppercase letter, a special character, and a digit.");
+                await this.ShowDialog("Weak Password", "Password must be at least Medium strength. Include an uppercase letter, a special character, and a digit.");
                 return;
             }
 
             // Validate password match
-            if (!ViewModel.ValidatePasswordMatch())
+            if (!this.ViewModel.ValidatePasswordMatch())
             {
-                ConfirmPasswordValidationTextBlock.Text = ViewModel.ConfirmPasswordValidationMessage;
+                this.ConfirmPasswordValidationTextBlock.Text = this.ViewModel.ConfirmPasswordValidationMessage;
                 return;
             }
 
             // Create the user
-            bool success = await ViewModel.CreateNewUser(ViewModel.NewUser);
-            
+            bool success = await this.ViewModel.CreateNewUser(this.ViewModel.NewUser);
+
             if (success)
             {
                 // Set the current user globally
-                App.CurrentUser = ViewModel.NewUser;
+                App.CurrentUser = this.ViewModel.NewUser;
 
-                await ShowDialog("Account Created", "Your account has been successfully created!");
+                await this.ShowDialog("Account Created", "Your account has been successfully created!");
                 await App.UserService.SetUser(App.CurrentUser.UserName);
 
-                Frame.Navigate(typeof(CategoryPage));
+                this.Frame.Navigate(typeof(CategoryPage));
             }
             else
             {
-                await ShowDialog("Error", "There was a problem creating your account. Please try again.");
+                await this.ShowDialog("Error", "There was a problem creating your account. Please try again.");
             }
         }
 
         /// <summary>
-        /// Displays a dialog with the specified title and message
+        /// Displays a dialog with the specified title and message.
         /// </summary>
         private async Task ShowDialog(string title, string content)
         {
@@ -97,35 +101,35 @@ namespace Duo.Views.Pages
                 Title = title,
                 Content = content,
                 CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
             await dialog.ShowAsync();
         }
 
         /// <summary>
-        /// Handles the password changes and updates the strength indicator
+        /// Handles the password changes and updates the strength indicator.
         /// </summary>
         private void PasswordBoxWithRevealMode_PasswordChanged(object sender, RoutedEventArgs e)
         {
-            ViewModel.UpdatePasswordStrength(PasswordBoxWithRevealMode.Password);
-            PasswordStrengthTextBlock.Text = ViewModel.PasswordStrength;
+            this.ViewModel.UpdatePasswordStrength(this.PasswordBoxWithRevealMode.Password);
+            this.PasswordStrengthTextBlock.Text = this.ViewModel.PasswordStrength;
         }
 
         /// <summary>
-        /// Handles the reveal mode checkbox changes
+        /// Handles the reveal mode checkbox changes.
         /// </summary>
         private void RevealModeCheckbox_Changed(object sender, RoutedEventArgs e)
         {
-            PasswordBoxWithRevealMode.PasswordRevealMode = RevealModeCheckBox.IsChecked == true ? PasswordRevealMode.Visible : PasswordRevealMode.Hidden;
-            ConfirmPasswordBox.PasswordRevealMode = RevealModeCheckBox.IsChecked == true ? PasswordRevealMode.Visible : PasswordRevealMode.Hidden;
+            this.PasswordBoxWithRevealMode.PasswordRevealMode = this.RevealModeCheckBox.IsChecked == true ? PasswordRevealMode.Visible : PasswordRevealMode.Hidden;
+            this.ConfirmPasswordBox.PasswordRevealMode = this.RevealModeCheckBox.IsChecked == true ? PasswordRevealMode.Visible : PasswordRevealMode.Hidden;
         }
 
         /// <summary>
-        /// Navigates to the login page
+        /// Navigates to the login page.
         /// </summary>
         private void NavigateToLoginPage(object sender, RoutedEventArgs e)
         {
-            Frame.Navigate(typeof(LoginPage));
+            this.Frame.Navigate(typeof(LoginPage));
         }
     }
 }

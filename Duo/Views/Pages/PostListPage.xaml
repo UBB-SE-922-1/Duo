@@ -190,7 +190,7 @@
         <StackPanel Spacing="0">
             <ListView
                 x:Name="FilteredListView"
-                ItemsSource="{x:Bind _viewModel.Posts, Mode=OneWay}"
+                ItemsSource="{x:Bind viewModel.Posts, Mode=OneWay}"
                 SelectionMode="None"
                 IsItemClickEnabled="True"
                 ItemClick="FilteredListView_ItemClick"
@@ -251,7 +251,7 @@
                 HorizontalAlignment="Center"
                 VerticalAlignment="Bottom"
                 Margin="0,0,0,16"
-                NumberOfPages="{x:Bind _viewModel.TotalPages, Mode=OneWay}"
+                NumberOfPages="{x:Bind viewModel.TotalPages, Mode=OneWay}"
                 Orientation="Horizontal"
                 PreviousButtonVisibility="Visible"
                 NextButtonVisibility="Visible"
