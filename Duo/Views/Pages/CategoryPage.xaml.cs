@@ -113,6 +113,9 @@ namespace Duo.Views.Pages
             {
                 switch (selectedItem.Tag)
                 {
+                    case "Profile":
+                        contentFrame.Navigate(typeof(ProfileSettingsPage));
+                        break;
                     case "Settings":
                         contentFrame.Navigate(typeof(ProfileSettingsPage));
                         break;
