@@ -39,8 +39,8 @@ namespace Duo.ViewModels
         /// </summary>
         public CategoryPageViewModel()
         {
-            this.categoryService = App._categoryService;
-            this.userService = App.userService;
+            this.categoryService = App.CategoryService;
+            this.userService = App.UserService;
             this.categoryViewModel = new CategoryViewModel(this.categoryService);
             _ = this.InitializeAsync();
             this.SelectCategoryCommand = new RelayCommandWithParameter<string>(this.SelectCategory);

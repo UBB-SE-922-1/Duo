@@ -337,7 +337,7 @@ namespace Duo.Views.Components
                         {
                             try
                             {
-                                var hashtagService = App._hashtagService;
+                                var hashtagService = App.hashtagService;
                                 var userId = userService.GetCurrentUser().UserId;
                                 
                                 var existingHashtag = await hashtagService.GetHashtagByName(hashtag);

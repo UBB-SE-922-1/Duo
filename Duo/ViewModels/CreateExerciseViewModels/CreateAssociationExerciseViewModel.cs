@@ -90,7 +90,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                 if (leftAnswers.Count < MINIMUMANSWERS || rightAnswers.Count < MINIMUMANSWERS)
                 {
                     this.parentViewModel.RaiseErrorMessage("Not enough answers", $"You must provide at least {MINIMUMANSWERS} answer pairs.");
-                    return null;
+                    return new AssociationExercise(0, question, difficulty, new List<string>(), new List<string>());
                 }
 
                 // Check for empty values in any pairing
@@ -99,7 +99,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                     if (string.IsNullOrWhiteSpace(leftAnswers[i]) || string.IsNullOrWhiteSpace(rightAnswers[i]))
                     {
                         this.parentViewModel.RaiseErrorMessage("Empty Pairing", "All answer pairings must be filled in.");
-                        return null;
+                        return new AssociationExercise(0, question, difficulty, new List<string>(), new List<string>());
                     }
                 }
 
@@ -109,7 +109,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
             catch (Exception ex)
             {
                 this.RaiseErrorMessage("Create Exercise Error", $"Failed to create association exercise.\nDetails: {ex.Message}");
-                return null;
+                return new AssociationExercise(0, question, difficulty, new List<string>(), new List<string>());
             }
         }
 
