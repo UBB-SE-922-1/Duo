@@ -69,7 +69,8 @@ namespace Duo.Views
                     Console.WriteLine("Starting InitializeAsync");
                     await viewModel.InitializeAsync(CurrentUserId);
                     Console.WriteLine("Finished InitializeAsync");
-                    viewModel.StartCourseProgressTimer();
+                    if (viewModel.IsEnrolled && !viewModel.IsCourseCompleted)
+                        viewModel.StartCourseProgressTimer();
                 }
                 catch (Exception ex)
                 {
