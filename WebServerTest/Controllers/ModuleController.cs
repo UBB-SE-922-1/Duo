@@ -93,13 +93,13 @@ namespace WebServerTest.Controllers
 
                 if (await IsCourseCompleted(userId, courseId))
                 {
-                    if (await _courseService.ClaimCompletionRewardAsync(userId, courseId))
+                    if (await _courseService.ClaimCompletionRewardAsync(userId, courseId, CourseCompletionRewardCoins))
                     {
                         string message = $"Congratulations! You have completed all required modules in this course. {CourseCompletionRewardCoins} coins have been added to your balance.";
                         // alert(message)
                     }
 
-                    if (await _courseService.ClaimTimedRewardAsync(userId, courseId, totalSecondsSpentOnCourse))
+                    if (await _courseService.ClaimTimedRewardAsync(userId, courseId, totalSecondsSpentOnCourse, CourseCompletionRewardCoins))
                     {
                         string message = $"Congratulations! You completed the course within the time limit. {TimedCompletionRewardCoins} coins have been added to your balance.";
                         // alert(message)
