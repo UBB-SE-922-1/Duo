@@ -1,73 +1,95 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Windows.Input;
-using Duo.Commands;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Models.Exercises;
-using Duo.ViewModels.Base;
-using Duo.ViewModels.ExerciseViewModels;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CreateAssociationExerciseViewModel.cs" company="YourCompanyName">
+//   Copyright (c) YourCompanyName. All rights reserved.
+//   Licensed under the MIT License. See LICENSE file in the project root for full license information.
+// </copyright>
+// <summary>
+//   ViewModel for creating association exercises.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace Duo.ViewModels.CreateExerciseViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using Duo.ViewModels.Base;
+    using Duo.ViewModels.ExerciseViewModels;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Models.Exercises;
+
+    /// <summary>
+    /// ViewModel for creating association exercises.
+    /// </summary>
     internal partial class CreateAssociationExerciseViewModel : CreateExerciseViewModelBase
     {
+        /// <summary>
+        /// The minimum number of answers required for the exercise.
+        /// </summary>
+        public const int MINIMUMANSWERS = 2;
+
+        /// <summary>
+        /// The maximum number of answers allowed for the exercise.
+        /// </summary>
+        public const int MAXIMUMANSWERS = 5;
         private readonly ExerciseCreationViewModel parentViewModel;
-        public ObservableCollection<Answer> LeftSideAnswers { get; set; } = new ObservableCollection<Answer>();
-        public ObservableCollection<Answer> RightSideAnswers { get; set; } = new ObservableCollection<Answer>();
-        public const int MINIMUM_ANSWERS = 2;
-        public const int MAXIMUM_ANSWERS = 5;
 
-        public ICommand AddNewAnswerCommand { get; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateAssociationExerciseViewModel"/> class.
+        /// </summary>
+        /// <param name="parentViewModel">The parent view model that manages exercise creation.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="parentViewModel"/> is null.</exception>
         public CreateAssociationExerciseViewModel(ExerciseCreationViewModel parentViewModel)
         {
             try
             {
                 this.parentViewModel = parentViewModel ?? throw new ArgumentNullException(nameof(parentViewModel));
-                LeftSideAnswers.Add(new Answer(string.Empty));
-                RightSideAnswers.Add(new Answer(string.Empty));
-                AddNewAnswerCommand = new RelayCommand(_ => AddNewAnswer());
+                this.LeftSideAnswers.Add(new Answer(string.Empty));
+                this.RightSideAnswers.Add(new Answer(string.Empty));
+                this.AddNewAnswerCommand = new RelayCommand(_ => this.AddNewAnswer());
             }
             catch (Exception ex)
             {
-                RaiseErrorMessage("Initialization Error", $"Failed to initialize CreateAssociationExerciseViewModel.\nDetails: {ex.Message}");
+                this.RaiseErrorMessage("Initialization Error", $"Failed to initialize CreateAssociationExerciseViewModel.\nDetails: {ex.Message}");
             }
         }
 
-        private void AddNewAnswer()
-        {
-            try
-            {
-                if (LeftSideAnswers.Count >= MAXIMUM_ANSWERS || RightSideAnswers.Count >= MAXIMUM_ANSWERS)
-                {
-                    parentViewModel.RaiseErrorMessage("Maximum Answers Reached", "You can only have up to 5 answers.");
-                    return;
-                }
-                Debug.WriteLine("New answer added");
-                LeftSideAnswers.Add(new Answer(string.Empty));
-                RightSideAnswers.Add(new Answer(string.Empty));
-            }
-            catch (Exception ex)
-            {
-                RaiseErrorMessage("Add Answer Error", $"Failed to add new answer.\nDetails: {ex.Message}");
-            }
-        }
+        /// <summary>
+        /// Gets or sets the collection of answers for the left side of the association exercise.
+        /// </summary>
+        public ObservableCollection<Answer> LeftSideAnswers { get; set; } = new ();
 
+        /// <summary>
+        /// Gets or sets the collection of answers for the right side of the association exercise.
+        /// </summary>
+        public ObservableCollection<Answer> RightSideAnswers { get; set; } = new ();
+
+        public ICommand AddNewAnswerCommand { get; }
+
+        /// <summary>
+        /// Creates an association exercise with the specified question and difficulty level.
+        /// </summary>
+        /// <param name="question">The question for the exercise.</param>
+        /// <param name="difficulty">The difficulty level of the exercise.</param>
+        /// <returns>
+        /// A new <see cref="AssociationExercise"/> instance if the exercise is successfully created; otherwise, <c>null</c>.
+        /// </returns>
         public override Exercise CreateExercise(string question, Difficulty difficulty)
         {
             try
             {
                 // Validate: No empty pairings and minimum answers
-                var leftAnswers = GenerateAnswerList(LeftSideAnswers);
-                var rightAnswers = GenerateAnswerList(RightSideAnswers);
+                var leftAnswers = this.GenerateAnswerList(this.LeftSideAnswers);
+                var rightAnswers = this.GenerateAnswerList(this.RightSideAnswers);
 
                 // Check for minimum answers
-                if (leftAnswers.Count < MINIMUM_ANSWERS || rightAnswers.Count < MINIMUM_ANSWERS)
+                if (leftAnswers.Count < MINIMUMANSWERS || rightAnswers.Count < MINIMUMANSWERS)
                 {
-                    parentViewModel.RaiseErrorMessage("Not enough answers", $"You must provide at least {MINIMUM_ANSWERS} answer pairs.");
+                    this.parentViewModel.RaiseErrorMessage("Not enough answers", $"You must provide at least {MINIMUMANSWERS} answer pairs.");
                     return null;
                 }
 
@@ -76,7 +98,7 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                 {
                     if (string.IsNullOrWhiteSpace(leftAnswers[i]) || string.IsNullOrWhiteSpace(rightAnswers[i]))
                     {
-                        parentViewModel.RaiseErrorMessage("Empty Pairing", "All answer pairings must be filled in.");
+                        this.parentViewModel.RaiseErrorMessage("Empty Pairing", "All answer pairings must be filled in.");
                         return null;
                     }
                 }
@@ -86,11 +108,16 @@ namespace Duo.ViewModels.CreateExerciseViewModels
             }
             catch (Exception ex)
             {
-                RaiseErrorMessage("Create Exercise Error", $"Failed to create association exercise.\nDetails: {ex.Message}");
+                this.RaiseErrorMessage("Create Exercise Error", $"Failed to create association exercise.\nDetails: {ex.Message}");
                 return null;
             }
         }
 
+        /// <summary>
+        /// Generates a list of answer values from the provided collection of answers.
+        /// </summary>
+        /// <param name="answers">The collection of answers to process.</param>
+        /// <returns>A list of string values representing the answers.</returns>
         public List<string> GenerateAnswerList(ObservableCollection<Answer> answers)
         {
             try
@@ -101,36 +128,47 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                 {
                     answersList.Add(answer.Value);
                 }
+
                 return answersList;
             }
             catch (Exception ex)
             {
-                RaiseErrorMessage("Generate Answers Error", $"Failed to generate answer list.\nDetails: {ex.Message}");
+                this.RaiseErrorMessage("Generate Answers Error", $"Failed to generate answer list.\nDetails: {ex.Message}");
                 return new List<string>();
             }
         }
 
+        private void AddNewAnswer()
+        {
+            try
+            {
+                if (this.LeftSideAnswers.Count >= MAXIMUMANSWERS || this.RightSideAnswers.Count >= MAXIMUMANSWERS)
+                {
+                    this.parentViewModel.RaiseErrorMessage("Maximum Answers Reached", "You can only have up to 5 answers.");
+                    return;
+                }
+
+                Debug.WriteLine("New answer added");
+                this.LeftSideAnswers.Add(new Answer(string.Empty));
+                this.RightSideAnswers.Add(new Answer(string.Empty));
+            }
+            catch (Exception ex)
+            {
+                this.RaiseErrorMessage("Add Answer Error", $"Failed to add new answer.\nDetails: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Represents an answer in the association exercise.
+        /// </summary>
         public class Answer : ViewModelBase
         {
             private string value;
 
-            public string Value
-            {
-                get => value;
-                set
-                {
-                    try
-                    {
-                        this.value = value;
-                        OnPropertyChanged(nameof(Value));
-                    }
-                    catch (Exception ex)
-                    {
-                        RaiseErrorMessage("Answer Value Error", $"Failed to set answer value.\nDetails: {ex.Message}");
-                    }
-                }
-            }
-
+            /// <summary>
+            /// Initializes a new instance of the <see cref="Answer"/> class.
+            /// </summary>
+            /// <param name="value">The value of the answer.</param>
             public Answer(string value)
             {
                 try
@@ -139,7 +177,27 @@ namespace Duo.ViewModels.CreateExerciseViewModels
                 }
                 catch (Exception ex)
                 {
-                    RaiseErrorMessage("Answer Initialization Error", $"Failed to initialize Answer.\nDetails: {ex.Message}");
+                    this.RaiseErrorMessage("Answer Initialization Error", $"Failed to initialize Answer.\nDetails: {ex.Message}");
+                }
+            }
+
+            /// <summary>
+            /// Gets or sets the value of the answer.
+            /// </summary>
+            public string Value
+            {
+                get => this.value;
+                set
+                {
+                    try
+                    {
+                        this.value = value;
+                        this.OnPropertyChanged(nameof(this.Value));
+                    }
+                    catch (Exception ex)
+                    {
+                        this.RaiseErrorMessage("Answer Value Error", $"Failed to set answer value.\nDetails: {ex.Message}");
+                    }
                 }
             }
         }
