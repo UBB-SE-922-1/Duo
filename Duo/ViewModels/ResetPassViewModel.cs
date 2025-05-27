@@ -1,113 +1,114 @@
-﻿using System;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
-using Duo.Services;
-
-using Duo.Validators;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Services.Interfaces;
+﻿// <copyright file="ResetPassViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using Duo.Services;
+    using Duo.Validators;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Services.Interfaces;
+
     /// <summary>
     /// ViewModel for password reset functionality.
     /// </summary>
     public class ResetPassViewModel : INotifyPropertyChanged
     {
-        private readonly ForgotPassService _forgotPassService;
-        private readonly PasswordResetValidator _validator;
-        private string _email = string.Empty;
-        private string _verificationCode = string.Empty;
-        private string _newPassword = string.Empty;
-        private string _confirmPassword = string.Empty;
-        private string _statusMessage = string.Empty;
-        private bool _isCodeVerified = false;
-        private bool _isProcessing = false;
-        private bool _emailPanelVisible = true;
-        private bool _codePanelVisible = false;
-        private bool _passwordPanelVisible = false;
+        private readonly ForgotPassService forgotPassService;
+        private readonly PasswordResetValidator validator;
+        private string email = string.Empty;
+        private string verificationCode = string.Empty;
+        private string newPassword = string.Empty;
+        private string confirmPassword = string.Empty;
+        private string statusMessage = string.Empty;
+        private bool isCodeVerified = false;
+        private bool isProcessing = false;
+        private bool emailPanelVisible = true;
+        private bool codePanelVisible = false;
+        private bool passwordPanelVisible = false;
 
-        /// <summary>
-        /// Event that is triggered when a property value changes
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <inheritdoc/>
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// Gets or sets the email address.
         /// </summary>
         public string Email
         {
-            get => _email;
+            get => this.email;
             set
             {
-                _email = value;
-                OnPropertyChanged();
+                this.email = value;
+                this.OnPropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the verification code.
         /// </summary>
         public string VerificationCode
         {
-            get => _verificationCode;
+            get => this.verificationCode;
             set
             {
-                _verificationCode = value;
-                OnPropertyChanged();
+                this.verificationCode = value;
+                this.OnPropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the new password.
         /// </summary>
         public string NewPassword
         {
-            get => _newPassword;
+            get => this.newPassword;
             set
             {
-                _newPassword = value;
-                OnPropertyChanged();
+                this.newPassword = value;
+                this.OnPropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the confirmed password.
         /// </summary>
         public string ConfirmPassword
         {
-            get => _confirmPassword;
+            get => this.confirmPassword;
             set
             {
-                _confirmPassword = value;
-                OnPropertyChanged();
+                this.confirmPassword = value;
+                this.OnPropertyChanged();
             }
         }
-        
+
         /// <summary>
         /// Gets or sets the status message.
         /// </summary>
         public string StatusMessage
         {
-            get => _statusMessage;
+            get => this.statusMessage;
             set
             {
-                _statusMessage = value;
-                OnPropertyChanged();
+                this.statusMessage = value;
+                this.OnPropertyChanged();
             }
         }
-        
+
         /// <summary>
-        /// Gets or sets a value indicating whether the code is verified.
+        /// Gets a value indicating whether the code is verified.
         /// </summary>
         public bool IsCodeVerified
         {
-            get => _isCodeVerified;
+            get => this.isCodeVerified;
             private set
             {
-                _isCodeVerified = value;
-                OnPropertyChanged();
+                this.isCodeVerified = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -116,11 +117,11 @@ namespace Duo.ViewModels
         /// </summary>
         public bool IsProcessing
         {
-            get => _isProcessing;
+            get => this.isProcessing;
             set
             {
-                _isProcessing = value;
-                OnPropertyChanged();
+                this.isProcessing = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -129,11 +130,11 @@ namespace Duo.ViewModels
         /// </summary>
         public bool EmailPanelVisible
         {
-            get => _emailPanelVisible;
+            get => this.emailPanelVisible;
             set
             {
-                _emailPanelVisible = value;
-                OnPropertyChanged();
+                this.emailPanelVisible = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -142,11 +143,11 @@ namespace Duo.ViewModels
         /// </summary>
         public bool CodePanelVisible
         {
-            get => _codePanelVisible;
+            get => this.codePanelVisible;
             set
             {
-                _codePanelVisible = value;
-                OnPropertyChanged();
+                this.codePanelVisible = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -155,11 +156,11 @@ namespace Duo.ViewModels
         /// </summary>
         public bool PasswordPanelVisible
         {
-            get => _passwordPanelVisible;
+            get => this.passwordPanelVisible;
             set
             {
-                _passwordPanelVisible = value;
-                OnPropertyChanged();
+                this.passwordPanelVisible = value;
+                this.OnPropertyChanged();
             }
         }
 
@@ -173,9 +174,9 @@ namespace Duo.ViewModels
             {
                 throw new ArgumentNullException(nameof(userHelperService));
             }
-            
-            _forgotPassService = new ForgotPassService(userHelperService);
-            _validator = new PasswordResetValidator();
+
+            this.forgotPassService = new ForgotPassService(userHelperService);
+            this.validator = new PasswordResetValidator();
         }
 
         /// <summary>
@@ -188,8 +189,9 @@ namespace Duo.ViewModels
             bool isValid = PasswordResetValidator.IsValidEmail(email);
             if (!isValid)
             {
-                StatusMessage = "Please enter a valid email address.";
+                this.StatusMessage = "Please enter a valid email address.";
             }
+
             return isValid;
         }
 
@@ -200,41 +202,41 @@ namespace Duo.ViewModels
         /// <returns>True if the code was sent successfully; otherwise, false.</returns>
         public async Task<bool> SendVerificationCode(string email)
         {
-            if (!ValidateEmail(email))
+            if (!this.ValidateEmail(email))
             {
                 return false;
             }
 
-            Email = email;
-            IsProcessing = true;
-            StatusMessage = "Sending verification code...";
+            this.Email = email;
+            this.IsProcessing = true;
+            this.StatusMessage = "Sending verification code...";
 
             try
             {
-                string code = await _forgotPassService.SendVerificationCode(email);
+                string code = await this.forgotPassService.SendVerificationCode(email);
 
                 if (!string.IsNullOrEmpty(code))
                 {
-                    StatusMessage = "Verification code sent. Please check your email.";
-                    EmailPanelVisible = false;
-                    CodePanelVisible = true;
-                    VerificationCode = code;
+                    this.StatusMessage = "Verification code sent. Please check your email.";
+                    this.EmailPanelVisible = false;
+                    this.CodePanelVisible = true;
+                    this.VerificationCode = code;
                     return true;
                 }
                 else
                 {
-                    StatusMessage = "Failed to send verification code. Please try again.";
+                    this.StatusMessage = "Failed to send verification code. Please try again.";
                     return false;
                 }
             }
             catch (Exception ex)
             {
-                StatusMessage = $"An error occurred: {ex.Message}";
+                this.StatusMessage = $"An error occurred: {ex.Message}";
                 return false;
             }
             finally
             {
-                IsProcessing = false;
+                this.IsProcessing = false;
             }
         }
 
@@ -248,8 +250,9 @@ namespace Duo.ViewModels
             bool isValid = PasswordResetValidator.IsValidVerificationCode(code);
             if (!isValid)
             {
-                StatusMessage = "Please enter the verification code.";
+                this.StatusMessage = "Please enter the verification code.";
             }
+
             return isValid;
         }
 
@@ -258,28 +261,28 @@ namespace Duo.ViewModels
         /// </summary>
         /// <param name="code">The verification code.</param>
         /// <returns>True if the code is valid; otherwise, false.</returns>
-        public async Task<bool> VerifyCode(string code)
+        public Task<bool> VerifyCode(string code)
         {
-            if (!ValidateCodeFormat(code))
+            if (!this.ValidateCodeFormat(code))
             {
-                return false;
+                return Task.FromResult(false);
             }
 
-            VerificationCode = code;
-            IsCodeVerified = _forgotPassService.VerifyCode(code);
+            this.VerificationCode = code;
+            this.IsCodeVerified = this.forgotPassService.VerifyCode(code);
 
-            if (IsCodeVerified)
+            if (this.IsCodeVerified)
             {
-                StatusMessage = "Code verified. Please enter your new password.";
-                CodePanelVisible = false;
-                PasswordPanelVisible = true;
+                this.StatusMessage = "Code verified. Please enter your new password.";
+                this.CodePanelVisible = false;
+                this.PasswordPanelVisible = true;
             }
             else
             {
-                StatusMessage = "Invalid verification code. Please try again.";
+                this.StatusMessage = "Invalid verification code. Please try again.";
             }
 
-            return IsCodeVerified;
+            return Task.FromResult(this.IsCodeVerified);
         }
 
         /// <summary>
@@ -288,11 +291,12 @@ namespace Duo.ViewModels
         /// <returns>True if the passwords match; otherwise, false.</returns>
         public bool ValidatePasswordsMatch()
         {
-            bool match = PasswordResetValidator.DoPasswordsMatch(NewPassword, ConfirmPassword);
+            bool match = PasswordResetValidator.DoPasswordsMatch(this.NewPassword, this.ConfirmPassword);
             if (!match)
             {
-                StatusMessage = "Passwords don't match!";
+                this.StatusMessage = "Passwords don't match!";
             }
+
             return match;
         }
 
@@ -306,8 +310,9 @@ namespace Duo.ViewModels
             bool isValid = PasswordResetValidator.IsValidNewPassword(password);
             if (!isValid)
             {
-                StatusMessage = "Please enter a valid password.";
+                this.StatusMessage = "Please enter a valid password.";
             }
+
             return isValid;
         }
 
@@ -318,45 +323,45 @@ namespace Duo.ViewModels
         /// <returns>True if the password was reset successfully; otherwise, false.</returns>
         public async Task<bool> ResetPassword(string newPassword)
         {
-            if (!ValidateNewPassword(newPassword))
+            if (!this.ValidateNewPassword(newPassword))
             {
                 return false;
             }
 
-            if (!ValidatePasswordsMatch())
+            if (!this.ValidatePasswordsMatch())
             {
                 return false;
             }
 
             try
             {
-                bool isReset = await _forgotPassService.ResetPassword(Email, newPassword);
+                bool isReset = await this.forgotPassService.ResetPassword(this.Email, newPassword);
 
                 if (isReset)
                 {
-                    StatusMessage = "Password reset successfully!";
+                    this.StatusMessage = "Password reset successfully!";
                 }
                 else
                 {
-                    StatusMessage = "Failed to reset password. Please try again.";
+                    this.StatusMessage = "Failed to reset password. Please try again.";
                 }
 
                 return isReset;
             }
             catch (Exception ex)
             {
-                StatusMessage = $"An error occurred: {ex.Message}";
+                this.StatusMessage = $"An error occurred: {ex.Message}";
                 return false;
             }
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for a property
+        /// Raises the PropertyChanged event for a property.
         /// </summary>
-        /// <param name="propertyName">The name of the property that changed</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        /// <param name="propertyName">The name of the property that changed.</param>
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

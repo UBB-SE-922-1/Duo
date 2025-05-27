@@ -1,17 +1,20 @@
-﻿using System;
-using Duo.Services;
-using DuoClassLibrary.Models;
-using System.Threading.Tasks;
-
-using Duo.Validators;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using DuoClassLibrary.Services;
+﻿// <copyright file="SignUpViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.ComponentModel;
+    using System.Runtime.CompilerServices;
+    using System.Threading.Tasks;
+    using Duo.Services;
+    using Duo.Validators;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Services;
+
     /// <summary>
-    /// ViewModel for handling sign-up operations and validation
+    /// ViewModel for handling sign-up operations and validation.
     /// </summary>
     public class SignUpViewModel : INotifyPropertyChanged
     {
@@ -24,15 +27,13 @@ namespace Duo.ViewModels
         private string passwordValidationMessage = string.Empty;
         private string confirmPasswordValidationMessage = string.Empty;
 
-        /// <summary>
-        /// Event that is triggered when a property value changes
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
+        /// <inheritdoc/>
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SignUpViewModel"/> class
+        /// Initializes a new instance of the <see cref="SignUpViewModel"/> class.
         /// </summary>
-        /// <param name="signUpService">The sign-up service</param>
+        /// <param name="signUpService">The sign-up service.</param>
         public SignUpViewModel(SignUpService signUpService)
         {
             this.signUpService = signUpService ?? throw new ArgumentNullException(nameof(signUpService));
@@ -40,113 +41,113 @@ namespace Duo.ViewModels
         }
 
         /// <summary>
-        /// Gets or sets the new user being created
+        /// Gets or sets the new user being created.
         /// </summary>
         public User NewUser
         {
-            get => newUser;
+            get => this.newUser;
             set
             {
-                newUser = value;
-                OnPropertyChanged();
+                this.newUser = value;
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the password confirmation
+        /// Gets or sets the password confirmation.
         /// </summary>
         public string ConfirmPassword
         {
-            get => confirmPassword;
+            get => this.confirmPassword;
             set
             {
-                confirmPassword = value;
-                ValidatePasswordMatch();
-                OnPropertyChanged();
+                this.confirmPassword = value;
+                this.ValidatePasswordMatch();
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the password strength indicator
+        /// Gets or sets the password strength indicator.
         /// </summary>
         public string PasswordStrength
         {
-            get => passwordStrength;
+            get => this.passwordStrength;
             set
             {
-                passwordStrength = value;
-                OnPropertyChanged();
+                this.passwordStrength = value;
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the username validation message
+        /// Gets or sets the username validation message.
         /// </summary>
         public string UsernameValidationMessage
         {
-            get => usernameValidationMessage;
+            get => this.usernameValidationMessage;
             set
             {
-                usernameValidationMessage = value;
-                OnPropertyChanged();
+                this.usernameValidationMessage = value;
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the password validation message
+        /// Gets or sets the password validation message.
         /// </summary>
         public string PasswordValidationMessage
         {
-            get => passwordValidationMessage;
+            get => this.passwordValidationMessage;
             set
             {
-                passwordValidationMessage = value;
-                OnPropertyChanged();
+                this.passwordValidationMessage = value;
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Gets or sets the confirm password validation message
+        /// Gets or sets the confirm password validation message.
         /// </summary>
         public string ConfirmPasswordValidationMessage
         {
-            get => confirmPasswordValidationMessage;
+            get => this.confirmPasswordValidationMessage;
             set
             {
-                confirmPasswordValidationMessage = value;
-                OnPropertyChanged();
+                this.confirmPasswordValidationMessage = value;
+                this.OnPropertyChanged();
             }
         }
 
         /// <summary>
-        /// Checks if a username is already taken
+        /// Checks if a username is already taken.
         /// </summary>
-        /// <param name="username">The username to check</param>
-        /// <returns>True if the username is taken; otherwise, false</returns>
+        /// <param name="username">The username to check.</param>
+        /// <returns>True if the username is taken; otherwise, false.</returns>
         public async Task<bool> IsUsernameTaken(string username)
         {
             try
             {
-                return await signUpService.IsUsernameTaken(username);
+                return await this.signUpService.IsUsernameTaken(username);
             }
             catch (Exception checkUsernameException)
             {
                 Console.WriteLine($"Error checking username: {checkUsernameException.Message}");
-                return true; // Fail-safe to prevent duplicate usernames if there's an error
+                return true;
             }
         }
 
         /// <summary>
-        /// Creates a new user with the provided information
+        /// Creates a new user with the provided information.
         /// </summary>
-        /// <param name="user">The user information</param>
-        /// <returns>True if the user was created successfully; otherwise, false</returns>
+        /// <param name="user">The user information.</param>
+        /// <returns>True if the user was created successfully; otherwise, false.</returns>
         public async Task<bool> CreateNewUser(User user)
         {
             try
             {
                 user.DateJoined = DateTime.Now;
-                return await signUpService.RegisterUser(user);
+                return await this.signUpService.RegisterUser(user);
             }
             catch (Exception createUserException)
             {
@@ -156,40 +157,40 @@ namespace Duo.ViewModels
         }
 
         /// <summary>
-        /// Validates if the username follows the required format
+        /// Validates if the username follows the required format.
         /// </summary>
-        /// <param name="username">The username to validate</param>
-        /// <returns>True if the username is valid; otherwise, false</returns>
+        /// <param name="username">The username to validate.</param>
+        /// <returns>True if the username is valid; otherwise, false.</returns>
         public bool ValidateUsername(string username)
         {
             bool isValid = SignUpValidator.IsValidUsername(username);
-            UsernameValidationMessage = isValid ? string.Empty : "Username must be 5-20 characters and contain only letters, digits, or underscores.";
+            this.UsernameValidationMessage = isValid ? string.Empty : "Username must be 5-20 characters and contain only letters, digits, or underscores.";
             return isValid;
         }
 
         /// <summary>
-        /// Updates the password strength indicator based on the provided password
+        /// Updates the password strength indicator based on the provided password.
         /// </summary>
-        /// <param name="password">The password to evaluate</param>
+        /// <param name="password">The password to evaluate.</param>
         public void UpdatePasswordStrength(string password)
         {
-            PasswordStrength = SignUpValidator.GetPasswordStrength(password);
+            this.PasswordStrength = SignUpValidator.GetPasswordStrength(password);
 
-            if (PasswordStrength == "Weak")
+            if (this.PasswordStrength == "Weak")
             {
-                PasswordValidationMessage = "Password must include uppercase, digit, and special character.";
+                this.PasswordValidationMessage = "Password must include uppercase, digit, and special character.";
             }
             else
             {
-                PasswordValidationMessage = string.Empty;
+                this.PasswordValidationMessage = string.Empty;
             }
         }
 
         /// <summary>
-        /// Validates if the password is strong enough
+        /// Validates if the password is strong enough.
         /// </summary>
-        /// <param name="password">The password to validate</param>
-        /// <returns>True if the password is medium or strong; otherwise, false</returns>
+        /// <param name="password">The password to validate.</param>
+        /// <returns>True if the password is medium or strong; otherwise, false.</returns>
         public bool ValidatePasswordStrength(string password)
         {
             string strength = SignUpValidator.GetPasswordStrength(password);
@@ -197,36 +198,36 @@ namespace Duo.ViewModels
         }
 
         /// <summary>
-        /// Validates if the passwords match
+        /// Validates if the passwords match.
         /// </summary>
-        /// <returns>True if the passwords match; otherwise, false</returns>
+        /// <returns>True if the passwords match; otherwise, false.</returns>
         public bool ValidatePasswordMatch()
         {
-            bool match = SignUpValidator.DoPasswordsMatch(NewUser.Password, ConfirmPassword);
-            ConfirmPasswordValidationMessage = match ? string.Empty : "Passwords do not match.";
+            bool match = SignUpValidator.DoPasswordsMatch(this.NewUser.Password, this.ConfirmPassword);
+            this.ConfirmPasswordValidationMessage = match ? string.Empty : "Passwords do not match.";
             return match;
         }
 
         /// <summary>
-        /// Validates all sign-up information
+        /// Validates all sign-up information.
         /// </summary>
-        /// <returns>True if all validations pass; otherwise, false</returns>
+        /// <returns>True if all validations pass; otherwise, false.</returns>
         public bool ValidateAll()
         {
-            bool usernameValid = ValidateUsername(NewUser.UserName);
-            bool passwordStrengthValid = ValidatePasswordStrength(NewUser.Password);
-            bool passwordsMatch = ValidatePasswordMatch();
-            
+            bool usernameValid = this.ValidateUsername(this.NewUser.UserName);
+            bool passwordStrengthValid = this.ValidatePasswordStrength(this.NewUser.Password);
+            bool passwordsMatch = this.ValidatePasswordMatch();
+
             return usernameValid && passwordStrengthValid && passwordsMatch;
         }
 
         /// <summary>
-        /// Raises the PropertyChanged event for a property
+        /// Raises the PropertyChanged event for a property.
         /// </summary>
-        /// <param name="propertyName">The name of the property that changed</param>
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        /// <param name="propertyName">The name of the property that changed.</param>
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
