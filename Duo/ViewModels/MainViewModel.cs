@@ -1,20 +1,21 @@
-using System;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Collections.Generic;
-using Duo.Commands;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Services;
-using Windows.System.Threading;
-using DuoClassLibrary.Services.Interfaces;
-
-#pragma warning disable IDE0028, CS8618, CS8602, CS8601, IDE0060
+// <copyright file="MainViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.ComponentModel;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Services;
+    using DuoClassLibrary.Services.Interfaces;
+
     /// <summary>
     /// ViewModel responsible for managing the main application logic, including course display, filtering, and user coin balance.
     /// </summary>
@@ -24,237 +25,239 @@ namespace Duo.ViewModels
 
         private readonly ICourseService courseService;
         private readonly ICoinsService coinsService;
-
         private string searchQuery = string.Empty;
         private bool filterByPremium;
         private bool filterByFree;
         private bool filterByEnrolled;
         private bool filterByNotEnrolled;
-
-        /// <summary>
-        /// Observable collection of courses to be displayed.
-        /// </summary>
         private ObservableCollection<Course> displayedCourses;
-        public ObservableCollection<Course> DisplayedCourses
-        {
-            get => displayedCourses;
-            set
-            {
-                if (displayedCourses != value)
-                {
-                    displayedCourses = value;
-                    OnPropertyChanged(nameof(DisplayedCourses));
-                }
-            }
-        }
-
-        /// <summary>
-        /// Observable collection of available tags.
-        /// </summary>
         private ObservableCollection<Tag> availableTags;
-        public ObservableCollection<Tag> AvailableTags
-        {
-            get => availableTags;
-            set
-            {
-                if (availableTags != value)
-                {
-                    // Unsubscribe from old tags
-                    if (availableTags != null)
-                    {
-                        foreach (var tag in availableTags)
-                        {
-                            tag.PropertyChanged -= Tag_PropertyChanged;
-                        }
-                    }
-
-                    availableTags = value;
-                    OnPropertyChanged(nameof(AvailableTags));
-
-                    // Subscribe to new tags
-                    if (availableTags != null)
-                    {
-                        foreach (var tag in availableTags)
-                        {
-                            tag.PropertyChanged += Tag_PropertyChanged;
-                        }
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// User's current coin balance.
-        /// </summary>
         private int userCoinBalance;
-        public int UserCoinBalance
-        {
-            get => userCoinBalance;
-            private set
-            {
-                userCoinBalance = value;
-                OnPropertyChanged(nameof(UserCoinBalance));
-            }
-        }
-
-        public async Task RefreshUserCoinBalanceAsync()
-        {
-            try
-            {
-                UserCoinBalance = await coinsService.GetCoinBalanceAsync(CurrentUserId);
-            }
-            catch (Exception ex)
-            {
-                RaiseErrorMessage("Failed to refresh coin balance", ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// The search query used to filter courses.
-        /// </summary>
-        public string SearchQuery
-        {
-            get => searchQuery;
-            set
-            {
-                if (value.Length <= 100 && searchQuery != value)
-                {
-                    searchQuery = value;
-                    OnPropertyChanged();
-                    ApplyAllFilters();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Filter flag for premium courses.
-        /// </summary>
-        public bool FilterByPremium
-        {
-            get => filterByPremium;
-            set
-            {
-                if (filterByPremium != value)
-                {
-                    filterByPremium = value;
-                    OnPropertyChanged();
-                    ApplyAllFilters();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Filter flag for free courses.
-        /// </summary>
-        public bool FilterByFree
-        {
-            get => filterByFree;
-            set
-            {
-                if (filterByFree != value)
-                {
-                    filterByFree = value;
-                    OnPropertyChanged();
-                    ApplyAllFilters();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Filter flag for enrolled courses.
-        /// </summary>
-        public bool FilterByEnrolled
-        {
-            get => filterByEnrolled;
-            set
-            {
-                if (filterByEnrolled != value)
-                {
-                    filterByEnrolled = value;
-                    OnPropertyChanged();
-                    ApplyAllFilters();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Filter flag for not enrolled courses.
-        /// </summary>
-        public bool FilterByNotEnrolled
-        {
-            get => filterByNotEnrolled;
-            set
-            {
-                if (filterByNotEnrolled != value)
-                {
-                    filterByNotEnrolled = value;
-                    OnPropertyChanged();
-                    ApplyAllFilters();
-                }
-            }
-        }
-
-        /// <summary>
-        /// Command to reset all filters.
-        /// </summary>
-        public ICommand ResetAllFiltersCommand { get; private set; }
-
-        /// <summary>
-        /// Flag to indicate if filters are being updated in a batch process to prevent unnecessary re-filtering during updates.
-        /// </summary>
         private bool isUpdatingFiltersBatch = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MainViewModel"/> class.
         /// </summary>
+        /// <param name="serviceProxy">The coins service proxy.</param>
+        /// <param name="courseServiceProxy">The course service proxy.</param>
+        /// <param name="currentUserId">The current user ID.</param>
+        /// <param name="courseService">Optional course service instance.</param>
+        /// <param name="coinsService">Optional coins service instance.</param>
         public MainViewModel(CoinsServiceProxy serviceProxy, CourseServiceProxy courseServiceProxy, int currentUserId,
             ICourseService? courseService = null, ICoinsService? coinsService = null)
         {
             this.CurrentUserId = currentUserId;
             this.courseService = courseService ?? new CourseService(courseServiceProxy);
             this.coinsService = coinsService ?? new CoinsService(serviceProxy);
+            this.InitializeAsync();
+        }
 
-            InitializeAsync();
+        /// <summary>
+        /// Gets or sets the collection of courses to be displayed.
+        /// </summary>
+        public ObservableCollection<Course> DisplayedCourses
+        {
+            get => this.displayedCourses;
+            set
+            {
+                if (this.displayedCourses != value)
+                {
+                    this.displayedCourses = value;
+                    this.OnPropertyChanged(nameof(this.DisplayedCourses));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the collection of available tags.
+        /// </summary>
+        public ObservableCollection<Tag> AvailableTags
+        {
+            get => this.availableTags;
+            set
+            {
+                if (this.availableTags != value)
+                {
+                    // Unsubscribe from old tags
+                    if (this.availableTags != null)
+                    {
+                        foreach (var tag in this.availableTags)
+                        {
+                            tag.PropertyChanged -= this.Tag_PropertyChanged;
+                        }
+                    }
+
+                    this.availableTags = value;
+                    this.OnPropertyChanged(nameof(this.AvailableTags));
+
+                    // Subscribe to new tags
+                    if (this.availableTags != null)
+                    {
+                        foreach (var tag in this.availableTags)
+                        {
+                            tag.PropertyChanged += this.Tag_PropertyChanged;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the user's current coin balance.
+        /// </summary>
+        public int UserCoinBalance
+        {
+            get => this.userCoinBalance;
+            private set
+            {
+                this.userCoinBalance = value;
+                this.OnPropertyChanged(nameof(this.UserCoinBalance));
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the search query used to filter courses.
+        /// </summary>
+        public string SearchQuery
+        {
+            get => this.searchQuery;
+            set
+            {
+                if (value.Length <= 100 && this.searchQuery != value)
+                {
+                    this.searchQuery = value;
+                    this.OnPropertyChanged();
+                    this.ApplyAllFilters();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter by premium courses.
+        /// </summary>
+        public bool FilterByPremium
+        {
+            get => this.filterByPremium;
+            set
+            {
+                if (this.filterByPremium != value)
+                {
+                    this.filterByPremium = value;
+                    this.OnPropertyChanged();
+                    this.ApplyAllFilters();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter by free courses.
+        /// </summary>
+        public bool FilterByFree
+        {
+            get => this.filterByFree;
+            set
+            {
+                if (this.filterByFree != value)
+                {
+                    this.filterByFree = value;
+                    this.OnPropertyChanged();
+                    this.ApplyAllFilters();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter by enrolled courses.
+        /// </summary>
+        public bool FilterByEnrolled
+        {
+            get => this.filterByEnrolled;
+            set
+            {
+                if (this.filterByEnrolled != value)
+                {
+                    this.filterByEnrolled = value;
+                    this.OnPropertyChanged();
+                    this.ApplyAllFilters();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether to filter by not enrolled courses.
+        /// </summary>
+        public bool FilterByNotEnrolled
+        {
+            get => this.filterByNotEnrolled;
+            set
+            {
+                if (this.filterByNotEnrolled != value)
+                {
+                    this.filterByNotEnrolled = value;
+                    this.OnPropertyChanged();
+                    this.ApplyAllFilters();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the command to reset all filters.
+        /// </summary>
+        public ICommand ResetAllFiltersCommand { get; private set; }
+
+        /// <summary>
+        /// Refreshes the user's coin balance asynchronously.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task RefreshUserCoinBalanceAsync()
+        {
+            try
+            {
+                this.UserCoinBalance = await this.coinsService.GetCoinBalanceAsync(this.CurrentUserId);
+            }
+            catch (Exception ex)
+            {
+                this.RaiseErrorMessage("Failed to refresh coin balance", ex.Message);
+            }
         }
 
         private async void InitializeAsync()
         {
             try
             {
-                // Initialize the command first to ensure it's available
-                ResetAllFiltersCommand = new RelayCommand(ResetAllFilters);
+                this.ResetAllFiltersCommand = new RelayCommand(this.ResetAllFilters);
 
                 var courseList = await this.courseService.GetCoursesAsync();
-                // Load tags for each course
                 foreach (var course in courseList)
                 {
                     course.Tags = await this.courseService.GetCourseTagsAsync(course.CourseId);
                 }
-                DisplayedCourses = new ObservableCollection<Course>(courseList);
-                AvailableTags = new ObservableCollection<Tag>(await this.courseService.GetTagsAsync());
+                this.DisplayedCourses = new ObservableCollection<Course>(courseList);
+                this.AvailableTags = new ObservableCollection<Tag>(await this.courseService.GetTagsAsync());
 
-                await RefreshUserCoinBalanceAsync();
+                await this.RefreshUserCoinBalanceAsync();
             }
             catch (Exception e)
             {
-                RaiseErrorMessage("Failed to load courses", e.Message);
+                this.RaiseErrorMessage("Failed to load courses", e.Message);
             }
         }
 
         /// <summary>
         /// Attempts to grant a daily login reward to the user.
         /// </summary>
+        /// <returns>A task representing the asynchronous operation. The task result indicates if the reward was granted.</returns>
         public async Task<bool> TryDailyLoginReward()
         {
             try
             {
-                bool loginRewardGranted = await coinsService.ApplyDailyLoginBonusAsync(CurrentUserId);
-                await RefreshUserCoinBalanceAsync();
+                bool loginRewardGranted = await this.coinsService.ApplyDailyLoginBonusAsync(this.CurrentUserId);
+                await this.RefreshUserCoinBalanceAsync();
                 return loginRewardGranted;
             }
             catch (Exception ex)
             {
-                RaiseErrorMessage("Daily login reward failed", ex.Message);
+                this.RaiseErrorMessage("Daily login reward failed", ex.Message);
                 return false;
             }
         }
@@ -262,27 +265,29 @@ namespace Duo.ViewModels
         /// <summary>
         /// Resets all the filters and clears the search query.
         /// </summary>
+        /// <param name="parameter">The command parameter (not used).</param>
         private void ResetAllFilters(object? parameter)
         {
             try
             {
                 this.isUpdatingFiltersBatch = true;
-                SearchQuery = string.Empty;
-                FilterByPremium = false;
-                FilterByFree = false;
-                FilterByEnrolled = false;
-                FilterByNotEnrolled = false;
+                this.SearchQuery = string.Empty;
+                this.FilterByPremium = false;
+                this.FilterByFree = false;
+                this.FilterByEnrolled = false;
+                this.FilterByNotEnrolled = false;
 
-                foreach (var tag in AvailableTags)
+                foreach (var tag in this.AvailableTags)
                 {
                     tag.IsSelected = false;
                 }
+
                 this.isUpdatingFiltersBatch = false;
-                ApplyAllFilters();
+                this.ApplyAllFilters();
             }
             catch (Exception ex)
             {
-                RaiseErrorMessage("Reset filters failed", ex.Message);
+                this.RaiseErrorMessage("Reset filters failed", ex.Message);
             }
         }
 
@@ -293,55 +298,59 @@ namespace Duo.ViewModels
         {
             try
             {
-                if (AvailableTags == null)
+                if (this.AvailableTags == null)
                 {
                     return;
                 }
 
-                var existingCourseTags = CacheExistingCourseTags();
-                DisplayedCourses.Clear();
-                await LoadFilteredCoursesWithTags(existingCourseTags);
+                var existingCourseTags = this.CacheExistingCourseTags();
+                this.DisplayedCourses.Clear();
+                await this.LoadFilteredCoursesWithTags(existingCourseTags);
             }
             catch (Exception e)
             {
-                RaiseErrorMessage("Failed to apply filters", e.Message);
+                this.RaiseErrorMessage("Failed to apply filters", e.Message);
             }
         }
 
         /// <summary>
         /// Saves the tags of currently displayed courses for reuse.
         /// </summary>
+        /// <returns>A dictionary mapping course IDs to their tags.</returns>
         private Dictionary<int, List<Tag>> CacheExistingCourseTags()
         {
             var tagCache = new Dictionary<int, List<Tag>>();
-            foreach (var course in DisplayedCourses)
+            foreach (var course in this.DisplayedCourses)
             {
                 if (course.Tags != null && course.Tags.Any())
                 {
                     tagCache[course.CourseId] = course.Tags.ToList();
                 }
             }
+
             return tagCache;
         }
 
         /// <summary>
         /// Loads filtered courses with their tags, using cached tags when available.
         /// </summary>
+        /// <param name="tagCache">A dictionary mapping course IDs to their tags.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task LoadFilteredCoursesWithTags(Dictionary<int, List<Tag>> tagCache)
         {
-            var selectedTagIds = AvailableTags
+            var selectedTagIds = this.AvailableTags
                 .Where(tag => tag.IsSelected)
                 .Select(tag => tag.TagId)
                 .ToList();
 
-            var filteredCourses = await courseService.GetFilteredCoursesAsync(
-                searchQuery,
-                filterByPremium,
-                filterByFree,
-                filterByEnrolled,
-                filterByNotEnrolled,
+            var filteredCourses = await this.courseService.GetFilteredCoursesAsync(
+                this.searchQuery,
+                this.filterByPremium,
+                this.filterByFree,
+                this.filterByEnrolled,
+                this.filterByNotEnrolled,
                 selectedTagIds,
-                CurrentUserId);
+                this.CurrentUserId);
 
             foreach (var course in filteredCourses)
             {
@@ -351,35 +360,35 @@ namespace Duo.ViewModels
                 }
                 else if (course.Tags == null || !course.Tags.Any())
                 {
-                    course.Tags = await courseService.GetCourseTagsAsync(course.CourseId);
+                    course.Tags = await this.courseService.GetCourseTagsAsync(course.CourseId);
                 }
 
-                DisplayedCourses.Add(course);
+                this.DisplayedCourses.Add(course);
             }
         }
 
         /// <summary>
         /// Handles property changes for tags to reapply filters when a tag's selection state changes.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">The tag object.</param>
+        /// <param name="e">The property changed event arguments.</param>
         private void Tag_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(Tag.IsSelected))
             {
-                if(!isUpdatingFiltersBatch)
+                if (!this.isUpdatingFiltersBatch)
                 {
-                    // If not in batch update mode, apply filters immediately
-                    ApplyAllFilters();
+                    this.ApplyAllFilters();
                 }
             }
         }
 
         /// <summary>
+        /// Public method to reset all filters.
         /// </summary>
         public void ResetAllFiltersPublic()
         {
-            ResetAllFilters(null);
+            this.ResetAllFilters(null);
         }
     }
 }

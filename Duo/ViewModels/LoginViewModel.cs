@@ -1,17 +1,29 @@
-
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Services.Interfaces;
-using System;
-using System.Threading.Tasks;
+// <copyright file="LoginViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Services.Interfaces;
+
     /// <summary>
     /// ViewModel that handles the login logic.
     /// </summary>
     public class LoginViewModel
     {
         private readonly ILoginService loginService;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LoginViewModel"/> class.
+        /// </summary>
+        /// <param name="loginService">The login service.</param>
+        public LoginViewModel(ILoginService loginService)
+        {
+            this.loginService = loginService ?? throw new ArgumentNullException(nameof(loginService));
+        }
 
         /// <summary>
         /// Gets or sets the username entered by the user.
@@ -31,16 +43,7 @@ namespace Duo.ViewModels
         /// <summary>
         /// Gets the logged-in user after a successful login.
         /// </summary>
-        public User LoggedInUser { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LoginViewModel"/> class.
-        /// </summary>
-        /// <param name="loginService">The login service.</param>
-        public LoginViewModel(ILoginService loginService)
-        {
-            this.loginService = loginService ?? throw new ArgumentNullException(nameof(loginService));
-        }
+        public User? LoggedInUser { get; private set; }
 
         /// <summary>
         /// Attempts to log in with the provided credentials.
@@ -65,10 +68,10 @@ namespace Duo.ViewModels
                 this.LoggedInUser = await this.loginService.GetUserByCredentials(this.Username, this.Password);
                 this.LoginStatus = this.LoggedInUser != null;
 
-                if (this.LoginStatus)
+                if (this.LoginStatus && this.LoggedInUser != null && App.UserService != null)
                 {
                     App.CurrentUser = this.LoggedInUser;
-                    App.UserService.SetUser(App.CurrentUser.UserName);
+                    await App.UserService.SetUser(App.CurrentUser.UserName);
                 }
 
                 return this.LoginStatus;
