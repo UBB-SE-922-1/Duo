@@ -10,6 +10,7 @@ using Duo.Views.Components;
 using static Duo.App;
 using DuolingoNou.Views.Pages;
 using System.Threading.Tasks;
+using Microsoft.UI.Xaml.Navigation;
 
 namespace Duo.Views.Pages
 {
@@ -22,12 +23,23 @@ namespace Duo.Views.Pages
             try
             {
                 this.InitializeComponent();
+                this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
+                contentFrame.Navigated += ContentFrame_Navigated;
                 _ = InitializeAsync();
+
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Page initialization failed: {ex.Message}");
             }
+        }
+
+        private void ContentFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            bool onCommunityList = e.SourcePageType == typeof(PostListPage);
+            CreatePostBtn.Visibility = onCommunityList
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         private async Task InitializeAsync()
@@ -110,8 +122,16 @@ namespace Duo.Views.Pages
         {
             if (args.SelectedItem is NavigationViewItem selectedItem)
             {
+                var tag = selectedItem.Tag as string;
+
+                bool isComunitySection = (tag == "Community" || (_viewModel.CategoryNames?.Contains(tag) ?? false));
+                    CreatePostBtn.Visibility = isComunitySection ? Visibility.Visible : Visibility.Collapsed;
+
                 switch (selectedItem.Tag)
                 {
+                    case "Profile":
+                        contentFrame.Navigate(typeof(ProfileSettingsPage));
+                        break;
                     case "Settings":
                         contentFrame.Navigate(typeof(ProfileSettingsPage));
                         break;

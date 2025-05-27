@@ -10,6 +10,8 @@ namespace Duo.Views.Pages
         public MainPage()
         {
             this.InitializeComponent();
+            var userName = App.CurrentUser?.UserName ?? "User";
+            WelcomeTextBlock.Text = $"Welcome, {userName}!";
         }
 
         /// <summary>

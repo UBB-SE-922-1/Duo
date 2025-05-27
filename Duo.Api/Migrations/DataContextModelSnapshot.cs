@@ -17,7 +17,7 @@ namespace Duo.Api.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "8.0.0")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -181,10 +181,10 @@ namespace Duo.Api.Migrations
 
             modelBuilder.Entity("Duo.Api.Models.Enrollment", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
-                    b.Property<int>("CourseId")
+                    b.Property<int?>("CourseId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("EnrolledAt")
@@ -744,11 +744,11 @@ namespace Duo.Api.Migrations
                 {
                     b.HasBaseType("Duo.Api.Models.Exercises.Exercise");
 
-                    b.PrimitiveCollection<string>("FirstAnswersList")
+                    b.Property<string>("FirstAnswersList")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.PrimitiveCollection<string>("SecondAnswersList")
+                    b.Property<string>("SecondAnswersList")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -759,7 +759,7 @@ namespace Duo.Api.Migrations
                 {
                     b.HasBaseType("Duo.Api.Models.Exercises.Exercise");
 
-                    b.PrimitiveCollection<string>("PossibleCorrectAnswers")
+                    b.Property<string>("PossibleCorrectAnswers")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasDiscriminator().HasValue("Fill in the blank");
