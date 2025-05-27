@@ -1,11 +1,15 @@
-﻿using System.Collections.ObjectModel;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using DuoClassLibrary.Models;
-using static Duo.ViewModels.CourseViewModel;
+﻿// <copyright file="ICourseViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System.Collections.ObjectModel;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using DuoClassLibrary.Models;
+    using static Duo.ViewModels.CourseViewModel;
+
     /// <summary>
     /// Interface defining the view model for course management in the application.
     /// This interface is responsible for exposing course-related data, user interaction commands, and course progress tracking.
@@ -33,7 +37,7 @@ namespace Duo.ViewModels
         bool IsEnrolled { get; set; }
 
         /// <summary>
-        /// Gets whether coin information should be visible (e.g., for premium courses).
+        /// Gets a value indicating whether coin information should be visible (e.g., for premium courses).
         /// </summary>
         bool CoinVisibility { get; }
 
@@ -97,11 +101,11 @@ namespace Duo.ViewModels
         /// </summary>
         bool TimedRewardClaimed { get; }
 
-        #region Methods
-
         /// <summary>
         /// Retrieves and updates the current coin balance asynchronously.
         /// </summary>
+        /// <param name="currentUserId">The ID of the current user.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the updated coin balance.</returns>
         Task<int> GetCoinBalanceAsync(int currentUserId);
 
         /// <summary>
@@ -112,30 +116,38 @@ namespace Duo.ViewModels
         /// <summary>
         /// Pauses the course progress timer and saves the current progress asynchronously.
         /// </summary>
+        /// <param name="currentUserId">The ID of the current user.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         Task PauseCourseProgressTimer(int currentUserId);
 
         /// <summary>
         /// Refreshes the module roadmap by reloading module statuses asynchronously.
         /// </summary>
+        /// <param name="currentUserId">The ID of the current user.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         Task RefreshCourseModulesDisplay(int currentUserId);
 
-        /// <summary
-        /// >Marks a module as completed and checks for rewards asynchronously.
+        /// <summary>
+        /// Marks a module as completed and checks for rewards asynchronously.
         /// </summary>
         /// <param name="targetModuleId">The ID of the module to mark as completed.</param>
+        /// <param name="currentUserId">The ID of the current user.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         Task MarkModuleAsCompletedAndCheckRewards(int targetModuleId, int currentUserId);
 
         /// <summary>
         /// Attempts to purchase a bonus module asynchronously.
         /// </summary>
         /// <param name="module">The module to purchase.</param>
+        /// <param name="currentUserId">The ID of the current user.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         Task AttemptBonusModulePurchaseAsync(Module? module, int currentUserId);
 
         /// <summary>
         /// Loads and organizes all modules for the course asynchronously.
         /// </summary>
+        /// <param name="currentUserId">The ID of the current user.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
         Task LoadAndOrganizeCourseModules(int currentUserId);
-
-        #endregion
     }
 }
