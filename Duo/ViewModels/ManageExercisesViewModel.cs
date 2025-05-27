@@ -1,92 +1,110 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Duo.Commands;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Models.Exercises;
-using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
-using Microsoft.UI.Dispatching;
+﻿// <copyright file="ManageExercisesViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
-    partial class ManageExercisesViewModel : AdminBaseViewModel
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using Duo.ViewModels.Base;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Models.Exercises;
+    using DuoClassLibrary.Services;
+    using Microsoft.UI.Dispatching;
+
+    /// <summary>
+    /// ViewModel for managing exercises in the admin interface.
+    /// </summary>
+    internal partial class ManageExercisesViewModel : AdminBaseViewModel
     {
         private readonly IExerciseService exerciseService;
 
-        public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ManageExercisesViewModel"/> class.
+        /// </summary>
         public ManageExercisesViewModel()
         {
             try
             {
-                exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService));
+                this.exerciseService = (IExerciseService)(App.ServiceProvider?.GetService(typeof(IExerciseService)) ?? throw new InvalidOperationException("ExerciseService not found."));
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage("Service initialization failed", ex.Message);
+                this.RaiseErrorMessage("Service initialization failed", ex.Message);
             }
 
-            DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(exercise => _ = DeleteExercise(exercise));
-
-            InitializeViewModel();
-
-            // Fire and forget
-            _ = LoadExercisesAsync();
+            this.DeleteExerciseCommand = new RelayCommandWithParameter<Exercise>(exercise => _ = this.DeleteExercise(exercise));
+            this.InitializeViewModel();
+            _ = this.LoadExercisesAsync();
         }
 
+        /// <summary>
+        /// Gets the collection of exercises.
+        /// </summary>
+        public ObservableCollection<Exercise> Exercises { get; } = new ObservableCollection<Exercise>();
+
+        /// <summary>
+        /// Gets the command to delete an exercise.
+        /// </summary>
         public ICommand DeleteExerciseCommand { get; }
 
-        // Placeholder for potential future initialization logic
+        /// <summary>
+        /// Placeholder for potential future initialization logic.
+        /// </summary>
         public void InitializeViewModel()
         {
         }
 
-        // Method to load exercises asynchronously
+        /// <summary>
+        /// Loads all exercises asynchronously and updates the collection.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         private async Task LoadExercisesAsync()
         {
-            // handle real async logic here
             try
             {
-                var exercises = await exerciseService.GetAllExercises();
+                var exercises = await this.exerciseService.GetAllExercises();
 
                 DispatcherQueueHandler callback = () =>
                 {
-                    Exercises.Clear();
+                    this.Exercises.Clear();
                     foreach (var exercise in exercises)
                     {
-                        Exercises.Add(exercise);
+                        this.Exercises.Add(exercise);
                     }
                 };
-                bool res = DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Normal, callback: callback);
+                _ = DispatcherQueue.GetForCurrentThread().TryEnqueue(DispatcherQueuePriority.Normal, callback: callback);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error during LoadExercisesAsync: {ex.Message}");
                 Debug.WriteLine(ex.StackTrace);
-                RaiseErrorMessage("Failed to load exercises", ex.Message);
+                this.RaiseErrorMessage("Failed to load exercises", ex.Message);
             }
         }
 
-        // Method to delete an exercise and refresh the list
+        /// <summary>
+        /// Deletes an exercise and refreshes the list.
+        /// </summary>
+        /// <param name="exercise">The exercise to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task DeleteExercise(Exercise exercise)
         {
             try
             {
-                await exerciseService.DeleteExercise(exercise.ExerciseId);
-                await LoadExercisesAsync();
+                await this.exerciseService.DeleteExercise(exercise.ExerciseId);
+                await this.LoadExercisesAsync();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error deleting exercise: {ex.Message}");
                 Debug.WriteLine(ex.StackTrace);
-                RaiseErrorMessage("Failed to delete exercise", ex.Message);
+                this.RaiseErrorMessage("Failed to delete exercise", ex.Message);
             }
         }
     }
