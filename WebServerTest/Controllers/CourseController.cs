@@ -118,29 +118,43 @@ namespace WebServerTest.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Enroll(int id)
         {
+            Console.WriteLine($"Enroll method called with id: {id}");
+            
             int userId = 1;
             var CurrentCourse = await _courseService.GetCourseAsync(id);
             var CoinBalance = await _coinsService.GetCoinBalanceAsync(userId);
             var IsEnrolled = await _courseService.IsUserEnrolledAsync(userId, id);
 
+            Console.WriteLine($"Course: {CurrentCourse?.Title}, CoinBalance: {CoinBalance}, IsEnrolled: {IsEnrolled}");
+
             if (!IsEnrolled && (CurrentCourse.Cost == 0 || CoinBalance >= CurrentCourse.Cost))
             {
+                Console.WriteLine("Enrolling user in course...");
+                
                 if (CurrentCourse.Cost > 0)
                 {
                     bool coinDeductionSuccessful = await _coinsService.TrySpendingCoinsAsync(userId, CurrentCourse.Cost);
+                    Console.WriteLine($"Coin deduction successful: {coinDeductionSuccessful}");
                 }
 
                 bool enrollmentSuccessful = await _courseService.EnrollInCourseAsync(userId, CurrentCourse.CourseId);
+                Console.WriteLine($"Enrollment successful: {enrollmentSuccessful}");
 
                 CoinBalance = await _coinsService.GetCoinBalanceAsync(userId);
                 IsEnrolled = true;
 
                 // Start Course Progress Timer ...
             }
+            else
+            {
+                Console.WriteLine("Enrollment conditions not met or user already enrolled");
+            }
 
-            return RedirectToAction("CoursePreview", new { id = CurrentCourse.CourseId });
+            Console.WriteLine("Redirecting to CoursePreview...");
+            return RedirectToAction("CoursePreview", new { id = id });
         }
     }
 }

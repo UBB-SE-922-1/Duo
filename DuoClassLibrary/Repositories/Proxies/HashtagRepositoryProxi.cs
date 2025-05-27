@@ -1,6 +1,6 @@
 ﻿using DuoClassLibrary.Models;
 using DuoClassLibrary.Repositories.Interfaces;
-using DuoClassLibrary.Constants;
+using DuoClassLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

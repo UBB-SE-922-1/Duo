@@ -1,6 +1,6 @@
 using System;
 
-namespace DuoClassLibrary.Constants
+namespace DuoClassLibrary.Services.Interfaces
 {
     public static class VerificationConstants
     {

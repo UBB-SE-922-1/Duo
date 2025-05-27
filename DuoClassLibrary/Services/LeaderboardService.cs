@@ -1,6 +1,6 @@
 ﻿using DuoClassLibrary.Models;
 using DuoClassLibrary.Services.Interfaces;
-using DuoClassLibrary.Constants;
+using DuoClassLibrary.Services.Interfaces;
 
 namespace Duo.Services;
 

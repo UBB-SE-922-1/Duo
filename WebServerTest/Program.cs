@@ -69,7 +69,6 @@ builder.Services.AddScoped<IExerciseServiceProxy, ExerciseServiceProxy>();
 builder.Services.AddScoped<ICourseServiceProxy, CourseServiceProxy>();
 builder.Services.AddScoped<ICoinsServiceProxy, CoinsServiceProxy>();
 
-
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<DataContext>();
 builder.Services.AddControllersWithViews();
@@ -113,15 +112,21 @@ app.MapControllerRoute(
     pattern: "Quiz/{action}/{id}",
     defaults: new { controller = "Quiz" });
 
+// Course routes - more specific routes first
 app.MapControllerRoute(
-    name: "coursePreview",
-    pattern: "Course/{id}",
-    defaults: new { controller = "Course", action = "CoursePreview" });
+    name: "courseEnroll",
+    pattern: "Course/Enroll",
+    defaults: new { controller = "Course", action = "Enroll" });
 
 app.MapControllerRoute(
     name: "course",
     pattern: "Course/{action=ViewCourses}/{id?}",
     defaults: new { controller = "Course" });
+
+app.MapControllerRoute(
+    name: "coursePreview",
+    pattern: "Course/{id:int}",
+    defaults: new { controller = "Course", action = "CoursePreview" });
 
 app.MapRazorPages();
 

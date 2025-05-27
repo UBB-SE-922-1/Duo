@@ -1,0 +1,122 @@
+Summary
+  Generated on: 4/8/2025 - 11:48:08 AM
+  Parser: VisualStudio
+  Assemblies: 2
+  Classes: 102
+  Files: 84
+  Line coverage: 70.3%
+  Covered lines: 6538
+  Uncovered lines: 2760
+  Coverable lines: 9298
+  Total lines: 16685
+  Method coverage: 68.3% (794 of 1162)
+  Full method coverage: 21.6% (251 of 1162)
+  Covered methods: 794
+  Fully covered methods: 251
+  Total methods: 1162
+
+Duo                                                                                                       46.5%
+  Duo.App                                                                                                    0%
+  Duo.Commands.RelayCommand                                                                                100%
+  Duo.Commands.RelayCommandWithParameter<T>                                                                100%
+  Duo.Converters.BoolToInvertedVisibilityConverter                                                         100%
+  Duo.Converters.BoolToVisibilityConverter                                                                 100%
+  Duo.Converters.LikesTextConverter                                                                        100%
+  Duo.Data.DataLink                                                                                          0%
+  Duo.Data.MockDatabaseConnectionCategoryRepository                                                        100%
+  Duo.Data.MockDatabaseConnectionCommentRepository                                                         100%
+  Duo.Data.MockDatabaseConnectionHashtagRepository                                                         100%
+  Duo.Data.MockDatabaseConnectionPostRepository                                                            100%
+  Duo.Data.MockDatabaseConnectionUserRepository                                                            100%
+  Duo.Data.MockDataTables                                                                                  100%
+  Duo.Data.MockDataTablesPost                                                                              100%
+  Duo.Data.SqlExceptionThrower                                                                             100%
+  Duo.Helpers.DateTimeHelper                                                                               100%
+  Duo.Helpers.ValidationHelper                                                                             100%
+  Duo.MainWindow                                                                                             0%
+  Server.Models.Category                                                                                      100%
+  Server.Models.Comment                                                                                       100%
+  Server.Models.Hashtag                                                                                       100%
+  Server.Models.Post                                                                                          100%
+  Server.Models.User                                                                                          100%
+  Duo.Repositories.CategoryRepository                                                                      100%
+  Duo.Repositories.CommentRepository                                                                       100%
+  Duo.Repositories.HashtagRepository                                                                       100%
+  Duo.Repositories.PostRepository                                                                          100%
+  Duo.Repositories.UserRepository                                                                          100%
+  Duo.Services.CategoryService                                                                             100%
+  Duo.Services.CommentService                                                                              100%
+  Duo.Services.PostService                                                                                 100%
+  Duo.Services.SearchService                                                                               100%
+  Duo.Services.UserService                                                                                 100%
+  Duo.ViewModels.Base.ViewModelBase                                                                          0%
+  Duo.ViewModels.CategoryPageViewModel                                                                       0%
+  Duo.ViewModels.CategoryViewModel                                                                           0%
+  Duo.ViewModels.CommentCreationViewModel                                                                    0%
+  Duo.ViewModels.CommentViewModel                                                                            0%
+  Duo.ViewModels.LoginViewModel                                                                              0%
+  Duo.ViewModels.PostCreationViewModel                                                                       0%
+  Duo.ViewModels.PostDetailViewModel                                                                         0%
+  Duo.ViewModels.PostListViewModel                                                                           0%
+  Duo.Views.Components.BoolToBackgroundConverter                                                             0%
+  Duo.Views.Components.Comment                                                                               0%
+  Duo.Views.Components.CommentButton                                                                         0%
+  Duo.Views.Components.CommentDeletedEventArgs                                                               0%
+  Duo.Views.Components.CommentInput                                                                          0%
+  Duo.Views.Components.CommentLikedEventArgs                                                                 0%
+  Duo.Views.Components.CommentReplyEventArgs                                                                 0%
+  Duo.Views.Components.CommunityItem                                                                         0%
+  Duo.Views.Components.CreatePostButton                                                                      0%
+  Duo.Views.Components.DialogComponent                                                                       0%
+  Duo.Views.Components.DialogContent                                                                         0%
+  Duo.Views.Components.IntToVisConverter                                                                     0%
+  Duo.Views.Components.LikeButton                                                                            0%
+  Duo.Views.Components.LikeButtonClickedEventArgs                                                            0%
+  Duo.Views.Components.MoreDropdown                                                                          0%
+  Duo.Views.Components.Post                                                                                  0%
+  Duo.Views.Components.PostDialogContent                                                                     0%
+  Duo.Views.Components.PostPreviewControl                                                                    0%
+  Duo.Views.LoginWindow                                                                                      0%
+  Duo.Views.Pages.CategoryPage                                                                               0%
+  Duo.Views.Pages.MainPage                                                                                   0%
+  Duo.Views.Pages.PostDetailPage                                                                             0%
+  Duo.Views.Pages.PostListPage                                                                               0%
+  Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Common.AutoInitialize                               100%
+  Microsoft.Windows.Foundation.UndockedRegFreeWinRTCS.AutoInitialize                                       100%
+  WinRT.DuoGenericHelpers.GlobalVtableLookup                                                               5.4%
+  WinRT.DuoVtableClasses.Duo_AppWinRTTypeDetails                                                             0%
+  WinRT.DuoVtableClasses.Duo_Duo_XamlTypeInfo_XamlMemberWinRTTypeDetails                                     0%
+  WinRT.DuoVtableClasses.Duo_Duo_XamlTypeInfo_XamlMetaDataProviderWinRTTypeDetails                           0%
+  WinRT.DuoVtableClasses.Duo_Duo_XamlTypeInfo_XamlUserTypeWinRTTypeDetails                                   0%
+  WinRT.DuoVtableClasses.Duo_MainWindowWinRTTypeDetails                                                      0%
+  WinRT.DuoVtableClasses.Duo_Views_Components_DialogContent_DialogContent_obj1_BindingsWinRTTypeDetails      0%
+  WinRT.DuoVtableClasses.Duo_Views_Components_PostPreviewControlWinRTTypeDetails                             0%
+  WinRT.DuoVtableClasses.Duo_Views_Pages_CategoryPageWinRTTypeDetails                                        0%
+  WinRT.DuoVtableClasses.Duo_Views_Pages_PostListPage_PostListPage_obj21_BindingsWinRTTypeDetails            0%
+
+TestMessi                                                                                                 99.6%
+  TestMessi.Converters.BoolToInvertedVisibilityConverterTests                                              100%
+  TestMessi.Converters.BoolToVisibilityConverterTests                                                      100%
+  TestMessi.Models.PostModelTest                                                                           100%
+  TestMessi.Repositories.CommentRepositoryTests                                                            100%
+  TestMessi.Repositories.PostRepositoryTests                                                               100%
+  TestProject1.Commands.RelayCommandTests                                                                 96.7%
+  TestProject1.Commands.RelayCommandWithParameterTests                                                    97.5%
+  TestProject1.Converters.LikesTextConverterTests                                                          100%
+  TestProject1.Helpers.DateTimeHelperTests                                                                 100%
+  TestProject1.Helpers.ValidationHelperTests                                                               100%
+  TestProject1.Models.CategoryTests                                                                        100%
+  TestProject1.Models.CommentTests                                                                         100%
+  TestProject1.Models.HashtagTests                                                                         100%
+  TestProject1.Models.UserTests                                                                            100%
+  TestProject1.Repositories.CategoryRepositoryTests                                                        100%
+  TestProject1.Repositories.HashtagRepositoryTests                                                         100%
+  TestProject1.Repositories.MockConsole                                                                     50%
+  TestProject1.Repositories.UserRepositoryTests                                                            100%
+  TestProject1.Services.CategoryServiceTests                                                               100%
+  TestProject1.Services.CommentServiceTests                                                               99.2%
+  TestProject1.Services.CommentServiceTests.TestComment                                                    100%
+  TestProject1.Services.PostServiceTests                                                                  99.8%
+  TestProject1.Services.PostServiceTests.TestPostServiceThatThrowsOnFormatDate                              60%
+  TestProject1.Services.SearchServiceTests                                                                 100%
+  TestProject1.Services.UserServiceTests                                                                   100%

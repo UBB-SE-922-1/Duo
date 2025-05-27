@@ -48,10 +48,14 @@
 
         @if (!Model.IsEnrolled)
         {
-            <form asp-controller="Course" asp-action="Enroll" method="post" class="me-3">
+            <form asp-controller="Course" asp-action="Enroll" method="post" class="me-3" 
+                  onsubmit="console.log('Form submitted with course ID:', '@Model.Course.CourseId'); console.log('Form action:', this.action); return true;">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Course.CourseId" />
-                <button type="submit" class="btn btn-primary">Enroll</button>
+                <button type="submit" class="btn btn-primary" 
+                        onclick="console.log('Enroll button clicked for course:', '@Model.Course.CourseId'); console.log('Form will submit to:', this.form.action);">
+                    Enroll
+                </button>
             </form>
             @if (Model.Course.Cost > 0)
             {

@@ -1,7 +1,7 @@
 ﻿using DuoClassLibrary.Models;
 using DuoClassLibrary.Repositories.Interfaces;
 using System.Text.Json;
-using DuoClassLibrary.Constants;
+using DuoClassLibrary.Services.Interfaces;
 
 public class CategoryRepositoryProxi : ICategoryRepository, IDisposable
 {
