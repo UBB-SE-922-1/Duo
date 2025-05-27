@@ -14,7 +14,11 @@ namespace DuoClassLibrary.Repositories.Proxies
 
         public UserRepositoryProxy()
         {
-            _httpClient = new HttpClient();
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            _httpClient = new HttpClient(handler);
             _httpClient.Timeout = TimeSpan.FromSeconds(10);
         }
 

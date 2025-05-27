@@ -10,7 +10,11 @@ public class PostRepositoryProxi : IPostRepository, IDisposable
 
     public PostRepositoryProxi()
     {
-        _httpClient = new HttpClient();
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        _httpClient = new HttpClient(handler);
     }
 
     public async Task<List<Post>> GetPosts()

@@ -18,6 +18,12 @@ namespace DuoClassLibrary.Services
         public CourseServiceProxy(HttpClient httpClient)
         {
             this.httpClient = httpClient;
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+
+            this.httpClient = new HttpClient(handler);
         }
 
         public async Task<List<Course>> GetAllCourses()

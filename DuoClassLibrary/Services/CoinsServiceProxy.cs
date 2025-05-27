@@ -14,11 +14,20 @@ namespace DuoClassLibrary.Services
     /// </remarks>
     /// <param name="httpClient">The HTTP client used to send requests to the Coins API.</param>
 #pragma warning disable SA1009 // Closing parenthesis should be spaced correctly
-    public class CoinsServiceProxy(HttpClient httpClient) : ICoinsServiceProxy
+    public class CoinsServiceProxy : ICoinsServiceProxy
 #pragma warning restore SA1009 // Closing parenthesis should be spaced correctly
     {
-        private readonly HttpClient httpClient = httpClient;
+        private readonly HttpClient httpClient;
         private readonly string url = "https://localhost:7174";
+
+        public CoinsServiceProxy(HttpClient httpClient)
+        {
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            this.httpClient = new HttpClient(handler);
+        }
 
         /// <summary>
         /// Retrieves the coin balance for a specific user.
