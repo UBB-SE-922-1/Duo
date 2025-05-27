@@ -1,104 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using Duo.Commands;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Models.Exercises;
-using DuoClassLibrary.Models.Quizzes;
-using DuoClassLibrary.Services;
-using Duo.ViewModels.Base;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+﻿// <copyright file="CreateQuizViewModel.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.ViewModels
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using System.Windows.Input;
+    using Duo.Commands;
+    using Duo.ViewModels.Base;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Models.Exercises;
+    using DuoClassLibrary.Models.Quizzes;
+    using DuoClassLibrary.Services;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// ViewModel for creating a quiz and managing its exercises.
+    /// </summary>
     internal class CreateQuizViewModel : AdminBaseViewModel
     {
+        private const int MaxExercises = 10;
+
         private readonly IQuizService quizService;
         private readonly IExerciseService exerciseService;
-        private readonly List<Exercise> availableExercises;
 
-        public ObservableCollection<Exercise> Exercises { get; set; } = new ObservableCollection<Exercise>();
-        public ObservableCollection<Exercise> SelectedExercises { get; private set; } = new ObservableCollection<Exercise>();
-
-        public event Action<List<Exercise>>? ShowListViewModal;
-
-        private const int MAX_EXERCISES = 10;
-        private const int NO_ORDER_NUMBER = -1;
-        private const int NO_SECTION_ID = -1;
-
-        public ICommand RemoveExerciseCommand { get; }
-        public ICommand SaveButtonCommand { get; }
-        public ICommand OpenSelectExercisesCommand { get; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateQuizViewModel"/> class.
+        /// </summary>
         public CreateQuizViewModel()
         {
             try
             {
                 if (App.ServiceProvider != null)
                 {
-                    quizService = (IQuizService?)App.ServiceProvider.GetService(typeof(IQuizService));
-                    exerciseService = (IExerciseService?)App.ServiceProvider.GetService(typeof(IExerciseService));
+                    this.quizService = (IQuizService)App.ServiceProvider.GetService(typeof(IQuizService))
+                        ?? throw new InvalidOperationException("QuizService not found.");
+                    this.exerciseService = (IExerciseService)App.ServiceProvider.GetService(typeof(IExerciseService))
+                        ?? throw new InvalidOperationException("ExerciseService not found.");
+                }
+                else
+                {
+                    throw new InvalidOperationException("ServiceProvider is not initialized.");
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex);
-                RaiseErrorMessage("Initialization Error", ex.Message);
+                this.RaiseErrorMessage("Initialization Error", ex.Message);
             }
 
-            _ = Task.Run(async () => await LoadExercisesAsync());
+            _ = Task.Run(async () => await this.LoadExercisesAsync());
 
-            SaveButtonCommand = new RelayCommand((_) => _ = CreateQuiz());
-            OpenSelectExercisesCommand = new RelayCommand(async (_) => await Task.Run(() => OpenSelectExercises()));
-            RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(RemoveExercise);
+            this.SaveButtonCommand = new RelayCommand(_ => _ = this.CreateQuiz());
+            this.OpenSelectExercisesCommand = new RelayCommand(_ => this.OpenSelectExercises());
+            this.RemoveExerciseCommand = new RelayCommandWithParameter<Exercise>(this.RemoveExercise);
         }
 
-        private async Task LoadExercisesAsync()
-        {
-            try
-            {
-                Exercises.Clear();
-                var exercises = await exerciseService.GetAllExercises();
-                foreach (var exercise in exercises)
-                {
-                    Exercises.Add(exercise);
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Error loading exercises: {ex.Message}");
-                RaiseErrorMessage("Load Error", "Failed to load exercises.");
-            }
-        }
+        /// <summary>
+        /// Gets the collection of all available exercises.
+        /// </summary>
+        public ObservableCollection<Exercise> Exercises { get; } = new ObservableCollection<Exercise>();
 
+        /// <summary>
+        /// Gets the collection of selected exercises for the quiz.
+        /// </summary>
+        public ObservableCollection<Exercise> SelectedExercises { get; } = new ObservableCollection<Exercise>();
+
+        /// <summary>
+        /// Occurs when the exercise selection modal should be shown.
+        /// </summary>
+        public event Action<List<Exercise>>? ShowListViewModal;
+
+        /// <summary>
+        /// Gets the command to remove an exercise from the quiz.
+        /// </summary>
+        public ICommand RemoveExerciseCommand { get; }
+
+        /// <summary>
+        /// Gets the command to save the quiz.
+        /// </summary>
+        public ICommand SaveButtonCommand { get; }
+
+        /// <summary>
+        /// Gets the command to open the exercise selection dialog.
+        /// </summary>
+        public ICommand OpenSelectExercisesCommand { get; }
+
+        /// <summary>
+        /// Opens the exercise selection dialog.
+        /// </summary>
         public void OpenSelectExercises()
         {
             try
             {
                 Debug.WriteLine("Opening select exercises...");
-                ShowListViewModal?.Invoke(GetAvailableExercises());
+                this.ShowListViewModal?.Invoke(this.GetAvailableExercises());
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error opening exercise selection: {ex.Message}");
-                RaiseErrorMessage("Open Dialog Error", "Could not open the exercise selection dialog.");
+                this.RaiseErrorMessage("Open Dialog Error", "Could not open the exercise selection dialog.");
             }
         }
 
+        /// <summary>
+        /// Gets the list of exercises that are available for selection (not already selected).
+        /// </summary>
+        /// <returns>A list of available exercises.</returns>
         public List<Exercise> GetAvailableExercises()
         {
             var availableExercises = new List<Exercise>();
             try
             {
-                foreach (var exercise in Exercises)
+                foreach (var exercise in this.Exercises)
                 {
-                    if (!SelectedExercises.Contains(exercise))
+                    if (!this.SelectedExercises.Contains(exercise))
                     {
                         availableExercises.Add(exercise);
                     }
@@ -107,46 +128,80 @@ namespace Duo.ViewModels
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error filtering available exercises: {ex.Message}");
-                RaiseErrorMessage("Filter Error", "Could not get available exercises.");
+                this.RaiseErrorMessage("Filter Error", "Could not get available exercises.");
             }
 
             return availableExercises;
         }
 
+        /// <summary>
+        /// Adds an exercise to the selected exercises collection.
+        /// </summary>
+        /// <param name="selectedExercise">The exercise to add.</param>
         public void AddExercise(Exercise selectedExercise)
         {
             try
             {
-                if (SelectedExercises.Count < MAX_EXERCISES)
+                if (this.SelectedExercises.Count < MaxExercises)
                 {
-                    SelectedExercises.Add(selectedExercise);
+                    this.SelectedExercises.Add(selectedExercise);
                 }
                 else
                 {
-                    RaiseErrorMessage("Limit Reached", $"Maximum number of exercises ({MAX_EXERCISES}) reached.");
+                    this.RaiseErrorMessage("Limit Reached", $"Maximum number of exercises ({MaxExercises}) reached.");
                 }
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error adding exercise: {ex.Message}");
-                RaiseErrorMessage("Add Error", "Could not add the selected exercise.");
+                this.RaiseErrorMessage("Add Error", "Could not add the selected exercise.");
             }
         }
 
+        /// <summary>
+        /// Removes an exercise from the selected exercises collection.
+        /// </summary>
+        /// <param name="exerciseToBeRemoved">The exercise to remove.</param>
         public void RemoveExercise(Exercise exerciseToBeRemoved)
         {
             try
             {
-                SelectedExercises.Remove(exerciseToBeRemoved);
+                this.SelectedExercises.Remove(exerciseToBeRemoved);
                 Debug.WriteLine("Removing exercise...");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error removing exercise: {ex.Message}");
-                RaiseErrorMessage("Remove Error", "Could not remove the selected exercise.");
+                this.RaiseErrorMessage("Remove Error", "Could not remove the selected exercise.");
             }
         }
 
+        /// <summary>
+        /// Loads all available exercises asynchronously.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task LoadExercisesAsync()
+        {
+            try
+            {
+                this.Exercises.Clear();
+                var exercises = await this.exerciseService.GetAllExercises();
+                foreach (var exercise in exercises)
+                {
+                    this.Exercises.Add(exercise);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error loading exercises: {ex.Message}");
+                this.RaiseErrorMessage("Load Error", "Failed to load exercises.");
+            }
+        }
+
+        /// <summary>
+        /// Creates a new quiz with the selected exercises.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task CreateQuiz()
         {
             try
@@ -154,21 +209,23 @@ namespace Duo.ViewModels
                 Debug.WriteLine("Creating quiz...");
                 var newQuiz = new Quiz(0, null, null);
 
-                foreach (var exercise in SelectedExercises)
+                foreach (var exercise in this.SelectedExercises)
                 {
                     newQuiz.AddExercise(exercise);
                 }
 
-                int quizId = await quizService.CreateQuiz(newQuiz);
-                // await quizService.AddExercisesToQuiz(quizId, newQuiz.Exercises);
-                GoBack();
+                int quizId = await this.quizService.CreateQuiz(newQuiz);
+
+                // await this.quizService.AddExercisesToQuiz(quizId, newQuiz.Exercises);
+
+                this.GoBack();
                 Debug.WriteLine(newQuiz);
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error during CreateQuiz: {ex.Message}");
                 Debug.WriteLine(ex.StackTrace);
-                RaiseErrorMessage("Quiz Creation Failed", "Something went wrong while creating the quiz.");
+                this.RaiseErrorMessage("Quiz Creation Failed", "Something went wrong while creating the quiz.");
             }
         }
     }
