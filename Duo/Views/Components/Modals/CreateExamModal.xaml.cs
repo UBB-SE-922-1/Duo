@@ -1,45 +1,58 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using DuoClassLibrary.Models;
-using DuoClassLibrary.Models.Exercises;
-using DuoClassLibrary.Models.Quizzes;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+// <copyright file="CreateExamModal.xaml.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Components.Modals
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models;
+    using DuoClassLibrary.Models.Exercises;
+    using DuoClassLibrary.Models.Quizzes;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// Modal dialog for creating an exam.
+    /// </summary>
     public sealed partial class CreateExamModal : UserControl
     {
-        public event EventHandler<ExamCreatedEventArgs> ExamCreated;
-        public event EventHandler ModalClosed;
+        /// <summary>
+        /// Occurs when an exam is created.
+        /// </summary>
+        public event EventHandler<ExamCreatedEventArgs>? ExamCreated;
 
+        /// <summary>
+        /// Occurs when the modal is closed.
+        /// </summary>
+        public event EventHandler? ModalClosed;
+
+        private const int MaxExercises = 25;
+        private const double DefaultPassingThreshold = 90;
         private readonly List<Exercise> availableExercises;
-        public ObservableCollection<Exercise> SelectedExercises { get; private set; }
 
-        private const int MAX_EXERCISES = 25; // From Exam class
-        private const double DEFAULT_PASSING_THRESHOLD = 90; // From Exam class
+        /// <summary>
+        /// Gets the collection of selected exercises.
+        /// </summary>
+        public ObservableCollection<Exercise> SelectedExercises { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateExamModal"/> class.
+        /// </summary>
         public CreateExamModal()
         {
             this.InitializeComponent();
 
-            // Initialize available exercises using helper method
-            availableExercises = CreateSampleExercises();
+            this.availableExercises = this.CreateSampleExercises();
+            this.SelectedExercises = new ObservableCollection<Exercise>();
+            this.ExerciseList.ItemsSource = this.SelectedExercises;
 
-            SelectedExercises = new ObservableCollection<Exercise>();
-            ExerciseList.ItemsSource = SelectedExercises;
-
-            // Subscribe to collection changed event
-            SelectedExercises.CollectionChanged += (s, e) => UpdateExerciseCount();
-
-            // Set default passing threshold
-            PassingThresholdBox.Value = DEFAULT_PASSING_THRESHOLD;
-
-            // Initial count update
-            UpdateExerciseCount();
+            this.SelectedExercises.CollectionChanged += (s, e) => this.UpdateExerciseCount();
+            this.PassingThresholdBox.Value = DefaultPassingThreshold;
+            this.UpdateExerciseCount();
         }
 
         private List<Exercise> CreateSampleExercises()
@@ -48,23 +61,20 @@ namespace Duo.Views.Components.Modals
 
             try
             {
-                // Fill in the blank exercises
                 exercises.Add(new FillInTheBlankExercise(1, "The capital of France is ___.", Difficulty.Normal, new List<string> { "Paris" }));
                 exercises.Add(new FillInTheBlankExercise(2, "The largest planet in our solar system is ___.", Difficulty.Normal, new List<string> { "Jupiter" }));
 
-                // Association exercise
                 var firstList = new List<string> { "H2O", "CO2" };
                 var secondList = new List<string> { "Water", "Carbon Dioxide" };
-                exercises.Add(new DuoClassLibrary.Models.Exercises.AssociationExercise(3, "Match chemical formulas with their names", Difficulty.Hard, firstList, secondList));
+                exercises.Add(new AssociationExercise(3, "Match chemical formulas with their names", Difficulty.Hard, firstList, secondList));
 
-                // Multiple choice exercise
-                var choices = new List<DuoClassLibrary.Models.Exercises.MultipleChoiceAnswerModel>
+                var choices = new List<MultipleChoiceAnswerModel>
                 {
-                    new DuoClassLibrary.Models.Exercises.MultipleChoiceAnswerModel("Mercury", true),
-                    new DuoClassLibrary.Models.Exercises.MultipleChoiceAnswerModel("Venus", false),
-                    new DuoClassLibrary.Models.Exercises.MultipleChoiceAnswerModel("Mars", false)
+                    new MultipleChoiceAnswerModel("Mercury", true),
+                    new MultipleChoiceAnswerModel("Venus", false),
+                    new MultipleChoiceAnswerModel("Mars", false),
                 };
-                exercises.Add(new DuoClassLibrary.Models.Exercises.MultipleChoiceExercise(4, "Which is the closest planet to the Sun?", Difficulty.Normal, choices));
+                exercises.Add(new MultipleChoiceExercise(4, "Which is the closest planet to the Sun?", Difficulty.Normal, choices));
             }
             catch (Exception ex)
             {
@@ -77,7 +87,7 @@ namespace Duo.Views.Components.Modals
 
         private void UpdateExerciseCount()
         {
-            ExerciseCountText.Text = $"Selected Exercises: {SelectedExercises.Count}/{MAX_EXERCISES}";
+            this.ExerciseCountText.Text = $"Selected Exercises: {this.SelectedExercises.Count}/{MaxExercises}";
         }
 
         private async void AddExerciseButton_Click(object sender, RoutedEventArgs e)
@@ -87,15 +97,15 @@ namespace Duo.Views.Components.Modals
                 Title = "Select Exercise",
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Primary,
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
 
             var listView = new ListView
             {
-                ItemsSource = availableExercises.Where(ex => !SelectedExercises.Contains(ex)).ToList(),
+                ItemsSource = this.availableExercises.Where(ex => !this.SelectedExercises.Contains(ex)).ToList(),
                 SelectionMode = ListViewSelectionMode.Single,
                 MaxHeight = 300,
-                ItemTemplate = (DataTemplate)Resources["ExerciseSelectionItemTemplate"]
+                ItemTemplate = (DataTemplate)this.Resources["ExerciseSelectionItemTemplate"],
             };
 
             dialog.Content = listView;
@@ -111,13 +121,13 @@ namespace Duo.Views.Components.Modals
 
             if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
             {
-                if (SelectedExercises.Count < MAX_EXERCISES)
+                if (this.SelectedExercises.Count < MaxExercises)
                 {
-                    SelectedExercises.Add(selectedExercise);
+                    this.SelectedExercises.Add(selectedExercise);
                 }
                 else
                 {
-                    await ShowErrorMessage("Cannot add more exercises", $"Maximum number of exercises ({MAX_EXERCISES}) reached.");
+                    await this.ShowErrorMessage("Cannot add more exercises", $"Maximum number of exercises ({MaxExercises}) reached.");
                 }
             }
         }
@@ -126,38 +136,38 @@ namespace Duo.Views.Components.Modals
         {
             if (sender is Button button && button.DataContext is Exercise exercise)
             {
-                SelectedExercises.Remove(exercise);
+                this.SelectedExercises.Remove(exercise);
             }
         }
 
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedExercises.Count == 0)
+            if (this.SelectedExercises.Count == 0)
             {
-                await ShowErrorMessage("No Exercises", "Please add at least one exercise to the exam.");
+                await this.ShowErrorMessage("No Exercises", "Please add at least one exercise to the exam.");
                 return;
             }
 
-            if (SelectedExercises.Count < MAX_EXERCISES)
+            if (this.SelectedExercises.Count < MaxExercises)
             {
-                await ShowErrorMessage("Insufficient Exercises", $"An exam must have exactly {MAX_EXERCISES} exercises.");
+                await this.ShowErrorMessage("Insufficient Exercises", $"An exam must have exactly {MaxExercises} exercises.");
                 return;
             }
 
-            var exam = new Exam(new Random().Next(1000), null); // Using random ID for demo
+            var exam = new Exam(new Random().Next(1000), null);
 
-            foreach (var exercise in SelectedExercises)
+            foreach (var exercise in this.SelectedExercises)
             {
                 exam.AddExercise(exercise);
             }
 
-            ExamCreated?.Invoke(this, new ExamCreatedEventArgs(exam));
-            ModalClosed?.Invoke(this, EventArgs.Empty);
+            this.ExamCreated?.Invoke(this, new ExamCreatedEventArgs(exam));
+            this.ModalClosed?.Invoke(this, EventArgs.Empty);
         }
 
         private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            ModalClosed?.Invoke(this, EventArgs.Empty);
+            this.ModalClosed?.Invoke(this, EventArgs.Empty);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -167,20 +177,30 @@ namespace Duo.Views.Components.Modals
                 Title = title,
                 Content = message,
                 CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
 
             await dialog.ShowAsync();
         }
     }
 
+    /// <summary>
+    /// Event args for exam creation.
+    /// </summary>
     public class ExamCreatedEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets the created exam.
+        /// </summary>
         public Exam Exam { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ExamCreatedEventArgs"/> class.
+        /// </summary>
+        /// <param name="exam">The created exam.</param>
         public ExamCreatedEventArgs(Exam exam)
         {
-            Exam = exam;
+            this.Exam = exam;
         }
     }
 }

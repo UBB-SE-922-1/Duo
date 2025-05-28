@@ -1,70 +1,133 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Windows.UI;
-using Windows.UI.ViewManagement;
-using Duo.ViewModels.Base;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Shapes;
+// <copyright file="AssociationExercise.xaml.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Components
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using Duo.ViewModels.Base;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Media;
+    using Microsoft.UI.Xaml.Shapes;
+    using Windows.Foundation;
+    using Windows.UI;
+    using Windows.UI.ViewManagement;
+
+    /// <summary>
+    /// UserControl for association (matching) exercises.
+    /// </summary>
     public sealed partial class AssociationExercise : UserControl
     {
-        public event EventHandler<AssociationExerciseEventArgs> OnSendClicked;
-        public event RoutedEventHandler Click;
-        private Button selectedLeftButton;
-        private Button selectedRightButton;
+        /// <summary>
+        /// Occurs when the send button is clicked.
+        /// </summary>
+        public event EventHandler<AssociationExerciseEventArgs>? OnSendClicked;
 
+        /// <summary>
+        /// Occurs when the control is clicked.
+        /// </summary>
+        public event RoutedEventHandler? Click;
+
+        /// <summary>
+        /// Identifies the Question dependency property.
+        /// </summary>
         public static readonly DependencyProperty QuestionProperty =
             DependencyProperty.Register(nameof(Question), typeof(string), typeof(AssociationExercise), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Identifies the FirstAnswersList dependency property.
+        /// </summary>
         public static readonly DependencyProperty FirstAnswersListProperty =
             DependencyProperty.Register(nameof(FirstAnswersList), typeof(ObservableCollection<string>), typeof(AssociationExercise), new PropertyMetadata(new ObservableCollection<string>()));
 
+        /// <summary>
+        /// Identifies the SecondAnswersList dependency property.
+        /// </summary>
         public static readonly DependencyProperty SecondAnswersListProperty =
             DependencyProperty.Register(nameof(SecondAnswersList), typeof(ObservableCollection<string>), typeof(AssociationExercise), new PropertyMetadata(new ObservableCollection<string>()));
 
         private static readonly UISettings UiSettings = new UISettings();
-        private readonly SolidColorBrush accentBrush;
-
+        private readonly SolidColorBrush accentBrush = new SolidColorBrush(UiSettings.GetColorValue(UIColorType.Accent));
         private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
         private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
         private static readonly SolidColorBrush MappedBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
         private static readonly SolidColorBrush DefaultBorderBrush = new SolidColorBrush(Color.FromArgb(255, 200, 200, 200));
         private static readonly SolidColorBrush LineBrush = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215));
 
-        private List<Tuple<Button, Button, Line>> pairs = new List<Tuple<Button, Button, Line>>();
+        private Button? selectedLeftButton;
+        private Button? selectedRightButton;
+        private readonly List<Tuple<Button, Button, Line>> pairs = new List<Tuple<Button, Button, Line>>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AssociationExercise"/> class.
+        /// </summary>
         public AssociationExercise()
         {
             try
             {
                 this.InitializeComponent();
-                accentBrush = new SolidColorBrush(UiSettings.GetColorValue(UIColorType.Accent));
                 if (this.DataContext is ViewModelBase viewModel)
                 {
-                    viewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                    viewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
                 }
                 else
                 {
-                    _ = ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
+                    _ = this.ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Initialization Error", $"Failed to initialize AssociationExercise.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Initialization Error", $"Failed to initialize AssociationExercise.\nDetails: {ex.Message}");
             }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        /// <summary>
+        /// Gets or sets the question text.
+        /// </summary>
+        public string Question
         {
-            await ShowErrorMessage(e.Title, e.Message);
+            get => (string)this.GetValue(QuestionProperty);
+            set => this.SetValue(QuestionProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the first answers list (shuffled).
+        /// </summary>
+        public ObservableCollection<string> FirstAnswersList
+        {
+            get
+            {
+                try
+                {
+                    var list = (ObservableCollection<string>)this.GetValue(FirstAnswersListProperty);
+                    return new ObservableCollection<string>(list.OrderBy(_ => Guid.NewGuid()));
+                }
+                catch (Exception ex)
+                {
+                    _ = this.ShowErrorMessage("Answers Error", $"Failed to get FirstAnswersList.\nDetails: {ex.Message}");
+                    return new ObservableCollection<string>();
+                }
+            }
+            set => this.SetValue(FirstAnswersListProperty, value);
+        }
+
+        /// <summary>
+        /// Gets or sets the second answers list.
+        /// </summary>
+        public ObservableCollection<string> SecondAnswersList
+        {
+            get => (ObservableCollection<string>)this.GetValue(SecondAnswersListProperty);
+            set => this.SetValue(SecondAnswersListProperty, value);
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            await this.ShowErrorMessage(e.Title, e.Message);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -76,7 +139,7 @@ namespace Duo.Views.Components
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
@@ -87,37 +150,7 @@ namespace Duo.Views.Components
             }
         }
 
-        public string Question
-        {
-            get => (string)GetValue(QuestionProperty);
-            set => SetValue(QuestionProperty, value);
-        }
-
-        public ObservableCollection<string> FirstAnswersList
-        {
-            get
-            {
-                try
-                {
-                    var list = (ObservableCollection<string>)GetValue(FirstAnswersListProperty);
-                    return new ObservableCollection<string>(list.OrderBy(_ => Guid.NewGuid()));
-                }
-                catch (Exception ex)
-                {
-                    _ = ShowErrorMessage("Answers Error", $"Failed to get FirstAnswersList.\nDetails: {ex.Message}");
-                    return new ObservableCollection<string>();
-                }
-            }
-            set => SetValue(FirstAnswersListProperty, value);
-        }
-
-        public ObservableCollection<string> SecondAnswersList
-        {
-            get => (ObservableCollection<string>)GetValue(SecondAnswersListProperty);
-            set => SetValue(SecondAnswersListProperty, value);
-        }
-
-        private void HandleOptionClick(ref Button selectedButton, Button clickedButton)
+        private void HandleOptionClick(ref Button? selectedButton, Button clickedButton)
         {
             try
             {
@@ -130,18 +163,18 @@ namespace Duo.Views.Components
                 {
                     selectedButton.Background = TransparentBrush;
                     selectedButton = clickedButton;
-                    selectedButton.Background = accentBrush;
-                    selectedButton.BorderBrush = accentBrush;
+                    selectedButton.Background = this.accentBrush;
+                    selectedButton.BorderBrush = this.accentBrush;
                 }
                 else
                 {
                     selectedButton = clickedButton;
-                    selectedButton.Background = accentBrush;
+                    selectedButton.Background = this.accentBrush;
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Option Click Error", $"Failed to handle option click.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Option Click Error", $"Failed to handle option click.\nDetails: {ex.Message}");
             }
         }
 
@@ -149,7 +182,7 @@ namespace Duo.Views.Components
         {
             try
             {
-                foreach (var mapping in pairs.ToList())
+                foreach (var mapping in this.pairs.ToList())
                 {
                     Button leftButtonContent = mapping.Item1;
                     Button rightButtonContent = mapping.Item2;
@@ -157,18 +190,18 @@ namespace Duo.Views.Components
 
                     if (leftButtonContent == clickedButton || rightButtonContent == clickedButton)
                     {
-                        pairs.Remove(mapping);
+                        this.pairs.Remove(mapping);
                         leftButtonContent.Background = TransparentBrush;
                         rightButtonContent.Background = TransparentBrush;
-                        clickedButton.Background = accentBrush;
-                        LinesCanvas.Children.Remove(line);
+                        clickedButton.Background = this.accentBrush;
+                        this.LinesCanvas.Children.Remove(line);
                         return;
                     }
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Connection Error", $"Failed to destroy existing connections.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Connection Error", $"Failed to destroy existing connections.\nDetails: {ex.Message}");
             }
         }
 
@@ -176,32 +209,32 @@ namespace Duo.Views.Components
         {
             try
             {
-                if (selectedLeftButton == null || selectedRightButton == null)
+                if (this.selectedLeftButton == null || this.selectedRightButton == null)
                 {
                     return;
                 }
 
                 var line = new Line
                 {
-                    Stroke = accentBrush,
+                    Stroke = this.accentBrush,
                     StrokeThickness = 2,
-                    X1 = GetCirclePosition(selectedLeftButton, true).X,
-                    Y1 = GetCirclePosition(selectedLeftButton, true).Y,
-                    X2 = GetCirclePosition(selectedRightButton, false).X,
-                    Y2 = GetCirclePosition(selectedRightButton, false).Y
+                    X1 = this.GetCirclePosition(this.selectedLeftButton, true).X,
+                    Y1 = this.GetCirclePosition(this.selectedLeftButton, true).Y,
+                    X2 = this.GetCirclePosition(this.selectedRightButton, false).X,
+                    Y2 = this.GetCirclePosition(this.selectedRightButton, false).Y,
                 };
 
-                LinesCanvas.Children.Add(line);
-                pairs.Add(new Tuple<Button, Button, Line>(selectedLeftButton, selectedRightButton, line));
+                this.LinesCanvas.Children.Add(line);
+                this.pairs.Add(new Tuple<Button, Button, Line>(this.selectedLeftButton, this.selectedRightButton, line));
 
-                selectedLeftButton.Background = accentBrush;
-                selectedRightButton.Background = accentBrush;
-                selectedLeftButton = null;
-                selectedRightButton = null;
+                this.selectedLeftButton.Background = this.accentBrush;
+                this.selectedRightButton.Background = this.accentBrush;
+                this.selectedLeftButton = null;
+                this.selectedRightButton = null;
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Connection Error", $"Failed to check connection.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Connection Error", $"Failed to check connection.\nDetails: {ex.Message}");
             }
         }
 
@@ -209,9 +242,8 @@ namespace Duo.Views.Components
         {
             try
             {
-                var transform = button.TransformToVisual(LinesCanvas);
+                var transform = button.TransformToVisual(this.LinesCanvas);
                 var buttonPosition = transform.TransformPoint(new Point(0, 0));
-
                 var buttonCenterY = buttonPosition.Y + (button.ActualHeight / 2);
 
                 var stackPanel = button.Parent as StackPanel;
@@ -220,7 +252,7 @@ namespace Duo.Views.Components
                     var circle = stackPanel.Children.OfType<Ellipse>().FirstOrDefault();
                     if (circle != null)
                     {
-                        var circleTransform = circle.TransformToVisual(LinesCanvas);
+                        var circleTransform = circle.TransformToVisual(this.LinesCanvas);
                         var circlePosition = circleTransform.TransformPoint(new Point(0, 0));
 
                         return new Point(
@@ -237,8 +269,8 @@ namespace Duo.Views.Components
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Position Error", $"Failed to get circle position.\nDetails: {ex.Message}");
-                return new Point(0, 0); // Fallback position
+                _ = this.ShowErrorMessage("Position Error", $"Failed to get circle position.\nDetails: {ex.Message}");
+                return new Point(0, 0);
             }
         }
 
@@ -246,19 +278,18 @@ namespace Duo.Views.Components
         {
             try
             {
-                var clickedButton = sender as Button;
-                if (clickedButton == null)
+                if (sender is not Button clickedButton)
                 {
-                    _ = ShowErrorMessage("Click Error", "Invalid button clicked.");
+                    _ = this.ShowErrorMessage("Click Error", "Invalid button clicked.");
                     return;
                 }
-                HandleOptionClick(ref selectedLeftButton, clickedButton);
-                DestroyExistingConnections(clickedButton);
-                CheckConnection();
+                this.HandleOptionClick(ref this.selectedLeftButton, clickedButton);
+                this.DestroyExistingConnections(clickedButton);
+                this.CheckConnection();
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Left Option Click Error", $"Failed to handle left option click.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Left Option Click Error", $"Failed to handle left option click.\nDetails: {ex.Message}");
             }
         }
 
@@ -266,19 +297,18 @@ namespace Duo.Views.Components
         {
             try
             {
-                var clickedButton = sender as Button;
-                if (clickedButton == null)
+                if (sender is not Button clickedButton)
                 {
-                    _ = ShowErrorMessage("Click Error", "Invalid button clicked.");
+                    _ = this.ShowErrorMessage("Click Error", "Invalid button clicked.");
                     return;
                 }
-                HandleOptionClick(ref selectedRightButton, clickedButton);
-                DestroyExistingConnections(clickedButton);
-                CheckConnection();
+                this.HandleOptionClick(ref this.selectedRightButton, clickedButton);
+                this.DestroyExistingConnections(clickedButton);
+                this.CheckConnection();
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Right Option Click Error", $"Failed to handle right option click.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Right Option Click Error", $"Failed to handle right option click.\nDetails: {ex.Message}");
             }
         }
 
@@ -286,27 +316,37 @@ namespace Duo.Views.Components
         {
             try
             {
-                List<(string, string)> contentPairs = pairs
+                List<(string, string)> contentPairs = this.pairs
                     .Select(mapping => (
-                        mapping.Item1.Content.ToString(),
-                        mapping.Item2.Content.ToString()))
+                        mapping.Item1.Content?.ToString() ?? string.Empty,
+                        mapping.Item2.Content?.ToString() ?? string.Empty))
                     .ToList();
 
-                OnSendClicked?.Invoke(this, new AssociationExerciseEventArgs(contentPairs));
+                this.OnSendClicked?.Invoke(this, new AssociationExerciseEventArgs(contentPairs));
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Send Click Error", $"Failed to process send action.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Send Click Error", $"Failed to process send action.\nDetails: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Event args for association exercise send event.
+        /// </summary>
         public class AssociationExerciseEventArgs : EventArgs
         {
+            /// <summary>
+            /// Gets the content pairs (user input).
+            /// </summary>
             public List<(string, string)> ContentPairs { get; }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="AssociationExerciseEventArgs"/> class.
+            /// </summary>
+            /// <param name="contentPairs">The content pairs.</param>
             public AssociationExerciseEventArgs(List<(string, string)> contentPairs)
             {
-                ContentPairs = contentPairs;
+                this.ContentPairs = contentPairs;
             }
         }
     }

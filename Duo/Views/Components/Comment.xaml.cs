@@ -6,23 +6,18 @@ namespace Duo.Views.Components
 {
     using System;
     using System.Collections.Generic;
-    using System.Collections.Specialized;
     using System.Linq;
     using Duo.Services;
     using Duo.ViewModels;
     using DuoClassLibrary.Models;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
-    using static Duo.App;
 
     /// <summary>
     /// Represents a comment control with support for replies, likes, and deletion.
     /// </summary>
     public sealed partial class Comment : UserControl
     {
-        /// <summary>
-        /// The maximum allowed nesting level for replies.
-        /// </summary>
         private const int MaxNestingLevel = 3;
 
         /// <summary>
@@ -51,7 +46,6 @@ namespace Duo.Views.Components
         public Comment()
         {
             this.InitializeComponent();
-
             this.CommentReplyButton.Click += this.CommentReplyButton_Click;
             this.LikeButton.LikeClicked += this.LikeButton_LikeClicked;
             this.ReplyInputControl.CommentSubmitted += this.ReplyInput_CommentSubmitted;
@@ -67,20 +61,14 @@ namespace Duo.Views.Components
                 if (this.ViewModel?.Replies != null && index < this.ViewModel.Replies.Count)
                 {
                     var childViewModel = this.ViewModel.Replies[index];
-
-                    // Create a Comment control for this child
                     var childComment = new Comment
                     {
                         DataContext = childViewModel,
                         Margin = new Thickness(0, 4, 0, 0),
                     };
-
-                    // Wire up events
                     childComment.ReplySubmitted += this.ChildComment_ReplySubmitted;
                     childComment.CommentLiked += this.ChildComment_CommentLiked;
                     childComment.CommentDeleted += this.ChildComment_CommentDeleted;
-
-                    // Set the content of the presenter
                     presenter.Content = childComment;
                 }
             }
@@ -88,7 +76,6 @@ namespace Duo.Views.Components
 
         private void Comment_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
-            // Set up level lines for indentation
             var indentationLevels = new List<int>();
             if (this.ViewModel != null)
             {
@@ -100,12 +87,10 @@ namespace Duo.Views.Components
 
             this.LevelLinesRepeater.ItemsSource = indentationLevels;
 
-            // Handle reply button visibility
             this.CommentReplyButton.Visibility = (this.ViewModel != null && this.ViewModel.Level >= MaxNestingLevel)
                 ? Visibility.Collapsed
                 : Visibility.Visible;
 
-            // Handle toggle button visibility
             this.ToggleChildrenButton.Visibility = (this.ViewModel?.Replies != null && this.ViewModel.Replies.Count > 0)
                 ? Visibility.Visible
                 : Visibility.Collapsed;
@@ -127,7 +112,6 @@ namespace Duo.Views.Components
                 this.DeleteButton.Visibility = Visibility.Collapsed;
             }
 
-            // Set initial toggle button state
             if (this.ToggleChildrenButton.Visibility == Visibility.Visible && this.ViewModel != null)
             {
                 this.ToggleIcon.Glyph = this.ViewModel.IsExpanded ? "\uE108" : "\uE109";
@@ -224,9 +208,8 @@ namespace Duo.Views.Components
                 PrimaryButtonText = "Delete",
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Close,
+                XamlRoot = this.XamlRoot,
             };
-
-            dialog.XamlRoot = this.XamlRoot;
 
             var result = await dialog.ShowAsync();
 
