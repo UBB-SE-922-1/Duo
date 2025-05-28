@@ -1,33 +1,57 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Media;
-using Windows.UI;
-using Windows.UI.ViewManagement;
-using Duo.ViewModels.Base;
+// <copyright file="FillInTheBlankExercise.xaml.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Components
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Collections.ObjectModel;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Threading.Tasks;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Media;
+    using Windows.UI;
+    using Windows.UI.ViewManagement;
+    using Duo.ViewModels.Base;
+
+    /// <summary>
+    /// UserControl for fill-in-the-blank exercises.
+    /// </summary>
     public sealed partial class FillInTheBlanksExercise : UserControl
     {
-        public event EventHandler<FillInTheBlanksExerciseEventArgs> OnSendClicked;
-        public event RoutedEventHandler Click;
-        private Button selectedLeftButton;
-        private Button selectedRightButton;
+        /// <summary>
+        /// Occurs when the send button is clicked.
+        /// </summary>
+        public event EventHandler<FillInTheBlanksExerciseEventArgs>? OnSendClicked;
 
+        /// <summary>
+        /// Occurs when the control is clicked.
+        /// </summary>
+        public event RoutedEventHandler? Click;
+
+        /// <summary>
+        /// Identifies the Question dependency property.
+        /// </summary>
         public static readonly DependencyProperty QuestionProperty =
             DependencyProperty.Register(nameof(Question), typeof(string), typeof(FillInTheBlanksExercise), new PropertyMetadata(string.Empty));
 
         private static readonly SolidColorBrush TransparentBrush = new SolidColorBrush(Microsoft.UI.Colors.Transparent);
         private static readonly SolidColorBrush SelectedBrush = new SolidColorBrush(Microsoft.UI.Colors.Coral);
 
+        private Button? selectedLeftButton;
+        private Button? selectedRightButton;
+
+        /// <summary>
+        /// Gets or sets the collection of UI elements representing the question and blanks.
+        /// </summary>
         public ObservableCollection<UIElement> QuestionElements { get; set; } = new ObservableCollection<UIElement>();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FillInTheBlanksExercise"/> class.
+        /// </summary>
         public FillInTheBlanksExercise()
         {
             try
@@ -35,22 +59,42 @@ namespace Duo.Views.Components
                 this.InitializeComponent();
                 if (this.DataContext is ViewModelBase viewModel)
                 {
-                    viewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                    viewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
                 }
                 else
                 {
-                    _ = ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
+                    _ = this.ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Initialization Error", $"Failed to initialize FillInTheBlanksExercise.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Initialization Error", $"Failed to initialize FillInTheBlanksExercise.\nDetails: {ex.Message}");
             }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        /// <summary>
+        /// Gets or sets the question text.
+        /// </summary>
+        public string Question
         {
-            await ShowErrorMessage(e.Title, e.Message);
+            get => (string)this.GetValue(QuestionProperty);
+            set
+            {
+                try
+                {
+                    this.SetValue(QuestionProperty, value);
+                    this.ParseQuestion(value);
+                }
+                catch (Exception ex)
+                {
+                    _ = this.ShowErrorMessage("Question Set Error", $"Failed to set question.\nDetails: {ex.Message}");
+                }
+            }
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            await this.ShowErrorMessage(e.Title, e.Message);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -62,7 +106,7 @@ namespace Duo.Views.Components
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
@@ -73,28 +117,11 @@ namespace Duo.Views.Components
             }
         }
 
-        public string Question
-        {
-            get => (string)GetValue(QuestionProperty);
-            set
-            {
-                try
-                {
-                    SetValue(QuestionProperty, value);
-                    ParseQuestion(value);
-                }
-                catch (Exception ex)
-                {
-                    _ = ShowErrorMessage("Question Set Error", $"Failed to set question.\nDetails: {ex.Message}");
-                }
-            }
-        }
-
         private void ParseQuestion(string question)
         {
             try
             {
-                QuestionElements.Clear();
+                this.QuestionElements.Clear();
                 var parts = Regex.Split(question, @"({})");
                 var uiSettings = new UISettings();
                 SolidColorBrush textColor = new SolidColorBrush(uiSettings.GetColorValue(UIColorType.Foreground));
@@ -117,7 +144,7 @@ namespace Duo.Views.Components
                             CornerRadius = new CornerRadius(4),
                             SelectionHighlightColor = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215)),
                             SelectionHighlightColorWhenNotFocused = new SolidColorBrush(Color.FromArgb(255, 0, 120, 215)),
-                            VerticalContentAlignment = VerticalAlignment.Center
+                            VerticalContentAlignment = VerticalAlignment.Center,
                         };
 
                         textBox.GotFocus += (s, e) =>
@@ -129,7 +156,7 @@ namespace Duo.Views.Components
                             }
                             catch (Exception ex)
                             {
-                                _ = ShowErrorMessage("TextBox Focus Error", $"Failed to update TextBox focus style.\nDetails: {ex.Message}");
+                                _ = this.ShowErrorMessage("TextBox Focus Error", $"Failed to update TextBox focus style.\nDetails: {ex.Message}");
                             }
                         };
 
@@ -142,11 +169,11 @@ namespace Duo.Views.Components
                             }
                             catch (Exception ex)
                             {
-                                _ = ShowErrorMessage("TextBox Focus Error", $"Failed to update TextBox lost focus style.\nDetails: {ex.Message}");
+                                _ = this.ShowErrorMessage("TextBox Focus Error", $"Failed to update TextBox lost focus style.\nDetails: {ex.Message}");
                             }
                         };
 
-                        QuestionElements.Add(textBox);
+                        this.QuestionElements.Add(textBox);
                     }
                     else
                     {
@@ -156,15 +183,15 @@ namespace Duo.Views.Components
                             FontSize = 16,
                             Foreground = textColor,
                             VerticalAlignment = VerticalAlignment.Center,
-                            Margin = new Thickness(4)
+                            Margin = new Thickness(4),
                         };
-                        QuestionElements.Add(textBlock);
+                        this.QuestionElements.Add(textBlock);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Parse Question Error", $"Failed to parse question.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Parse Question Error", $"Failed to parse question.\nDetails: {ex.Message}");
             }
         }
 
@@ -172,26 +199,36 @@ namespace Duo.Views.Components
         {
             try
             {
-                List<string> inputValues = QuestionElements
+                List<string> inputValues = this.QuestionElements
                     .OfType<TextBox>()
                     .Select(textBox => textBox.Text)
                     .ToList();
 
-                OnSendClicked?.Invoke(this, new FillInTheBlanksExerciseEventArgs(inputValues));
+                this.OnSendClicked?.Invoke(this, new FillInTheBlanksExerciseEventArgs(inputValues));
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Send Click Error", $"Failed to process send action.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Send Click Error", $"Failed to process send action.\nDetails: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Event args for fill-in-the-blanks send event.
+        /// </summary>
         public class FillInTheBlanksExerciseEventArgs : EventArgs
         {
+            /// <summary>
+            /// Gets the content pairs (user input).
+            /// </summary>
             public List<string> ContentPairs { get; }
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="FillInTheBlanksExerciseEventArgs"/> class.
+            /// </summary>
+            /// <param name="inputValues">The input values.</param>
             public FillInTheBlanksExerciseEventArgs(List<string> inputValues)
             {
-                ContentPairs = inputValues;
+                this.ContentPairs = inputValues;
             }
         }
     }

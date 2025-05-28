@@ -1,13 +1,23 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Duo.ViewModels.Base;
+// <copyright file="CreateMultipleChoiceExercise.xaml.cs" company="YourCompany">
+// Copyright (c) YourCompany. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Components.CreateExerciseComponents
 {
+    using System;
+    using System.Threading.Tasks;
+    using Duo.ViewModels.Base;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// UserControl for creating multiple choice exercises.
+    /// </summary>
     public sealed partial class CreateMultipleChoiceExercise : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateMultipleChoiceExercise"/> class.
+        /// </summary>
         public CreateMultipleChoiceExercise()
         {
             try
@@ -15,22 +25,22 @@ namespace Duo.Views.Components.CreateExerciseComponents
                 this.InitializeComponent();
                 if (this.DataContext is ViewModelBase viewModel)
                 {
-                    viewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                    viewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
                 }
                 else
                 {
-                    _ = ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
+                    _ = this.ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Initialization Error", $"Failed to initialize CreateMultipleChoiceExercise.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Initialization Error", $"Failed to initialize CreateMultipleChoiceExercise.\nDetails: {ex.Message}");
             }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
         {
-            await ShowErrorMessage(e.Title, e.Message);
+            await this.ShowErrorMessage(e.Title, e.Message);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -42,7 +52,7 @@ namespace Duo.Views.Components.CreateExerciseComponents
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
