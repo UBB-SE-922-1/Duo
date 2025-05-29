@@ -1,48 +1,48 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using DuoClassLibrary.Models.Exercises;
-using Duo.Views.Pages;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+// <copyright file="QuizEndScreen.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace Duo.Views.Components
 {
+    using System;
+    using Duo.Views.Pages;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// A user control that displays the end screen for a quiz.
+    /// </summary>
     public sealed partial class QuizEndScreen : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QuizEndScreen"/> class.
+        /// </summary>
         public QuizEndScreen()
         {
             this.InitializeComponent();
         }
 
-        public string CorrectAnswersText { get; set; }
-        public string PassingPercentText { get; set; }
-        public string IsPassedText { get; set; }
+        /// <summary>
+        /// Gets or sets the text displaying the number of correct answers.
+        /// </summary>
+        public string CorrectAnswersText { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the text displaying the passing percent.
+        /// </summary>
+        public string PassingPercentText { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Gets or sets the text indicating if the quiz was passed.
+        /// </summary>
+        public string IsPassedText { get; set; } = string.Empty;
 
         private void GoToRoadmap_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button)
+            var parentFrame = Helpers.Helpers.FindParent<Frame>(this);
+            if (parentFrame != null)
             {
-                Frame parentFrame = Helpers.Helpers.FindParent<Frame>(this);
-                if (parentFrame != null)
-                {
-                    parentFrame.Navigate(typeof(RoadmapMainPage));
-                }
+                parentFrame.Navigate(typeof(RoadmapMainPage));
             }
         }
     }

@@ -1,44 +1,48 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Documents;
+// <copyright file="QuizAdminButton.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace Duo.Views.Components
 {
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// A button control for quiz admin actions.
+    /// </summary>
     public sealed partial class QuizAdminButton : UserControl
     {
-        public event RoutedEventHandler Click;
-
+        /// <summary>
+        /// Identifies the Text dependency property.
+        /// </summary>
         public static readonly DependencyProperty TextProperty =
-           DependencyProperty.Register(nameof(Text), typeof(string), typeof(QuizAdminButton), new PropertyMetadata(string.Empty));
+            DependencyProperty.Register(nameof(Text), typeof(string), typeof(QuizAdminButton), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QuizAdminButton"/> class.
+        /// </summary>
         public QuizAdminButton()
         {
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Occurs when the button is clicked.
+        /// </summary>
+        public event RoutedEventHandler? Click;
+
+        /// <summary>
+        /// Gets or sets the button text.
+        /// </summary>
         public string Text
         {
-            get => (string)GetValue(TextProperty);
-            set => SetValue(TextProperty, value);
+            get => (string)this.GetValue(TextProperty);
+            set => this.SetValue(TextProperty, value);
         }
 
         private void QuizAdminButton_Click(object sender, RoutedEventArgs e)
         {
-            Click?.Invoke(this, e);
+            this.Click?.Invoke(this, e);
         }
     }
 }
