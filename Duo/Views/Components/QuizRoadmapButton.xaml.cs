@@ -1,41 +1,49 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Windows.Input;
-using DuoClassLibrary.Models.Exercises;
-using DuoClassLibrary.Models.Quizzes;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Documents;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using static Duo.ViewModels.Roadmap.RoadmapButtonTemplate;
+// <copyright file="QuizRoadmapButton.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace Duo.Views.Components
 {
+    using System;
+    using System.Diagnostics;
+    using System.Windows.Input;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Media;
+    using static Duo.ViewModels.Roadmap.RoadmapButtonTemplate;
+
+    /// <summary>
+    /// A button control for displaying a quiz or exam in the roadmap.
+    /// </summary>
     public sealed partial class QuizRoadmapButton : UserControl
     {
-        public event RoutedEventHandler ButtonClick;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QuizRoadmapButton"/> class.
+        /// </summary>
+        public QuizRoadmapButton()
+        {
+            this.InitializeComponent();
+            this.Loaded += this.QuizRoadmapButton_Loaded;
+        }
 
+        /// <summary>
+        /// Identifies the QuizId dependency property.
+        /// </summary>
         public static readonly DependencyProperty QuizIdProperty =
-           DependencyProperty.Register(
-               nameof(QuizId),
-               typeof(int),
-               typeof(QuizRoadmapButton),
-               new PropertyMetadata(0, OnQuizIdChanged));
+            DependencyProperty.Register(
+                nameof(QuizId),
+                typeof(int),
+                typeof(QuizRoadmapButton),
+                new PropertyMetadata(0, OnQuizIdChanged));
 
+        /// <summary>
+        /// Occurs when the button is clicked and no command is set or can execute.
+        /// </summary>
+        public event RoutedEventHandler? ButtonClick;
+
+        /// <summary>
+        /// Identifies the IsExam dependency property.
+        /// </summary>
         public static readonly DependencyProperty IsExamProperty =
             DependencyProperty.Register(
                 nameof(IsExam),
@@ -43,31 +51,46 @@ namespace Duo.Views.Components
                 typeof(QuizRoadmapButton),
                 new PropertyMetadata(false, OnIsExamChanged));
 
+        /// <summary>
+        /// Identifies the QuizStatus dependency property.
+        /// </summary>
         public static readonly DependencyProperty QuizStatusProperty =
             DependencyProperty.Register(
-            nameof(QuizStatus),
-            typeof(QUIZ_STATUS),
-            typeof(QuizRoadmapButton),
-            new PropertyMetadata(1));
+                nameof(QuizStatus),
+                typeof(QUIZ_STATUS),
+                typeof(QuizRoadmapButton),
+                new PropertyMetadata(QUIZ_STATUS.INCOMPLETE));
 
+        /// <summary>
+        /// Gets or sets the quiz or exam ID.
+        /// </summary>
         public int QuizId
         {
-            get => (int)GetValue(QuizIdProperty);
-            set => SetValue(QuizIdProperty, value);
+            get => (int)this.GetValue(QuizIdProperty);
+            set => this.SetValue(QuizIdProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether this button represents an exam.
+        /// </summary>
         public bool IsExam
         {
-            get => (bool)GetValue(IsExamProperty);
-            set => SetValue(IsExamProperty, value);
+            get => (bool)this.GetValue(IsExamProperty);
+            set => this.SetValue(IsExamProperty, value);
         }
 
+        /// <summary>
+        /// Gets or sets the quiz or exam status.
+        /// </summary>
         public QUIZ_STATUS QuizStatus
         {
-            get => (QUIZ_STATUS)GetValue(QuizStatusProperty);
-            set => SetValue(QuizStatusProperty, value);
+            get => (QUIZ_STATUS)this.GetValue(QuizStatusProperty);
+            set => this.SetValue(QuizStatusProperty, value);
         }
 
+        /// <summary>
+        /// Identifies the Command dependency property.
+        /// </summary>
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register(
                 nameof(Command),
@@ -75,6 +98,9 @@ namespace Duo.Views.Components
                 typeof(QuizRoadmapButton),
                 new PropertyMetadata(null));
 
+        /// <summary>
+        /// Identifies the CommandParameter dependency property.
+        /// </summary>
         public static readonly DependencyProperty CommandParameterProperty =
             DependencyProperty.Register(
                 nameof(CommandParameter),
@@ -82,28 +108,28 @@ namespace Duo.Views.Components
                 typeof(QuizRoadmapButton),
                 new PropertyMetadata(null));
 
-        public ICommand Command
+        /// <summary>
+        /// Gets or sets the command to execute when the button is clicked.
+        /// </summary>
+        public ICommand? Command
         {
-            get => (ICommand)GetValue(CommandProperty);
-            set => SetValue(CommandProperty, value);
+            get => (ICommand?)this.GetValue(CommandProperty);
+            set => this.SetValue(CommandProperty, value);
         }
 
-        public object CommandParameter
+        /// <summary>
+        /// Gets or sets the command parameter.
+        /// </summary>
+        public object? CommandParameter
         {
-            get => GetValue(CommandParameterProperty);
-            set => SetValue(CommandParameterProperty, value);
-        }
-
-        public QuizRoadmapButton()
-        {
-            this.InitializeComponent();
-            this.Loaded += QuizRoadmapButton_Loaded;
+            get => this.GetValue(CommandParameterProperty);
+            set => this.SetValue(CommandParameterProperty, value);
         }
 
         private void QuizRoadmapButton_Loaded(object sender, RoutedEventArgs e)
         {
-            UpdateQuizId(QuizId);
-            UpdateExamStatus(IsExam);
+            this.UpdateQuizId(this.QuizId);
+            this.UpdateExamStatus(this.IsExam);
         }
 
         private static void OnQuizIdChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -127,99 +153,95 @@ namespace Duo.Views.Components
 
         private void UpdateQuizId(int newQuizId)
         {
-            if (ButtonNumber != null)
+            if (this.ButtonNumber != null)
             {
-                ButtonNumber.Text = newQuizId.ToString();
+                this.ButtonNumber.Text = newQuizId.ToString();
             }
 
-            if (ButtonLabel != null)
+            if (this.ButtonLabel != null)
             {
-                ButtonLabel.Text = IsExam ? $"Exam {newQuizId}" : $"Quiz {newQuizId}";
+                this.ButtonLabel.Text = this.IsExam ? $"Exam {newQuizId}" : $"Quiz {newQuizId}";
             }
 
-            // Bind command parameter if set
-            if (Command != null && CircularButton != null)
+            if (this.Command != null && this.CircularButton != null)
             {
-                CircularButton.Tag = CommandParameter;
+                this.CircularButton.Tag = this.CommandParameter;
             }
         }
 
         private void UpdateExamStatus(bool isExam)
         {
-            if (CircularButton != null)
+            if (this.CircularButton != null)
             {
-                // Apply special styling for exams
                 if (isExam)
                 {
-                    switch (QuizStatus)
+                    switch (this.QuizStatus)
                     {
                         case QUIZ_STATUS.LOCKED:
-                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkGray);
+                            this.CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkGray);
                             break;
                         case QUIZ_STATUS.INCOMPLETE:
-                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Olive);
+                            this.CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Olive);
                             break;
                         case QUIZ_STATUS.COMPLETED:
-                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkRed);
+                            this.CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkRed);
                             break;
                         default:
-                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkGray);
+                            this.CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.DarkGray);
                             break;
                     }
-                    CircularButton.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
+                    this.CircularButton.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
                 }
                 else
                 {
-                    switch (QuizStatus)
+                    switch (this.QuizStatus)
                     {
                         case QUIZ_STATUS.LOCKED:
-                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Gray);
+                            this.CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Gray);
                             break;
                         case QUIZ_STATUS.INCOMPLETE:
-                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Olive);
+                            this.CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Olive);
                             break;
                         case QUIZ_STATUS.COMPLETED:
-                            CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Green);
+                            this.CircularButton.Background = new SolidColorBrush(Microsoft.UI.Colors.Green);
                             break;
                         default:
-                            CircularButton.ClearValue(Button.BackgroundProperty);
+                            this.CircularButton.ClearValue(Button.BackgroundProperty);
                             break;
                     }
-                    CircularButton.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
+                    this.CircularButton.Foreground = new SolidColorBrush(Microsoft.UI.Colors.White);
                 }
             }
 
-            // Update label text
-            if (ButtonLabel != null && ButtonNumber != null)
+            if (this.ButtonLabel != null && this.ButtonNumber != null)
             {
-                ButtonLabel.Text = isExam ? $"Exam {QuizId}" : $"Quiz {QuizId}";
+                this.ButtonLabel.Text = isExam ? $"Exam {this.QuizId}" : $"Quiz {this.QuizId}";
             }
         }
 
         private void OnButtonClick(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine($"Button clicked: {QuizId}");
-            Debug.WriteLine($"Is Exam: {IsExam}");
-            Debug.WriteLine($"Quiz Status: {QuizStatus}");
+            Debug.WriteLine($"Button clicked: {this.QuizId}");
+            Debug.WriteLine($"Is Exam: {this.IsExam}");
+            Debug.WriteLine($"Quiz Status: {this.QuizStatus}");
 
-            if (QuizStatus == QUIZ_STATUS.LOCKED)
+            if (this.QuizStatus == QUIZ_STATUS.LOCKED)
             {
                 return;
             }
 
-            if(QuizStatus == QUIZ_STATUS.COMPLETED && IsExam)
+            if (this.QuizStatus == QUIZ_STATUS.COMPLETED && this.IsExam)
             {
-
                 return;
             }
 
-            if (Command?.CanExecute(CommandParameter) == true)
+            if (this.Command?.CanExecute(this.CommandParameter) == true)
             {
-                Command.Execute(CommandParameter);
+                this.Command.Execute(this.CommandParameter);
             }
             else
             {
-                ButtonClick?.Invoke(this, e);  // Fallback to the event if the command is not set or cannot execute
+                this.ButtonClick?.Invoke(this, e);
             }
         }
     }

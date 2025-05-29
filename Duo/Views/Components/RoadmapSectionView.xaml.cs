@@ -1,36 +1,47 @@
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Diagnostics;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
-using Duo.Helpers;
-using Duo.Views.Pages;
-using Duo.ViewModels.Base;
+// <copyright file="RoadmapSectionView.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Components
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using Duo.ViewModels.Base;
+    using Duo.Views.Pages;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// A user control for displaying a section in the roadmap.
+    /// </summary>
     public sealed partial class RoadmapSectionView : UserControl
     {
-        public event RoutedEventHandler Click;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoadmapSectionView"/> class.
+        /// </summary>
         public RoadmapSectionView()
         {
             this.InitializeComponent();
             if (this.DataContext is ViewModelBase viewModel)
             {
-                viewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                viewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
             }
             else
             {
-                _ = ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
+                _ = this.ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
             }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        /// <summary>
+        /// Occurs when the section is clicked.
+        /// </summary>
+        public event RoutedEventHandler? Click;
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
         {
-            await ShowErrorMessage(e.Title, e.Message);
+            await this.ShowErrorMessage(e.Title, e.Message);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -42,7 +53,7 @@ namespace Duo.Views.Components
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
@@ -61,24 +72,24 @@ namespace Duo.Views.Components
                 {
                     Debug.WriteLine($"Quiz with ID {button.QuizId} clicked!");
 
-                    Frame parentFrame = Helpers.Helpers.FindParent<Frame>(this);
+                    var parentFrame = Helpers.Helpers.FindParent<Frame>(this);
                     if (parentFrame != null)
                     {
                         parentFrame.Navigate(typeof(QuizPreviewPage), (button.QuizId, button.IsExam));
                     }
                     else
                     {
-                        _ = ShowErrorMessage("Navigation Error", "Failed to find parent frame for navigation.");
+                        _ = this.ShowErrorMessage("Navigation Error", "Failed to find parent frame for navigation.");
                     }
                 }
                 else
                 {
-                    _ = ShowErrorMessage("Click Error", "Invalid button type clicked.");
+                    _ = this.ShowErrorMessage("Click Error", "Invalid button type clicked.");
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Navigation Error", $"Failed to navigate to quiz preview.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Navigation Error", $"Failed to navigate to quiz preview.\nDetails: {ex.Message}");
             }
         }
     }

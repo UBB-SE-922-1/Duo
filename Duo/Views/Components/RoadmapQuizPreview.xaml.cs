@@ -1,17 +1,27 @@
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using DuoClassLibrary.Models.Quizzes;
-using Duo.ViewModels.Base;
-using Duo.ViewModels.Roadmap;
-using Duo.Views.Pages;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
+// <copyright file="RoadmapQuizPreview.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Components
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using Duo.ViewModels.Base;
+    using Duo.ViewModels.Roadmap;
+    using Duo.Views.Pages;
+    using DuoClassLibrary.Models.Quizzes;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// A user control for previewing a quiz or exam in the roadmap.
+    /// </summary>
     public sealed partial class RoadmapQuizPreview : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoadmapQuizPreview"/> class.
+        /// </summary>
         public RoadmapQuizPreview()
         {
             try
@@ -19,51 +29,31 @@ namespace Duo.Views.Components
                 this.InitializeComponent();
                 if (this.DataContext is ViewModelBase viewModel)
                 {
-                    viewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                    viewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
                 }
                 else
                 {
-                    _ = ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
+                    _ = this.ShowErrorMessage("Initialization Error", "DataContext is not set to a valid ViewModel.");
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Initialization Error", $"Failed to initialize RoadmapQuizPreview.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Initialization Error", $"Failed to initialize RoadmapQuizPreview.\nDetails: {ex.Message}");
             }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
-        {
-            await ShowErrorMessage(e.Title, e.Message);
-        }
-
-        private async Task ShowErrorMessage(string title, string message)
-        {
-            try
-            {
-                var dialog = new ContentDialog
-                {
-                    Title = title,
-                    Content = message,
-                    CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
-                };
-
-                await dialog.ShowAsync();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error dialog failed to display. Details: {ex.Message}");
-            }
-        }
-
+        /// <summary>
+        /// Handles the click event to open a quiz or exam.
+        /// </summary>
+        /// <param name="sender">The sender object.</param>
+        /// <param name="e">The event arguments.</param>
         public void OpenQuizButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (sender is Button button && this.DataContext is RoadmapQuizPreviewViewModel viewModel)
+                if (sender is Button && this.DataContext is RoadmapQuizPreviewViewModel viewModel)
                 {
-                    Frame parentFrame = Helpers.Helpers.FindParent<Frame>(this);
+                    var parentFrame = Helpers.Helpers.FindParent<Frame>(this);
                     if (parentFrame != null)
                     {
                         if (viewModel.Quiz is Exam)
@@ -79,20 +69,26 @@ namespace Duo.Views.Components
                     }
                     else
                     {
-                        _ = ShowErrorMessage("Navigation Error", "Failed to find parent frame for navigation.");
+                        _ = this.ShowErrorMessage("Navigation Error", "Failed to find parent frame for navigation.");
                     }
                 }
                 else
                 {
-                    _ = ShowErrorMessage("Click Error", "Invalid button or ViewModel type.");
+                    _ = this.ShowErrorMessage("Click Error", "Invalid button or ViewModel type.");
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Navigation Error", $"Failed to navigate to quiz page.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Navigation Error", $"Failed to navigate to quiz page.\nDetails: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Loads the quiz or exam preview.
+        /// </summary>
+        /// <param name="quizId">The quiz or exam ID.</param>
+        /// <param name="isExam">Whether the item is an exam.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public async Task Load(int quizId, bool isExam)
         {
             try
@@ -103,12 +99,37 @@ namespace Duo.Views.Components
                 }
                 else
                 {
-                    _ = ShowErrorMessage("Load Error", "DataContext is not set to a valid ViewModel.");
+                    _ = this.ShowErrorMessage("Load Error", "DataContext is not set to a valid ViewModel.");
                 }
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Load Error", $"Failed to load quiz with ID {quizId}.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Load Error", $"Failed to load quiz with ID {quizId}.\nDetails: {ex.Message}");
+            }
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            await this.ShowErrorMessage(e.Title, e.Message);
+        }
+
+        private async Task ShowErrorMessage(string title, string message)
+        {
+            try
+            {
+                var dialog = new ContentDialog
+                {
+                    Title = title,
+                    Content = message,
+                    CloseButtonText = "OK",
+                    XamlRoot = this.XamlRoot,
+                };
+
+                await dialog.ShowAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error dialog failed to display. Details: {ex.Message}");
             }
         }
     }
