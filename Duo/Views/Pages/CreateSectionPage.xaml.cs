@@ -25,6 +25,11 @@ namespace Duo.Views.Pages
             this.Loaded += this.RunAfterLoaded;
         }
 
+        /// <summary>
+        /// Handles the ViewModel's request to navigate back.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
         public void ViewModelRequestGoBack(object sender, EventArgs e)
         {
             if (this.Frame.CanGoBack)

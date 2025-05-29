@@ -1,46 +1,81 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using DuoClassLibrary.Models.Exercises;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+// <copyright file="ManageExamsPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models.Exercises;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for managing exams and their exercises.
     /// </summary>
     public sealed partial class ManageExamsPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ManageExamsPage"/> class.
+        /// </summary>
         public ManageExamsPage()
         {
             this.InitializeComponent();
             this.Loaded += this.Setup;
         }
 
-        private void Setup(object sender, RoutedEventArgs e)
-        {
-            ViewModel.ShowListViewModal += ViewModel_openSelectExercises;
-            ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
-        }
-
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        /// <summary>
+        /// Handles navigation back when requested by the ViewModel.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        public void ViewModel_RequestGoBack(object? sender, EventArgs e)
         {
             try
             {
-                await ShowErrorMessage(e.Title, e.Message);
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"ViewModel_RequestGoBack error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles the back button click event.
+        /// </summary>
+        /// <param name="sender"> The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        public void BackButton_Click(object? sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"BackButton_Click error: {ex.Message}");
+            }
+        }
+
+        private void Setup(object? sender, RoutedEventArgs e)
+        {
+            this.ViewModel.ShowListViewModal += this.ViewModel_openSelectExercises;
+            this.ViewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            try
+            {
+                await this.ShowErrorMessage(e.Title, e.Message);
             }
             catch (Exception ex)
             {
@@ -57,7 +92,7 @@ namespace Duo.Views.Pages
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
@@ -68,36 +103,6 @@ namespace Duo.Views.Pages
             }
         }
 
-        public void ViewModel_RequestGoBack(object sender, EventArgs e)
-        {
-            try
-            {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"ViewModel_RequestGoBack error: {ex.Message}");
-            }
-        }
-
-        public void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"BackButton_Click error: {ex.Message}");
-            }
-        }
-
         private async void ViewModel_openSelectExercises(List<Exercise> exercises)
         {
             var dialog = new ContentDialog
@@ -105,7 +110,7 @@ namespace Duo.Views.Pages
                 Title = "Select Exercise",
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Primary,
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
 
             var listView = new ListView
@@ -113,7 +118,7 @@ namespace Duo.Views.Pages
                 ItemsSource = exercises,
                 SelectionMode = ListViewSelectionMode.Single,
                 MaxHeight = 300,
-                ItemTemplate = (DataTemplate)Resources["ExerciseSelectionItemTemplate"]
+                ItemTemplate = (DataTemplate)this.Resources["ExerciseSelectionItemTemplate"],
             };
 
             dialog.Content = listView;
@@ -128,7 +133,7 @@ namespace Duo.Views.Pages
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
             {
-                await ViewModel.AddExercise(selectedExercise);
+                await this.ViewModel.AddExercise(selectedExercise);
             }
         }
     }

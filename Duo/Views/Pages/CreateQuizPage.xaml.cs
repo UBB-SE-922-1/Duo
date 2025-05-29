@@ -36,6 +36,8 @@ namespace Duo.Views.Pages
         /// <summary>
         /// Handles the ViewModel's request to go back.
         /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
         public void ViewModel_RequestGoBack(object? sender, EventArgs e)
         {
             if (this.Frame.CanGoBack)

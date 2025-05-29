@@ -1,34 +1,31 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using DuoClassLibrary.Models.Exercises;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+// <copyright file="ManageQuizesPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models.Exercises;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for managing quizzes and their exercises.
     /// </summary>
     public sealed partial class ManageQuizesPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ManageQuizesPage"/> class.
+        /// </summary>
         public ManageQuizesPage()
         {
             try
             {
                 this.InitializeComponent();
-                ViewModel.ShowListViewModal += ViewModel_openSelectExercises;
-                ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                this.ViewModel.ShowListViewModal += this.ViewModel_openSelectExercises;
+                this.ViewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
             }
             catch (Exception ex)
             {
@@ -36,11 +33,31 @@ namespace Duo.Views.Pages
             }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        /// <summary>
+        /// Handles the back button click event.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The event data.</param>
+        public void BackButton_Click(object? sender, RoutedEventArgs e)
         {
             try
             {
-                await ShowErrorMessage(e.Title, e.Message);
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"BackButton_Click error: {ex.Message}");
+            }
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            try
+            {
+                await this.ShowErrorMessage(e.Title, e.Message);
             }
             catch (Exception ex)
             {
@@ -57,7 +74,7 @@ namespace Duo.Views.Pages
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
@@ -65,21 +82,6 @@ namespace Duo.Views.Pages
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"ContentDialog error: {ex.Message}");
-            }
-        }
-
-        public void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-            }
-            catch (Exception ex)
-            {
-                System.Diagnostics.Debug.WriteLine($"BackButton_Click error: {ex.Message}");
             }
         }
 
@@ -92,7 +94,7 @@ namespace Duo.Views.Pages
                     Title = "Select Exercise",
                     CloseButtonText = "Cancel",
                     DefaultButton = ContentDialogButton.Primary,
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 var listView = new ListView
@@ -100,7 +102,7 @@ namespace Duo.Views.Pages
                     ItemsSource = exercises,
                     SelectionMode = ListViewSelectionMode.Single,
                     MaxHeight = 300,
-                    ItemTemplate = (DataTemplate)Resources["ExerciseSelectionItemTemplate"]
+                    ItemTemplate = (DataTemplate)this.Resources["ExerciseSelectionItemTemplate"],
                 };
 
                 dialog.Content = listView;
@@ -115,7 +117,7 @@ namespace Duo.Views.Pages
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
                 {
-                    ViewModel.AddExercise(selectedExercise);
+                    this.ViewModel.AddExercise(selectedExercise);
                 }
             }
             catch (Exception ex)
