@@ -1,5 +1,5 @@
-// <copyright file="FillInTheBlankExercise.xaml.cs" company="YourCompany">
-// Copyright (c) YourCompany. All rights reserved.
+// <copyright file="FillInTheBlankExercise.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
 // </copyright>
 
 namespace Duo.Views.Components
@@ -10,12 +10,12 @@ namespace Duo.Views.Components
     using System.Linq;
     using System.Text.RegularExpressions;
     using System.Threading.Tasks;
+    using Duo.ViewModels.Base;
     using Microsoft.UI.Xaml;
     using Microsoft.UI.Xaml.Controls;
     using Microsoft.UI.Xaml.Media;
     using Windows.UI;
     using Windows.UI.ViewManagement;
-    using Duo.ViewModels.Base;
 
     /// <summary>
     /// UserControl for fill-in-the-blank exercises.

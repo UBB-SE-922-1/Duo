@@ -1,106 +1,106 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using DuoClassLibrary.Models.Exercises;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using Microsoft.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Shapes;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+// <copyright file="FlashcardExercise.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Components
 {
+    using System;
+    using System.Diagnostics;
+    using System.Linq;
+    using DuoClassLibrary.Models.Exercises;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Media;
+    using Microsoft.UI.Xaml.Shapes;
+
     /// <summary>
-    /// Flashcard exercise component that displays a question on the front and answer on the back
+    /// Flashcard exercise component that displays a question on the front and answer on the back.
     /// </summary>
     public sealed partial class FlashcardExercise : UserControl
     {
-        public event EventHandler<FlashcardExerciseEventArgs> OnSendClicked;
-        private DispatcherTimer timer;
-        private int timerDuration; // Maximum time in seconds
-        private TimeSpan remainingTime; // Time remaining
-        private TimeSpan elapsedTime; // Time elapsed for statistics
-        private bool isRunning;
-        private DuoClassLibrary.Models.Exercises.FlashcardExercise exerciseData;
-
-        private const double OPACITY = 0.5;
-        private const string BLANK_PLACEHOLDER = "___"; // Placeholder for fill-in-the-blank
-
-        // Total time for timer (in seconds) based on difficulty
-        private int GetTimerDurationByDifficulty(DuoClassLibrary.Models.Difficulty difficulty)
-        {
-            switch (difficulty)
-            {
-                case DuoClassLibrary.Models.Difficulty.Easy:
-                    return 15; // 15 seconds for easy
-                case DuoClassLibrary.Models.Difficulty.Hard:
-                    return 45; // 45 seconds for hard
-                case DuoClassLibrary.Models.Difficulty.Normal:
-                default:
-                    return 30; // 30 seconds for normal
-            }
-        }
+        /// <summary>
+        /// Raised when the exercise is completed by clicking OK.
+        /// </summary>
+        public event EventHandler<bool>? ExerciseCompleted;
 
         /// <summary>
-        /// Raised when the exercise is completed by clicking OK
+        /// Raised when the exercise is closed by clicking Close.
         /// </summary>
-        public event EventHandler<bool> ExerciseCompleted;
+        public event EventHandler? ExerciseClosed;
 
         /// <summary>
-        /// Raised when the exercise is closed by clicking Close
+        /// Raised when the send button is clicked.
         /// </summary>
-        public event EventHandler ExerciseClosed;
+        public event EventHandler<FlashcardExerciseEventArgs>? OnSendClicked;
 
-        // User's answer from the fill-in-the-gap input
-        public string UserAnswer
-        {
-            get => FillInGapInput?.Text ?? string.Empty;
-        }
+        private const double OpacityDefault = 0.5;
+        private const string BlankPlaceholder = "___";
 
-        // Topic property for category display
+        private DispatcherTimer? timer;
+        private int timerDuration;
+        private TimeSpan remainingTime;
+        private TimeSpan elapsedTime;
+        private DuoClassLibrary.Models.Exercises.FlashcardExercise? exerciseData;
+
+        /// <summary>
+        /// Gets the user's answer from the fill-in-the-gap input.
+        /// </summary>
+        public string UserAnswer => this.FillInGapInput?.Text ?? string.Empty;
+
+        /// <summary>
+        /// Identifies the Topic dependency property.
+        /// </summary>
         public static readonly DependencyProperty TopicProperty =
-            DependencyProperty.Register(nameof(Topic), typeof(string), typeof(FlashcardExercise),
-                new PropertyMetadata(string.Empty, OnTopicChanged));
+            DependencyProperty.Register(nameof(Topic), typeof(string), typeof(FlashcardExercise), new PropertyMetadata(string.Empty, OnTopicChanged));
 
+        /// <summary>
+        /// Gets or sets the topic for category display.
+        /// </summary>
         public string Topic
         {
-            get => (string)GetValue(TopicProperty);
-            set => SetValue(TopicProperty, value);
+            get => (string)this.GetValue(TopicProperty);
+            set => this.SetValue(TopicProperty, value);
         }
 
-        // Question property
+        /// <summary>
+        /// Identifies the Question dependency property.
+        /// </summary>
         public static readonly DependencyProperty QuestionProperty =
-            DependencyProperty.Register(nameof(Question), typeof(string), typeof(FlashcardExercise),
-                new PropertyMetadata(string.Empty, OnQuestionChanged));
+            DependencyProperty.Register(nameof(Question), typeof(string), typeof(FlashcardExercise), new PropertyMetadata(string.Empty, OnQuestionChanged));
 
+        /// <summary>
+        /// Gets or sets the question.
+        /// </summary>
         public string Question
         {
-            get => (string)GetValue(QuestionProperty);
-            set => SetValue(QuestionProperty, value);
+            get => (string)this.GetValue(QuestionProperty);
+            set => this.SetValue(QuestionProperty, value);
         }
 
-        // Answer property
+        /// <summary>
+        /// Identifies the Answer dependency property.
+        /// </summary>
         public static readonly DependencyProperty AnswerProperty =
-            DependencyProperty.Register(nameof(Answer), typeof(string), typeof(FlashcardExercise),
-                new PropertyMetadata(string.Empty));
+            DependencyProperty.Register(nameof(Answer), typeof(string), typeof(FlashcardExercise), new PropertyMetadata(string.Empty));
 
+        /// <summary>
+        /// Gets or sets the answer.
+        /// </summary>
         public string Answer
         {
-            get => (string)GetValue(AnswerProperty);
-            set => SetValue(AnswerProperty, value);
+            get => (string)this.GetValue(AnswerProperty);
+            set => this.SetValue(AnswerProperty, value);
         }
 
-        // Handle changes to the Topic property
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FlashcardExercise"/> class.
+        /// </summary>
+        public FlashcardExercise()
+        {
+            this.InitializeComponent();
+            this.Loaded += this.FlashcardExercise_Loaded;
+        }
+
         private static void OnTopicChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FlashcardExercise flashcard && e.NewValue is string topic)
@@ -109,170 +109,149 @@ namespace Duo.Views.Components
             }
         }
 
-        // Update topic display on both sides of the card
-        private void UpdateTopicDisplay(string topic)
-        {
-            if (TopicTitle != null)
-            {
-                TopicTitle.Text = topic;
-            }
-
-            if (BackTopicTitle != null)
-            {
-                BackTopicTitle.Text = topic;
-            }
-        }
-
-        // Handle changes to the Question property
         private static void OnQuestionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is FlashcardExercise flashcard && e.NewValue is string question)
             {
-                // The question title is already bound with x:Bind
-                // We just need to update the question parts for the fill-in-the-gap
                 flashcard.UpdateQuestionParts(question);
             }
         }
 
-        // Constructor
-        public FlashcardExercise()
-        {
-            this.InitializeComponent();
-            this.Loaded += FlashcardExercise_Loaded;
-        }
-
         private void FlashcardExercise_Loaded(object sender, RoutedEventArgs e)
         {
-            // Ensure timer is setup
-            if (timer == null)
+            if (this.timer == null)
             {
-                SetupTimer();
+                this.SetupTimer();
             }
 
-            StartTimer();
+            this.StartTimer();
 
-            // Set initial question parts if not already set
-            if (string.IsNullOrEmpty(QuestionPart1?.Text))
+            if (string.IsNullOrEmpty(this.QuestionPart1?.Text))
             {
-                UpdateQuestionParts(Question);
+                this.UpdateQuestionParts(this.Question);
             }
 
-            // Initially hide feedback icons until answer is evaluated
-            if (RightAnswerIcon != null)
+            if (this.RightAnswerIcon != null)
             {
-                RightAnswerIcon.Opacity = OPACITY;
+                this.RightAnswerIcon.Opacity = OpacityDefault;
             }
 
-            if (WrongAnswerIcon != null)
+            if (this.WrongAnswerIcon != null)
             {
-                WrongAnswerIcon.Opacity = OPACITY;
+                this.WrongAnswerIcon.Opacity = OpacityDefault;
+            }
+        }
+
+        private void UpdateTopicDisplay(string topic)
+        {
+            if (this.TopicTitle != null)
+            {
+                this.TopicTitle.Text = topic;
+            }
+
+            if (this.BackTopicTitle != null)
+            {
+                this.BackTopicTitle.Text = topic;
             }
         }
 
         private void UpdateQuestionParts(string question)
         {
-            if (QuestionPart1 == null || QuestionPart2 == null || string.IsNullOrEmpty(question))
+            if (this.QuestionPart1 == null || this.QuestionPart2 == null || string.IsNullOrEmpty(question))
             {
                 return;
             }
 
-            // Set actual question text to display
-            if (QuestionDisplay != null)
+            if (this.QuestionDisplay != null)
             {
-                QuestionDisplay.Text = question;
+                this.QuestionDisplay.Text = question;
             }
 
-            // Try to create a fill-in-the-blank by analyzing the question string
-
-            // Check if the question already has a blank placeholder
-            if (question.Contains(BLANK_PLACEHOLDER))
+            if (question.Contains(BlankPlaceholder))
             {
-                string[] parts = question.Split(BLANK_PLACEHOLDER);
+                string[] parts = question.Split(BlankPlaceholder);
                 if (parts.Length >= 2)
                 {
-                    QuestionPart1.Text = parts[0].Trim();
-                    QuestionPart2.Text = parts[1].Trim();
+                    this.QuestionPart1.Text = parts[0].Trim();
+                    this.QuestionPart2.Text = parts[1].Trim();
                     return;
                 }
             }
 
-            // No placeholder found, create a fill-in-the-blank by breaking the question
-            // into two parts around the expected answer
-            if (!string.IsNullOrEmpty(Answer) && question.Contains(Answer, StringComparison.OrdinalIgnoreCase))
+            if (!string.IsNullOrEmpty(this.Answer) && question.Contains(this.Answer, StringComparison.OrdinalIgnoreCase))
             {
-                int answerIndex = question.IndexOf(Answer, StringComparison.OrdinalIgnoreCase);
-                QuestionPart1.Text = question.Substring(0, answerIndex).Trim();
+                int answerIndex = question.IndexOf(this.Answer, StringComparison.OrdinalIgnoreCase);
+                this.QuestionPart1.Text = question.Substring(0, answerIndex).Trim();
 
-                int afterAnswerIndex = answerIndex + Answer.Length;
+                int afterAnswerIndex = answerIndex + this.Answer.Length;
                 if (afterAnswerIndex < question.Length)
                 {
-                    QuestionPart2.Text = question.Substring(afterAnswerIndex).Trim();
+                    this.QuestionPart2.Text = question.Substring(afterAnswerIndex).Trim();
                 }
                 else
                 {
-                    QuestionPart2.Text = string.Empty;
+                    this.QuestionPart2.Text = string.Empty;
                 }
+
                 return;
             }
 
-            // Default fallback if we can't determine how to split
-            QuestionPart1.Text = "Fill in the answer";
-            QuestionPart2.Text = string.Empty;
+            this.QuestionPart1.Text = "Fill in the answer";
+            this.QuestionPart2.Text = string.Empty;
+        }
+
+        private int GetTimerDurationByDifficulty(DuoClassLibrary.Models.Difficulty difficulty)
+        {
+            return difficulty switch
+            {
+                DuoClassLibrary.Models.Difficulty.Easy => 15,
+                DuoClassLibrary.Models.Difficulty.Hard => 45,
+                _ => 30,
+            };
         }
 
         private void SetupTimer()
         {
-            // Get duration in seconds for this difficulty
-            timerDuration = GetTimerDurationByDifficulty(exerciseData?.Difficulty ?? DuoClassLibrary.Models.Difficulty.Normal);
+            this.timerDuration = this.GetTimerDurationByDifficulty(this.exerciseData?.Difficulty ?? DuoClassLibrary.Models.Difficulty.Normal);
+            this.remainingTime = TimeSpan.FromSeconds(this.timerDuration);
+            this.elapsedTime = TimeSpan.Zero;
 
-            // Initialize remaining time to full duration
-            remainingTime = TimeSpan.FromSeconds(timerDuration);
-            elapsedTime = TimeSpan.Zero;
-
-            // Set up timer text to show max time
-            if (TimerText != null)
+            if (this.TimerText != null)
             {
-                TimerText.Text = string.Format("00:{0:00}", timerDuration);
+                this.TimerText.Text = string.Format("00:{0:00}", this.timerDuration);
             }
 
-            timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(1);
-            timer.Tick += Timer_Tick;
+            this.timer = new DispatcherTimer();
+            this.timer.Interval = TimeSpan.FromSeconds(1);
+            this.timer.Tick += this.Timer_Tick;
         }
 
-        private void Timer_Tick(object sender, object e)
+        private void Timer_Tick(object? sender, object e)
         {
-            if (remainingTime.TotalSeconds > 0)
+            if (this.remainingTime.TotalSeconds > 0)
             {
-                // Decrease remaining time by 1 second
-                remainingTime = remainingTime.Subtract(TimeSpan.FromSeconds(1));
+                this.remainingTime = this.remainingTime.Subtract(TimeSpan.FromSeconds(1));
+                this.elapsedTime = this.elapsedTime.Add(TimeSpan.FromSeconds(1));
 
-                // Increase elapsed time for statistics
-                elapsedTime = elapsedTime.Add(TimeSpan.FromSeconds(1));
-
-                // Update timer display with remaining time
-                if (TimerText != null)
+                if (this.TimerText != null)
                 {
-                    int seconds = (int)remainingTime.TotalSeconds;
-                    TimerText.Text = string.Format("00:{0:00}", seconds);
+                    int seconds = (int)this.remainingTime.TotalSeconds;
+                    this.TimerText.Text = string.Format("00:{0:00}", seconds);
                 }
 
-                // Calculate progress as ratio of elapsed time to total duration
-                double progress = 1.0 - (remainingTime.TotalSeconds / timerDuration);
-                UpdateTimerVisual(progress);
+                double progress = 1.0 - (this.remainingTime.TotalSeconds / this.timerDuration);
+                this.UpdateTimerVisual(progress);
 
-                // If time is up, automatically flip the card
-                if (remainingTime.TotalSeconds <= 0)
+                if (this.remainingTime.TotalSeconds <= 0)
                 {
-                    PerformCardFlip();
+                    this.PerformCardFlip();
                 }
             }
             else
             {
-                // Time is up, automatically flip the card if not already flipped
-                if (FrontSide.Visibility == Visibility.Visible)
+                if (this.FrontSide.Visibility == Visibility.Visible)
                 {
-                    PerformCardFlip();
+                    this.PerformCardFlip();
                 }
             }
         }
@@ -281,110 +260,95 @@ namespace Duo.Views.Components
         {
             try
             {
-                // Define colors
                 SolidColorBrush redBrush = new SolidColorBrush(Microsoft.UI.Colors.Red);
                 SolidColorBrush orangeBrush = new SolidColorBrush(Microsoft.UI.Colors.Orange);
                 SolidColorBrush blackBrush = new SolidColorBrush(Microsoft.UI.Colors.Black);
 
-                // Change color based on remaining time
                 if (progress > 0.75)
                 {
-                    // Red for last 25% of time
-                    if (TimerArc != null)
+                    if (this.TimerArc != null)
                     {
-                        TimerArc.Fill = redBrush;
+                        this.TimerArc.Fill = redBrush;
                     }
 
-                    if (TimerText != null)
+                    if (this.TimerText != null)
                     {
-                        TimerText.Foreground = redBrush;
+                        this.TimerText.Foreground = redBrush;
                     }
                 }
                 else if (progress > 0.5)
                 {
-                    // Orange for 50-75% of time
-                    if (TimerArc != null)
+                    if (this.TimerArc != null)
                     {
-                        TimerArc.Fill = orangeBrush;
+                        this.TimerArc.Fill = orangeBrush;
                     }
 
-                    if (TimerText != null)
+                    if (this.TimerText != null)
                     {
-                        TimerText.Foreground = orangeBrush;
+                        this.TimerText.Foreground = orangeBrush;
                     }
                 }
                 else
                 {
-                    // Default black for 0-50% of time
-                    if (TimerArc != null)
+                    if (this.TimerArc != null)
                     {
-                        TimerArc.Fill = blackBrush;
+                        this.TimerArc.Fill = blackBrush;
                     }
 
-                    if (TimerText != null)
+                    if (this.TimerText != null)
                     {
-                        TimerText.Foreground = blackBrush;
+                        this.TimerText.Foreground = blackBrush;
                     }
                 }
 
-                // Calculate the angle for the arc
                 double angle = progress * 360;
                 double radians = (angle - 90) * Math.PI / 180.0;
                 double radius = 15.0;
                 double endX = 20 + (radius * Math.Cos(radians));
                 double endY = 20 + (radius * Math.Sin(radians));
 
-                // Create SVG path for arc
-                string arcFlag = angle > 180 ? "1" : "0";
-                string pathData = $"M 20,20 L 20,5 A {radius},{radius} 0 {arcFlag} 1 {endX},{endY} z";
-
-                // Update the timer arc path
-                if (TimerArc != null)
+                if (this.TimerArc != null)
                 {
                     var pathGeometry = new PathGeometry();
-                    var figure = new PathFigure();
-                    figure.StartPoint = new Point(20, 20);
+                    var figure = new PathFigure { StartPoint = new Windows.Foundation.Point(20, 20) };
 
-                    // Create segment for the straight line
-                    var lineSegment = new LineSegment();
-                    lineSegment.Point = new Point(20, 5);
+                    var lineSegment = new LineSegment { Point = new Windows.Foundation.Point(20, 5) };
                     figure.Segments.Add(lineSegment);
 
-                    // Create arc segment
-                    var arcSegment = new ArcSegment();
-                    arcSegment.Point = new Point(endX, endY);
-                    arcSegment.Size = new Size(radius, radius);
-                    arcSegment.SweepDirection = SweepDirection.Clockwise;
-                    arcSegment.IsLargeArc = angle > 180;
+                    var arcSegment = new ArcSegment
+                    {
+                        Point = new Windows.Foundation.Point(endX, endY),
+                        Size = new Windows.Foundation.Size(radius, radius),
+                        SweepDirection = SweepDirection.Clockwise,
+                        IsLargeArc = angle > 180,
+                    };
                     figure.Segments.Add(arcSegment);
 
-                    // Complete the path
                     figure.IsClosed = true;
                     pathGeometry.Figures.Add(figure);
 
-                    TimerArc.Data = pathGeometry;
+                    this.TimerArc.Data = pathGeometry;
                 }
             }
             catch (Exception ex)
             {
-                // Fallback if there's an issue
-                System.Diagnostics.Debug.WriteLine($"Error updating timer: {ex.Message}");
+                Debug.WriteLine($"Error updating timer: {ex.Message}");
             }
         }
 
         private void StartTimer()
         {
-            if (timer != null && !timer.IsEnabled)
+            if (this.timer != null && !this.timer.IsEnabled)
             {
-                timer.Start();
+                this.timer.Start();
             }
         }
 
         private void StopTimer()
         {
-            if (timer != null && timer.IsEnabled)
+            if (this.timer != null && this.timer.IsEnabled)
             {
-                timer.Stop();
+                this.timer.Stop();
             }
         }
 
@@ -392,109 +356,92 @@ namespace Duo.Views.Components
         {
             try
             {
-                StopTimer();
-                // Reset times
-                elapsedTime = TimeSpan.Zero;
-                remainingTime = TimeSpan.FromSeconds(timerDuration);
+                this.StopTimer();
+                this.elapsedTime = TimeSpan.Zero;
+                this.remainingTime = TimeSpan.FromSeconds(this.timerDuration);
 
-                if (TimerText != null)
+                if (this.TimerText != null)
                 {
-                    TimerText.Text = string.Format("00:{0:00}", timerDuration);
-                    TimerText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
+                    this.TimerText.Text = string.Format("00:{0:00}", this.timerDuration);
+                    this.TimerText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
                 }
 
-                if (TimerArc != null)
+                if (this.TimerArc != null)
                 {
-                    TimerArc.Fill = new SolidColorBrush(Microsoft.UI.Colors.Black);
+                    this.TimerArc.Fill = new SolidColorBrush(Microsoft.UI.Colors.Black);
                 }
 
-                UpdateTimerVisual(0);
+                this.UpdateTimerVisual(0);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error resetting timer: {ex.Message}");
+                Debug.WriteLine($"Error resetting timer: {ex.Message}");
             }
         }
 
+        /// <summary>
+        /// Initializes the flashcard exercise with the provided data.
+        /// </summary>
+        /// <param name="exercise">The flashcard exercise data.</param>
         public void Initialize(DuoClassLibrary.Models.Exercises.FlashcardExercise exercise)
         {
-            exerciseData = exercise;
+            this.exerciseData = exercise;
+            this.Question = exercise.Question;
+            this.Answer = exercise.Answer;
+            this.FrontSide.Visibility = Visibility.Visible;
+            this.BackSide.Visibility = Visibility.Collapsed;
 
-            // Set topic, question and answer from the model
-            Question = exercise.Question;
-            Answer = exercise.Answer;
-
-            // Reset the UI state
-            FrontSide.Visibility = Visibility.Visible;
-            BackSide.Visibility = Visibility.Collapsed;
-
-            // Clear the user input
-            if (FillInGapInput != null)
+            if (this.FillInGapInput != null)
             {
-                FillInGapInput.Text = string.Empty;
+                this.FillInGapInput.Text = string.Empty;
             }
 
-            // Reset feedback icons
-            if (RightAnswerIcon != null)
+            if (this.RightAnswerIcon != null)
             {
-                RightAnswerIcon.Opacity = OPACITY;
+                this.RightAnswerIcon.Opacity = OpacityDefault;
             }
 
-            if (WrongAnswerIcon != null)
+            if (this.WrongAnswerIcon != null)
             {
-                WrongAnswerIcon.Opacity = OPACITY;
+                this.WrongAnswerIcon.Opacity = OpacityDefault;
             }
 
-            // Reset the timer with the appropriate duration for this exercise's difficulty
-            ResetTimer();
-
-            // Setup timer fresh to ensure proper difficulty-based duration
-            SetupTimer();
-
-            // Start the timer
-            StartTimer();
-
-            // Update difficulty info on UI if needed
-            UpdateDifficultyIndicator(exercise.Difficulty);
+            this.ResetTimer();
+            this.SetupTimer();
+            this.StartTimer();
+            this.UpdateDifficultyIndicator(exercise.Difficulty);
         }
 
-        // Common method for flipping the card to avoid code duplication
         private void PerformCardFlip()
         {
-            var contentPairs = UserAnswer;
-            OnSendClicked?.Invoke(this, new FlashcardExerciseEventArgs(contentPairs));
+            var contentPairs = this.UserAnswer;
+            this.OnSendClicked?.Invoke(this, new FlashcardExerciseEventArgs(contentPairs));
 
-            // Store elapsed time in the exercise data
-            if (exerciseData != null)
+            if (this.exerciseData != null)
             {
-                exerciseData.ElapsedTime = elapsedTime;
+                this.exerciseData.ElapsedTime = this.elapsedTime;
             }
 
-            // Check if the user's answer matches the correct answer
-            bool isCorrect = IsAnswerCorrect();
+            bool isCorrect = this.IsAnswerCorrect();
 
-            // Update the feedback icons
-            if (RightAnswerIcon != null)
+            if (this.RightAnswerIcon != null)
             {
-                RightAnswerIcon.Opacity = isCorrect ? 1.0 : 0.3;
+                this.RightAnswerIcon.Opacity = isCorrect ? 1.0 : 0.3;
             }
 
-            if (WrongAnswerIcon != null)
+            if (this.WrongAnswerIcon != null)
             {
-                WrongAnswerIcon.Opacity = isCorrect ? 0.3 : 1.0;
+                this.WrongAnswerIcon.Opacity = isCorrect ? 0.3 : 1.0;
 
-                // Make the X red when answer is incorrect
                 if (!isCorrect)
                 {
-                    // Find the path that makes the X and update its color
-                    var wrongPath = WrongAnswerIcon.Children.OfType<Microsoft.UI.Xaml.Shapes.Path>().FirstOrDefault();
+                    var wrongPath = this.WrongAnswerIcon.Children.OfType<Path>().FirstOrDefault();
                     if (wrongPath != null)
                     {
                         wrongPath.Stroke = new SolidColorBrush(Microsoft.UI.Colors.Red);
                     }
 
-                    // Find the ellipse and update its stroke color
-                    var wrongEllipse = WrongAnswerIcon.Children.OfType<Ellipse>().FirstOrDefault();
+                    var wrongEllipse = this.WrongAnswerIcon.Children.OfType<Ellipse>().FirstOrDefault();
                     if (wrongEllipse != null)
                     {
                         wrongEllipse.Stroke = new SolidColorBrush(Microsoft.UI.Colors.Red);
@@ -502,148 +449,133 @@ namespace Duo.Views.Components
                 }
             }
 
-            // Update OK button color based on correctness
             var okButton = this.FindName("OkButton") as Button;
             if (okButton != null)
             {
                 okButton.Background = new SolidColorBrush(
                     isCorrect ?
-                    Microsoft.UI.ColorHelper.FromArgb(255, 102, 204, 102) : // #66CC66 (green)
+                    Microsoft.UI.ColorHelper.FromArgb(255, 102, 204, 102) :
                     Microsoft.UI.Colors.Red);
             }
 
-            // Flip the card
-            FrontSide.Visibility = Visibility.Collapsed;
-            BackSide.Visibility = Visibility.Visible;
+            this.FrontSide.Visibility = Visibility.Collapsed;
+            this.BackSide.Visibility = Visibility.Visible;
         }
 
         private void FlipButton_Click(object sender, RoutedEventArgs e)
         {
-            // Stop the timer
-            StopTimer();
-
-            // Perform the flip
-            PerformCardFlip();
+            this.StopTimer();
+            this.PerformCardFlip();
         }
 
         private bool IsAnswerCorrect()
         {
-            if (string.IsNullOrEmpty(UserAnswer) || string.IsNullOrEmpty(Answer))
+            if (string.IsNullOrEmpty(this.UserAnswer) || string.IsNullOrEmpty(this.Answer))
             {
                 return false;
             }
 
-            // Simple case-insensitive comparison
-            return UserAnswer.Trim().Equals(Answer.Trim(), StringComparison.OrdinalIgnoreCase);
+            return this.UserAnswer.Trim().Equals(this.Answer.Trim(), StringComparison.OrdinalIgnoreCase);
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            StopTimer();
+            this.StopTimer();
 
-            if (exerciseData != null)
+            if (this.exerciseData != null)
             {
-                exerciseData.ElapsedTime = elapsedTime;
+                this.exerciseData.ElapsedTime = this.elapsedTime;
             }
 
-            // Notify listeners that the card was closed
-            ExerciseClosed?.Invoke(this, EventArgs.Empty);
+            this.ExerciseClosed?.Invoke(this, EventArgs.Empty);
         }
 
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            StopTimer();
+            this.StopTimer();
 
-            if (exerciseData != null)
+            if (this.exerciseData != null)
             {
-                exerciseData.ElapsedTime = elapsedTime;
+                this.exerciseData.ElapsedTime = this.elapsedTime;
             }
 
-            // Notify listeners that the card was completed
-            ExerciseCompleted?.Invoke(this, IsAnswerCorrect());
+            this.ExerciseCompleted?.Invoke(this, this.IsAnswerCorrect());
         }
 
+        /// <summary>
+        /// Resets the flashcard exercise UI and timer.
+        /// </summary>
         public void Reset()
         {
-            // Reset UI state
-            FrontSide.Visibility = Visibility.Visible;
-            BackSide.Visibility = Visibility.Collapsed;
+            this.FrontSide.Visibility = Visibility.Visible;
+            this.BackSide.Visibility = Visibility.Collapsed;
 
-            // Clear user input
-            if (FillInGapInput != null)
+            if (this.FillInGapInput != null)
             {
-                FillInGapInput.Text = string.Empty;
+                this.FillInGapInput.Text = string.Empty;
             }
 
-            // Reset feedback icons
-            if (RightAnswerIcon != null)
+            if (this.RightAnswerIcon != null)
             {
-                RightAnswerIcon.Opacity = 0.5;
+                this.RightAnswerIcon.Opacity = OpacityDefault;
             }
 
-            if (WrongAnswerIcon != null)
+            if (this.WrongAnswerIcon != null)
             {
-                WrongAnswerIcon.Opacity = 0.5;
+                this.WrongAnswerIcon.Opacity = OpacityDefault;
             }
 
-            // Reset timer
-            ResetTimer();
-            StartTimer();
+            this.ResetTimer();
+            this.StartTimer();
         }
 
+        /// <summary>
+        /// Gets the elapsed time for the exercise.
+        /// </summary>
+        /// <returns>The elapsed time.</returns>
         public TimeSpan GetElapsedTime()
         {
-            return elapsedTime;
+            return this.elapsedTime;
         }
 
-        // Update UI to show difficulty level
         private void UpdateDifficultyIndicator(DuoClassLibrary.Models.Difficulty difficulty)
         {
-            // Get duration in seconds for this difficulty
-            int seconds = GetTimerDurationByDifficulty(difficulty);
-            timerDuration = seconds;
-            remainingTime = TimeSpan.FromSeconds(seconds);
+            int seconds = this.GetTimerDurationByDifficulty(difficulty);
+            this.timerDuration = seconds;
+            this.remainingTime = TimeSpan.FromSeconds(seconds);
 
-            // Update timer text to show maximum time
-            if (TimerText != null)
+            if (this.TimerText != null)
             {
-                TimerText.Text = string.Format("00:{0:00}", seconds);
-                // Ensure timer text has default color
-                TimerText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
+                this.TimerText.Text = string.Format("00:{0:00}", seconds);
+                this.TimerText.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Black);
             }
 
-            // Ensure timer arc has default color
-            if (TimerArc != null)
+            if (this.TimerArc != null)
             {
-                TimerArc.Fill = new SolidColorBrush(Microsoft.UI.Colors.Black);
+                this.TimerArc.Fill = new SolidColorBrush(Microsoft.UI.Colors.Black);
             }
 
             try
             {
-                // Update difficulty text
                 var difficultyText = this.FindName("DifficultyText") as TextBlock;
                 if (difficultyText != null)
                 {
                     difficultyText.Text = difficulty.ToString();
                 }
 
-                // Update difficulty bars visibility
                 var difficultyBars = this.FindName("DifficultyBars") as StackPanel;
                 if (difficultyBars != null && difficultyBars.Children.Count >= 3)
                 {
-                    // Find the individual bars
                     var easyBar = difficultyBars.Children[0] as Rectangle;
                     var normalBar = difficultyBars.Children[1] as Rectangle;
                     var hardBar = difficultyBars.Children[2] as Rectangle;
 
                     if (easyBar != null && normalBar != null && hardBar != null)
                     {
-                        // Reset all bars
                         easyBar.Opacity = 0.3;
                         normalBar.Opacity = 0.3;
                         hardBar.Opacity = 0.3;
 
-                        // Highlight appropriate bars based on difficulty
                         switch (difficulty)
                         {
                             case DuoClassLibrary.Models.Difficulty.Easy:
@@ -664,18 +596,28 @@ namespace Duo.Views.Components
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error updating difficulty indicator: {ex.Message}");
+                Debug.WriteLine($"Error updating difficulty indicator: {ex.Message}");
             }
         }
     }
 
+    /// <summary>
+    /// Event args for flashcard exercise send event.
+    /// </summary>
     public class FlashcardExerciseEventArgs : EventArgs
     {
+        /// <summary>
+        /// Gets the user answer or content pairs.
+        /// </summary>
         public string ContentPairs { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FlashcardExerciseEventArgs"/> class.
+        /// </summary>
+        /// <param name="contentPairs">The user answer or content pairs.</param>
         public FlashcardExerciseEventArgs(string contentPairs)
         {
-            ContentPairs = contentPairs;
+            this.ContentPairs = contentPairs;
         }
     }
 }
