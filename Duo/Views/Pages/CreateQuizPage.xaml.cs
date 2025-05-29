@@ -1,41 +1,52 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using DuoClassLibrary.Models.Exercises;
-using DuoClassLibrary.Models.Quizzes;
-using Duo.Views.Components.Modals;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Dispatching;
+// <copyright file="CreateQuizPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models.Exercises;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A page for creating quizzes.
     /// </summary>
     public sealed partial class CreateQuizPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateQuizPage"/> class.
+        /// </summary>
         public CreateQuizPage()
         {
             this.InitializeComponent();
-            ViewModel.ShowListViewModal += (exercises) =>
+            this.ViewModel.ShowListViewModal += exercises =>
             {
                 this.DispatcherQueue.TryEnqueue(() =>
                 {
-                    ViewModel_openSelectExercises(exercises);
+                    this.ViewModel_openSelectExercises(exercises);
                 });
             };
-            ViewModel.RequestGoBack += ViewModel_RequestGoBack;
-            ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+            this.ViewModel.RequestGoBack += this.ViewModel_RequestGoBack;
+            this.ViewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
         }
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+
+        /// <summary>
+        /// Handles the ViewModel's request to go back.
+        /// </summary>
+        public void ViewModel_RequestGoBack(object? sender, EventArgs e)
         {
-            await ShowErrorMessage(e.Title, e.Message);
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            await this.ShowErrorMessage(e.Title, e.Message);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -47,7 +58,7 @@ namespace Duo.Views.Pages
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
@@ -58,14 +69,6 @@ namespace Duo.Views.Pages
             }
         }
 
-        public void ViewModel_RequestGoBack(object sender, EventArgs e)
-        {
-            if (this.Frame.CanGoBack)
-            {
-                this.Frame.GoBack();
-            }
-        }
-
         private async void ViewModel_openSelectExercises(List<Exercise> exercises)
         {
             var dialog = new ContentDialog
@@ -73,7 +76,7 @@ namespace Duo.Views.Pages
                 Title = "Select Exercise",
                 CloseButtonText = "Cancel",
                 DefaultButton = ContentDialogButton.Primary,
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
 
             var listView = new ListView
@@ -81,7 +84,7 @@ namespace Duo.Views.Pages
                 ItemsSource = exercises,
                 SelectionMode = ListViewSelectionMode.Single,
                 MaxHeight = 300,
-                ItemTemplate = (DataTemplate)Resources["ExerciseSelectionItemTemplate"]
+                ItemTemplate = (DataTemplate)this.Resources["ExerciseSelectionItemTemplate"],
             };
 
             dialog.Content = listView;
@@ -96,7 +99,7 @@ namespace Duo.Views.Pages
             var result = await dialog.ShowAsync();
             if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
             {
-                ViewModel.AddExercise(selectedExercise);
+                this.ViewModel.AddExercise(selectedExercise);
             }
         }
 

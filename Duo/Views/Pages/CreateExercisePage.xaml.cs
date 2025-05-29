@@ -1,40 +1,30 @@
-using System;
-using System.Threading.Tasks;
-using System.Reflection.Metadata;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Duo.Views.Components;
-using Duo.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
+// <copyright file="CreateExercisePage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A page for creating exercises.
     /// </summary>
     public sealed partial class CreateExercisePage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateExercisePage"/> class.
+        /// </summary>
         public CreateExercisePage()
         {
             try
             {
                 this.InitializeComponent();
-                ViewModel.RequestGoBack += ViewModel_RequestGoBack;
-                ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+                this.ViewModel.RequestGoBack += this.ViewModel_RequestGoBack;
+                this.ViewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
             }
             catch (Exception ex)
             {
@@ -42,11 +32,69 @@ namespace Duo.Views.Pages
             }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        /// <summary>
+        /// Handles the back button click event.
+        /// </summary>
+        public void BackButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                await ShowErrorMessage(e.Title, e.Message);
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"BackButton_Click error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles the cancel button click event.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e"> The event data.</param>
+        public void CancelButton_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"CancelButton_Click error: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// Handles the ViewModel's request to go back.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e"> The event data.</param>
+        public void ViewModel_RequestGoBack(object? sender, EventArgs e)
+        {
+            try
+            {
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"ViewModel_RequestGoBack error: {ex.Message}");
+            }
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            try
+            {
+                await this.ShowErrorMessage(e.Title, e.Message);
             }
             catch (Exception ex)
             {
@@ -63,7 +111,7 @@ namespace Duo.Views.Pages
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
@@ -71,51 +119,6 @@ namespace Duo.Views.Pages
             catch (Exception ex)
             {
                 Debug.WriteLine($"ContentDialog error: {ex.Message}");
-            }
-        }
-
-        public void BackButton_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"BackButton_Click error: {ex.Message}");
-            }
-        }
-
-        public void CancelButton_Click(object senderm, RoutedEventArgs e)
-        {
-            try
-            {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"CancelButton_Click error: {ex.Message}");
-            }
-        }
-
-        public void ViewModel_RequestGoBack(object sender, EventArgs e)
-        {
-            try
-            {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"ViewModel_RequestGoBack error: {ex.Message}");
             }
         }
     }

@@ -1,47 +1,49 @@
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using DuoClassLibrary.Models.Exercises;
-using DuoClassLibrary.Models.Quizzes;
-using Duo.Views.Components.Modals;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+// <copyright file="CreateSectionPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models.Quizzes;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// A page for creating sections.
     /// </summary>
     public sealed partial class CreateSectionPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateSectionPage"/> class.
+        /// </summary>
         public CreateSectionPage()
         {
             this.InitializeComponent();
-            this.Loaded += RunAfterLoaded;
+            this.Loaded += this.RunAfterLoaded;
+        }
+
+        public void ViewModelRequestGoBack(object sender, EventArgs e)
+        {
+            if (this.Frame.CanGoBack)
+            {
+                this.Frame.GoBack();
+            }
         }
 
         private void RunAfterLoaded(object sender, RoutedEventArgs e)
         {
-            ViewModel.ShowListViewModalQuizes += ViewModel_openSelectQuizes;
-            ViewModel.ShowListViewModalExams += ViewModel_openSelectExams;
-            ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
-            ViewModel.RequestGoBack += ViewModel_RequestGoBack;
+            this.ViewModel.ShowListViewModalQuizes += this.ViewModel_openSelectQuizes;
+            this.ViewModel.ShowListViewModalExams += this.ViewModel_openSelectExams;
+            this.ViewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
+            this.ViewModel.RequestGoBack += this.ViewModelRequestGoBack;
         }
 
         private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
         {
-            await ShowErrorMessage(e.Title, e.Message);
+            await this.ShowErrorMessage(e.Title, e.Message);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -51,18 +53,10 @@ namespace Duo.Views.Pages
                 Title = title,
                 Content = message,
                 CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
 
             await dialog.ShowAsync();
-        }
-
-        public void ViewModel_RequestGoBack(object sender, EventArgs e)
-        {
-            if (this.Frame.CanGoBack)
-            {
-                this.Frame.GoBack();
-            }
         }
 
         private async void ViewModel_openSelectExams(List<Exam> exams)
@@ -74,7 +68,7 @@ namespace Duo.Views.Pages
                     Title = "Select Exam",
                     CloseButtonText = "Cancel",
                     DefaultButton = ContentDialogButton.Primary,
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 var listView = new ListView
@@ -82,7 +76,7 @@ namespace Duo.Views.Pages
                     ItemsSource = exams,
                     SelectionMode = ListViewSelectionMode.Single,
                     MaxHeight = 300,
-                    ItemTemplate = (DataTemplate)Resources["ExamSelectionItemTemplate"]
+                    ItemTemplate = (DataTemplate)this.Resources["ExamSelectionItemTemplate"],
                 };
 
                 dialog.Content = listView;
@@ -97,12 +91,12 @@ namespace Duo.Views.Pages
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Primary && listView.SelectedItem is Exam selectedExam)
                 {
-                    ViewModel.AddExam(selectedExam);
+                    this.ViewModel.AddExam(selectedExam);
                 }
             }
             catch (Exception ex)
             {
-                await ShowErrorMessage("Selection Error", $"Failed to add exam: {ex.Message}");
+                await this.ShowErrorMessage("Selection Error", $"Failed to add exam: {ex.Message}");
             }
         }
 
@@ -115,7 +109,7 @@ namespace Duo.Views.Pages
                     Title = "Select Quiz",
                     CloseButtonText = "Cancel",
                     DefaultButton = ContentDialogButton.Primary,
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 var listView = new ListView
@@ -123,7 +117,7 @@ namespace Duo.Views.Pages
                     ItemsSource = quizzes,
                     SelectionMode = ListViewSelectionMode.Single,
                     MaxHeight = 300,
-                    ItemTemplate = (DataTemplate)Resources["QuizSelectionItemTemplate"]
+                    ItemTemplate = (DataTemplate)Resources["QuizSelectionItemTemplate"],
                 };
 
                 dialog.Content = listView;
@@ -138,12 +132,12 @@ namespace Duo.Views.Pages
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Primary && listView.SelectedItem is Quiz selectedQuiz)
                 {
-                    ViewModel.AddQuiz(selectedQuiz);
+                    this.ViewModel.AddQuiz(selectedQuiz);
                 }
             }
             catch (Exception ex)
             {
-                await ShowErrorMessage("Selection Error", $"Failed to add quiz: {ex.Message}");
+                await this.ShowErrorMessage("Selection Error", $"Failed to add quiz: {ex.Message}");
             }
         }
 
