@@ -1,38 +1,58 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using System.Threading.Tasks;
-using DuoClassLibrary.Models.Exercises;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
+// <copyright file="CreateExamPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models.Exercises;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Page for creating a new exam and selecting exercises.
     /// </summary>
     public sealed partial class CreateExamPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CreateExamPage"/> class.
+        /// </summary>
         public CreateExamPage()
         {
             this.InitializeComponent();
-            this.Loaded += CreateExamPage_Loaded;
+            this.Loaded += this.CreateExamPage_Loaded;
         }
 
-        private void CreateExamPage_Loaded(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Handles navigation back when requested by the ViewModel.
+        /// </summary>
+        public void ViewModel_RequestGoBack(object? sender, EventArgs e)
         {
-            ViewModel.ShowListViewModal += ViewModel_openSelectExercises;
-            ViewModel.RequestGoBack += ViewModel_RequestGoBack;
-            ViewModel.ShowErrorMessageRequested += ViewModel_ShowErrorMessageRequested;
+            try
+            {
+                if (this.Frame.CanGoBack)
+                {
+                    this.Frame.GoBack();
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = this.ShowErrorMessage("Navigation Error", $"Failed to navigate back.\nDetails: {ex.Message}");
+            }
         }
 
-        private async void ViewModel_ShowErrorMessageRequested(object sender, (string Title, string Message) e)
+        private void CreateExamPage_Loaded(object? sender, RoutedEventArgs e)
         {
-            await ShowErrorMessage(e.Title, e.Message);
+            this.ViewModel.ShowListViewModal += this.ViewModel_openSelectExercises;
+            this.ViewModel.RequestGoBack += this.ViewModel_RequestGoBack;
+            this.ViewModel.ShowErrorMessageRequested += this.ViewModel_ShowErrorMessageRequested;
+        }
+
+        private async void ViewModel_ShowErrorMessageRequested(object? sender, (string Title, string Message) e)
+        {
+            await this.ShowErrorMessage(e.Title, e.Message);
         }
 
         private async Task ShowErrorMessage(string title, string message)
@@ -44,30 +64,15 @@ namespace Duo.Views.Pages
                     Title = title,
                     Content = message,
                     CloseButtonText = "OK",
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 await dialog.ShowAsync();
             }
             catch (Exception ex)
             {
-                // You may optionally log this or suppress it to avoid recursive dialog errors
+                // Optionally log this or suppress it to avoid recursive dialog errors
                 Console.WriteLine($"Error dialog failed to display. Details: {ex.Message}");
-            }
-        }
-
-        public void ViewModel_RequestGoBack(object sender, EventArgs e)
-        {
-            try
-            {
-                if (this.Frame.CanGoBack)
-                {
-                    this.Frame.GoBack();
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = ShowErrorMessage("Navigation Error", $"Failed to navigate back.\nDetails: {ex.Message}");
             }
         }
 
@@ -80,7 +85,7 @@ namespace Duo.Views.Pages
                     Title = "Select Exercise",
                     CloseButtonText = "Cancel",
                     DefaultButton = ContentDialogButton.Primary,
-                    XamlRoot = this.XamlRoot
+                    XamlRoot = this.XamlRoot,
                 };
 
                 var listView = new ListView
@@ -88,7 +93,7 @@ namespace Duo.Views.Pages
                     ItemsSource = exercises,
                     SelectionMode = ListViewSelectionMode.Single,
                     MaxHeight = 300,
-                    ItemTemplate = (DataTemplate)Resources["ExerciseSelectionItemTemplate"]
+                    ItemTemplate = (DataTemplate)this.Resources["ExerciseSelectionItemTemplate"],
                 };
 
                 dialog.Content = listView;
@@ -103,16 +108,16 @@ namespace Duo.Views.Pages
                 var result = await dialog.ShowAsync();
                 if (result == ContentDialogResult.Primary && listView.SelectedItem is Exercise selectedExercise)
                 {
-                    ViewModel.AddExercise(selectedExercise);
+                    this.ViewModel.AddExercise(selectedExercise);
                 }
             }
             catch (Exception ex)
             {
-                await ShowErrorMessage("Dialog Error", $"Failed to open exercise selection dialog.\nDetails: {ex.Message}");
+                await this.ShowErrorMessage("Dialog Error", $"Failed to open exercise selection dialog.\nDetails: {ex.Message}");
             }
         }
 
-        private void CancelButton_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object? sender, RoutedEventArgs e)
         {
             try
             {
@@ -123,7 +128,7 @@ namespace Duo.Views.Pages
             }
             catch (Exception ex)
             {
-                _ = ShowErrorMessage("Navigation Error", $"Failed to cancel and go back.\nDetails: {ex.Message}");
+                _ = this.ShowErrorMessage("Navigation Error", $"Failed to cancel and go back.\nDetails: {ex.Message}");
             }
         }
     }

@@ -1,29 +1,37 @@
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Navigation;
-using System;
-using System.Diagnostics;
-using DuoClassLibrary.Models;
-using System.Collections.Generic;
-using Duo.ViewModels;
-using Duo.Views.Components;
-using static Duo.App;
-using DuolingoNou.Views.Pages;
-using System.Threading.Tasks;
+// <copyright file="CategoryPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+    using Duo.ViewModels;
+    using Duo.Views.Components;
+    using DuoClassLibrary.Models;
+    using DuolingoNou.Views.Pages;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Navigation;
+
+    /// <summary>
+    /// Displays categories and handles navigation for the main community page.
+    /// </summary>
     public sealed partial class CategoryPage : Page
     {
-        private CategoryPageViewModel _viewModel;
+        private CategoryPageViewModel viewModel = null!;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CategoryPage"/> class.
+        /// </summary>
         public CategoryPage()
         {
             try
             {
                 this.InitializeComponent();
-                this.NavigationCacheMode = Microsoft.UI.Xaml.Navigation.NavigationCacheMode.Required;
-                _ = InitializeAsync();
+                this.NavigationCacheMode = NavigationCacheMode.Required;
+                _ = this.InitializeAsync();
             }
             catch (Exception ex)
             {
@@ -31,32 +39,54 @@ namespace Duo.Views.Pages
             }
         }
 
+        /// <summary>
+        /// Refreshes the current view, navigating to the current category or main page.
+        /// </summary>
+        public void RefreshCurrentView()
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(this.viewModel.CurrentCategoryName))
+                {
+                    this.contentFrame.Navigate(typeof(PostListPage), this.viewModel.CurrentCategoryName);
+                }
+                else
+                {
+                    this.contentFrame.Navigate(typeof(MainPage));
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Refresh current view failed: {ex.Message}");
+            }
+        }
+
         private async Task InitializeAsync()
         {
             try
             {
-                _viewModel = new CategoryPageViewModel();
-                this.DataContext = _viewModel;
+                this.viewModel = new CategoryPageViewModel();
+                this.DataContext = this.viewModel;
 
                 // Subscribe to events
-                _viewModel.NavigationRequested += OnNavigationRequested;
-                _viewModel.CategoryNavigationRequested += OnCategoryNavigationRequested;
-                _viewModel.PostCreationSucceeded += OnPostCreationSucceeded;
+                this.viewModel.NavigationRequested += this.OnNavigationRequested;
+                this.viewModel.CategoryNavigationRequested += this.OnCategoryNavigationRequested;
+                this.viewModel.PostCreationSucceeded += this.OnPostCreationSucceeded;
 
                 // Wait for categories to load
-                while (_viewModel.IsLoading)
+                while (this.viewModel.IsLoading)
                 {
                     await Task.Delay(100);
                 }
 
-                PopulateCommunityMenuItems();
-                
+                this.PopulateCommunityMenuItems();
+
                 // Set the username from the view model
-                UsernameTextBlock.Text = _viewModel.Username;
+                this.UsernameTextBlock.Text = this.viewModel.Username;
 
                 try
                 {
-                    contentFrame.Navigate(typeof(MainPage));
+                    this.contentFrame.Navigate(typeof(MainPage));
                 }
                 catch (Exception ex)
                 {
@@ -73,7 +103,7 @@ namespace Duo.Views.Pages
         {
             try
             {
-                var categoryNames = _viewModel.CategoryNames;
+                var categoryNames = this.viewModel.CategoryNames;
                 if (categoryNames == null || categoryNames.Count == 0)
                 {
                     Debug.WriteLine("No categories found or categoryNames is null");
@@ -94,7 +124,7 @@ namespace Duo.Views.Pages
                     {
                         Content = categoryName.Replace("-", " "),
                         Icon = new SymbolIcon(Symbol.Message),
-                        Tag = categoryName
+                        Tag = categoryName,
                     };
 
                     ToolTipService.SetToolTip(item, categoryName.Replace("-", " "));
@@ -114,38 +144,39 @@ namespace Duo.Views.Pages
                 switch (selectedItem.Tag)
                 {
                     case "Profile":
-                        contentFrame.Navigate(typeof(ProfileSettingsPage));
+                        this.contentFrame.Navigate(typeof(ProfileSettingsPage));
                         break;
                     case "Settings":
-                        contentFrame.Navigate(typeof(ProfileSettingsPage));
+                        this.contentFrame.Navigate(typeof(ProfileSettingsPage));
                         break;
                     case "HomePage":
-                        contentFrame.Navigate(typeof(MainPage));
+                        this.contentFrame.Navigate(typeof(MainPage));
                         break;
                     case "QuizParent":
-                        contentFrame.Navigate(typeof(Views.Pages.RoadmapMainPage), "Roadmap");
+                        this.contentFrame.Navigate(typeof(Views.Pages.RoadmapMainPage), "Roadmap");
                         break;
                     case "QuizAdminParent":
-                        contentFrame.Navigate(typeof(Views.Pages.AdminMainPage), "Admin");
+                        this.contentFrame.Navigate(typeof(Views.Pages.AdminMainPage), "Admin");
                         break;
                     case "CoursesParent":
-                        contentFrame.Navigate(typeof(Duo.Views.MainPage), "Main");
+                        this.contentFrame.Navigate(typeof(Duo.Views.MainPage), "Main");
                         break;
                     default:
                         if (selectedItem.Tag is string categoryName)
                         {
-                            contentFrame.Navigate(typeof(PostListPage), categoryName);
+                            this.contentFrame.Navigate(typeof(PostListPage), categoryName);
                         }
+
                         break;
                 }
             }
         }
 
-        private void OnNavigationRequested(object sender, Type pageType)
+        private void OnNavigationRequested(object? sender, Type pageType)
         {
             try
             {
-                contentFrame.Navigate(pageType);
+                this.contentFrame.Navigate(pageType);
             }
             catch (Exception ex)
             {
@@ -153,11 +184,11 @@ namespace Duo.Views.Pages
             }
         }
 
-        private void OnCategoryNavigationRequested(object sender, string category)
+        private void OnCategoryNavigationRequested(object? sender, string category)
         {
             try
             {
-                contentFrame.Navigate(typeof(PostListPage), category);
+                this.contentFrame.Navigate(typeof(PostListPage), category);
             }
             catch (Exception ex)
             {
@@ -165,54 +196,29 @@ namespace Duo.Views.Pages
             }
         }
 
-        private void OnPostCreationSucceeded(object sender, bool success)
+        private void OnPostCreationSucceeded(object? sender, bool success)
         {
             // This would handle any UI updates needed when post creation succeeds
             // Currently nothing specific is needed here as we navigate to refresh the list
         }
 
-        private async void CreatePostBtn_CreatePostRequested(object sender, RoutedEventArgs e) 
+        private async void CreatePostBtn_CreatePostRequested(object? sender, RoutedEventArgs e)
         {
-            // First approach: Use the dialog with the embedded ViewModel
             var dialogComponent = new DialogComponent();
-            var result = await dialogComponent.ShowCreatePostDialog(this.XamlRoot, _viewModel.CurrentCategoryId);
-            
+            var result = await dialogComponent.ShowCreatePostDialog(this.XamlRoot, this.viewModel.CurrentCategoryId);
+
             if (result.Success)
             {
-                // The post is already created in the database through the ViewModel
-                // Just show the success message and refresh the page
-                
-                // Show success message
-                ContentDialog successDialog = new ContentDialog
+                var successDialog = new ContentDialog
                 {
                     XamlRoot = this.XamlRoot,
                     Title = "Success",
                     Content = "Your post was created successfully!",
-                    CloseButtonText = "OK"
+                    CloseButtonText = "OK",
                 };
                 await successDialog.ShowAsync();
-                
-                // Use the view model to handle post creation success
-                _viewModel.HandlePostCreation(true);
-            }
-        }
 
-        public void RefreshCurrentView()
-        {
-            try
-            {
-                if (!string.IsNullOrEmpty(_viewModel.CurrentCategoryName))
-                {
-                    contentFrame.Navigate(typeof(PostListPage), _viewModel.CurrentCategoryName);
-                }
-                else
-                {
-                    contentFrame.Navigate(typeof(MainPage));
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Refresh current view failed: {ex.Message}");
+                this.viewModel.HandlePostCreation(true);
             }
         }
     }

@@ -1,65 +1,90 @@
-using System;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using DuoClassLibrary.Models.Quizzes;
-using DuoClassLibrary.Models.Exercises;
-using Duo.Views.Components.Modals;
+// <copyright file="AdminMainPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using Duo.Views.Components.Modals;
+    using DuoClassLibrary.Models.Exercises;
+    using DuoClassLibrary.Models.Quizzes;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+
+    /// <summary>
+    /// Admin main page for managing sections, exercises, quizzes, and exams.
+    /// </summary>
     public sealed partial class AdminMainPage : Page
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AdminMainPage"/> class.
+        /// </summary>
         public AdminMainPage()
         {
             this.InitializeComponent();
 
             // Subscribe to modal events
-            ManageSectionsCard.AddButtonClicked += CreateSection_Click;
-            ManageExercisesCard.AddButtonClicked += CreateExercise_Click;
-            ManageQuizesCard.AddButtonClicked += CreateQuiz_Click;
-            ManageExamsCard.AddButtonClicked += CreateExam_Click;
+            this.ManageSectionsCard.AddButtonClicked += this.CreateSection_Click;
+            this.ManageExercisesCard.AddButtonClicked += this.CreateExercise_Click;
+            this.ManageQuizesCard.AddButtonClicked += this.CreateQuiz_Click;
+            this.ManageExamsCard.AddButtonClicked += this.CreateExam_Click;
 
-            ManageSectionsCard.ManageButtonClicked += OpenManageSectionsPage_Click;
-            ManageExercisesCard.ManageButtonClicked += OpenManageExercisesPage_Click;
-            ManageQuizesCard.ManageButtonClicked += OpenManageQuizesPage_Click;
-            ManageExamsCard.ManageButtonClicked += OpenManageExamsPage_Click;
-        }
-
-        private void CreateSection_Click(object sender, EventArgs e)
-        {
-            Frame.Navigate(typeof(CreateSectionPage));
-        }
-        private void CreateQuiz_Click(object sender, EventArgs e)
-        {
-            Frame.Navigate(typeof(CreateQuizPage));
+            this.ManageSectionsCard.ManageButtonClicked += this.OpenManageSectionsPage_Click;
+            this.ManageExercisesCard.ManageButtonClicked += this.OpenManageExercisesPage_Click;
+            this.ManageQuizesCard.ManageButtonClicked += this.OpenManageQuizesPage_Click;
+            this.ManageExamsCard.ManageButtonClicked += this.OpenManageExamsPage_Click;
         }
 
-        private void CreateExam_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Navigates to the manage exercises page.
+        /// </summary>
+        public void OpenManageExercisesPage_Click(object? sender, EventArgs e)
         {
-            Frame.Navigate(typeof(CreateExamPage));
+            this.Frame.Navigate(typeof(ManageExercisesPage));
         }
 
-        private void CreateExercise_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Navigates to the manage quizzes page.
+        /// </summary>
+        public void OpenManageQuizesPage_Click(object? sender, EventArgs e)
         {
-            Frame.Navigate(typeof(CreateExercisePage));
+            this.Frame.Navigate(typeof(ManageQuizesPage));
         }
 
-        public void OpenManageExercisesPage_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Navigates to the manage sections page.
+        /// </summary>
+        public void OpenManageSectionsPage_Click(object? sender, EventArgs e)
         {
-            Frame.Navigate(typeof(ManageExercisesPage));
+            this.Frame.Navigate(typeof(ManageSectionsPage));
         }
 
-        public void OpenManageQuizesPage_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Navigates to the manage exams page.
+        /// </summary>
+        public void OpenManageExamsPage_Click(object? sender, EventArgs e)
         {
-            Frame.Navigate(typeof(ManageQuizesPage));
+            this.Frame.Navigate(typeof(ManageExamsPage));
         }
-        public void OpenManageSectionsPage_Click(object sender, EventArgs e)
+
+        private void CreateSection_Click(object? sender, EventArgs e)
         {
-            Frame.Navigate(typeof(ManageSectionsPage));
+            this.Frame.Navigate(typeof(CreateSectionPage));
         }
-        public void OpenManageExamsPage_Click(object sender, EventArgs e)
+
+        private void CreateQuiz_Click(object? sender, EventArgs e)
         {
-            Frame.Navigate(typeof(ManageExamsPage));
+            this.Frame.Navigate(typeof(CreateQuizPage));
+        }
+
+        private void CreateExam_Click(object? sender, EventArgs e)
+        {
+            this.Frame.Navigate(typeof(CreateExamPage));
+        }
+
+        private void CreateExercise_Click(object? sender, EventArgs e)
+        {
+            this.Frame.Navigate(typeof(CreateExercisePage));
         }
     }
 }
