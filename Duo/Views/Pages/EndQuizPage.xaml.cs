@@ -1,41 +1,53 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using DuoClassLibrary.Models.Quizzes;
+// <copyright file="EndQuizPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
 namespace Duo.Views.Pages
 {
+    using System;
+    using System.Threading.Tasks;
+    using DuoClassLibrary.Models.Quizzes;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
+    using Microsoft.UI.Xaml.Media;
+
+    /// <summary>
+    /// A page that displays the results at the end of a quiz.
+    /// </summary>
     public sealed partial class EndQuizPage : Page
     {
         private readonly Quiz quiz;
         private readonly TimeSpan timeTaken;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EndQuizPage"/> class.
+        /// </summary>
+        /// <param name="quiz">The quiz object.</param>
+        /// <param name="timeTaken">The time taken to complete the quiz.</param>
         public EndQuizPage(Quiz quiz, TimeSpan timeTaken)
         {
             this.InitializeComponent();
             this.quiz = quiz;
             this.timeTaken = timeTaken;
-
-            DisplayResults();
+            this.DisplayResults();
         }
 
         private void DisplayResults()
         {
-            double scorePercentage = ((double)quiz.GetNumberOfCorrectAnswers() / quiz.GetNumberOfAnswersGiven()) * 100;
+            double scorePercentage = ((double)this.quiz.GetNumberOfCorrectAnswers() / this.quiz.GetNumberOfAnswersGiven()) * 100;
 
-            ScoreTextBlock.Text = $"{quiz.GetNumberOfCorrectAnswers()}/{quiz.GetNumberOfAnswersGiven()} ({scorePercentage:F1}%)";
-            TimeTextBlock.Text = $"{timeTaken.Minutes}m {timeTaken.Seconds}s";
+            this.ScoreTextBlock.Text = $"{this.quiz.GetNumberOfCorrectAnswers()}/{this.quiz.GetNumberOfAnswersGiven()} ({scorePercentage:F1}%)";
+            this.TimeTextBlock.Text = $"{this.timeTaken.Minutes}m {this.timeTaken.Seconds}s";
 
-            if (scorePercentage >= quiz.GetPassingThreshold())
+            if (scorePercentage >= this.quiz.GetPassingThreshold())
             {
-                FeedbackTextBlock.Text = "Great job! You've passed the quiz!";
-                FeedbackTextBlock.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Green);
+                this.FeedbackTextBlock.Text = "Great job! You've passed the quiz!";
+                this.FeedbackTextBlock.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Green);
             }
             else
             {
-                FeedbackTextBlock.Text = "Keep practicing! You can do better next time.";
-                FeedbackTextBlock.Foreground = new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.Red);
+                this.FeedbackTextBlock.Text = "Keep practicing! You can do better next time.";
+                this.FeedbackTextBlock.Foreground = new SolidColorBrush(Microsoft.UI.Colors.Red);
             }
         }
 
@@ -43,18 +55,18 @@ namespace Duo.Views.Pages
         {
             try
             {
-                if (Frame.CanGoBack)
+                if (this.Frame.CanGoBack)
                 {
-                    Frame.GoBack();
+                    this.Frame.GoBack();
                 }
                 else
                 {
-                    Frame.Navigate(typeof(RoadmapMainPage));
+                    this.Frame.Navigate(typeof(RoadmapMainPage));
                 }
             }
             catch (Exception ex)
             {
-                await ShowErrorMessage("Navigation Error", ex.Message);
+                await this.ShowErrorMessage("Navigation Error", ex.Message);
             }
         }
 
@@ -65,7 +77,7 @@ namespace Duo.Views.Pages
                 Title = title,
                 Content = message,
                 CloseButtonText = "OK",
-                XamlRoot = this.XamlRoot
+                XamlRoot = this.XamlRoot,
             };
 
             await dialog.ShowAsync();

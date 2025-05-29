@@ -1,5 +1,5 @@
-// <copyright file="LoginWindow.xaml.cs" company="YourCompany">
-// Copyright (c) YourCompany. All rights reserved.
+// <copyright file="LoginWindow.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
 // </copyright>
 
 namespace Duo.Views.Pages

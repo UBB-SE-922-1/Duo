@@ -1,130 +1,116 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Navigation;
-using DuoClassLibrary.Models;
-using System.Collections.ObjectModel;
+// <copyright file="LeaderboardPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
+// </copyright>
 
-using System.Data;
-using DuolingoNou.Views.Pages;
-using Duo.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
-using System.Threading.Tasks;
-
-// To learn more about WinUI, the WinUI project structure,
-// and more about our project templates, see: http://aka.ms/winui-project-info.
-
-namespace Duo.Views.Pages;
-
-
-/// <summary>
-/// An empty page that can be used on its own or navigated to within a Frame.
-/// </summary>
-public sealed partial class LeaderboardPage : Page
+namespace Duo.Views.Pages
 {
-    public ObservableCollection<LeaderboardEntry> Leaderboard { get; set; }
-    private LeaderboardViewModel _leaderboardViewModel;
-    private string _selectedMode = "Global";
-    private int currentUserId = App.CurrentUser.UserId;
-    
-    public LeaderboardPage()
-    {
-        this.InitializeComponent();
-        _leaderboardViewModel = App.ServiceProvider.GetRequiredService<LeaderboardViewModel>();
-        Leaderboard = new ObservableCollection<LeaderboardEntry>();//check here later 
-        LeaderboardListView.ItemsSource = Leaderboard;
-        CurrentUserRank.Text = $"Your Rank: {_leaderboardViewModel.GetCurrentUserGlobalRank(currentUserId, "Accuracy")}";
-    }
+    using System;
+    using System.Collections.ObjectModel;
+    using System.Threading.Tasks;
+    using Duo.ViewModels;
+    using DuoClassLibrary.Models;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.UI.Xaml;
+    using Microsoft.UI.Xaml.Controls;
 
-    // Event handler for Global button click
-    private async void GlobalButton_Click(object sender, RoutedEventArgs e)
+    /// <summary>
+    /// A page that displays the leaderboard.
+    /// </summary>
+    public sealed partial class LeaderboardPage : Page
     {
-        // Update the Leaderboard to display global rankings
-        _selectedMode = "Global";
-        LeaderboardListView.ItemsSource = await _leaderboardViewModel.GetGlobalLeaderboard("Accuracy");
-        CurrentUserRank.Text = $"Your Rank: {await _leaderboardViewModel.GetCurrentUserGlobalRank(currentUserId, "Accuracy")}";
-        RankingCriteriaComboBox.SelectedItem = SortBy;
-    }
 
-    // Event handler for Friends button click
-    private async void FriendsButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Update the Leaderboard to display friends' rankings
-        _selectedMode = "Friends";
-        var friendsLeaderboard = await _leaderboardViewModel.GetFriendsLeaderboard(currentUserId, "Accuracy");
-        LeaderboardListView.ItemsSource = friendsLeaderboard;
-        CurrentUserRank.Text = $"Your Rank: {await _leaderboardViewModel.GetCurrentUserFriendsRank(currentUserId, "Accuracy")}";
-        RankingCriteriaComboBox.SelectedItem = SortBy;
-    }
+        private readonly LeaderboardViewModel leaderboardViewModel;
+        private readonly int currentUserId = App.CurrentUser.UserId;
+        private string selectedMode = "Global";
 
-    private async void RefreshButton_Click(object sender, RoutedEventArgs e)
-    {
-        // Refresh the Leaderboard
-        if (_selectedMode == "Global")
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LeaderboardPage"/> class.
+        /// </summary>
+        public LeaderboardPage()
         {
-            Leaderboard = new ObservableCollection<LeaderboardEntry>(await _leaderboardViewModel.GetGlobalLeaderboard("Accuracy"));
-            CurrentUserRank.Text = $"Your Rank: {_leaderboardViewModel.GetCurrentUserGlobalRank(currentUserId, "Accuracy")}";
+            this.InitializeComponent();
+            this.leaderboardViewModel = App.ServiceProvider.GetRequiredService<LeaderboardViewModel>();
+            this.Leaderboard = new ObservableCollection<LeaderboardEntry>();
+            this.LeaderboardListView.ItemsSource = this.Leaderboard;
+            this.CurrentUserRank.Text = $"Your Rank: {this.leaderboardViewModel.GetCurrentUserGlobalRank(this.currentUserId, "Accuracy")}";
         }
-        else
+
+        /// <summary>
+        /// Gets or sets the leaderboard entries.
+        /// </summary>
+        public ObservableCollection<LeaderboardEntry> Leaderboard { get; set; }
+
+        private async void GlobalButton_Click(object sender, RoutedEventArgs e)
         {
-            var friendsLeaderboard = await _leaderboardViewModel.GetFriendsLeaderboard(currentUserId, "Accuracy");
-            Leaderboard = new ObservableCollection<LeaderboardEntry>(friendsLeaderboard);
-            CurrentUserRank.Text = $"Your Rank: {await _leaderboardViewModel.GetCurrentUserFriendsRank(currentUserId, "Accuracy")}";
+            this.selectedMode = "Global";
+            this.LeaderboardListView.ItemsSource = await this.leaderboardViewModel.GetGlobalLeaderboard("Accuracy");
+            this.CurrentUserRank.Text = $"Your Rank: {await this.leaderboardViewModel.GetCurrentUserGlobalRank(this.currentUserId, "Accuracy")}";
+            this.RankingCriteriaComboBox.SelectedItem = this.SortBy;
         }
-        LeaderboardListView.ItemsSource = Leaderboard;
-        RankingCriteriaComboBox.SelectedItem = SortBy;
-    }
 
-    private async void RankingCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-        // Get the selected item
-        var selectedItem = (ComboBoxItem)RankingCriteriaComboBox.SelectedItem;
-
-        if (selectedItem != null)
+        private async void FriendsButton_Click(object sender, RoutedEventArgs e)
         {
-            string selectedCriteria = selectedItem.Content.ToString();
+            this.selectedMode = "Friends";
+            var friendsLeaderboard = await this.leaderboardViewModel.GetFriendsLeaderboard(this.currentUserId, "Accuracy");
+            this.LeaderboardListView.ItemsSource = friendsLeaderboard;
+            this.CurrentUserRank.Text = $"Your Rank: {await this.leaderboardViewModel.GetCurrentUserFriendsRank(this.currentUserId, "Accuracy")}";
+            this.RankingCriteriaComboBox.SelectedItem = this.SortBy;
+        }
 
-            switch (selectedCriteria)
+        private async void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (this.selectedMode == "Global")
             {
-                case "Accuracy":
-                    if (_selectedMode == "Global")
-                    {
-                        Leaderboard = new ObservableCollection<LeaderboardEntry>(await _leaderboardViewModel.GetGlobalLeaderboard("Accuracy"));
-                        CurrentUserRank.Text = $"Your Rank: {_leaderboardViewModel.GetCurrentUserGlobalRank(currentUserId, "Accuracy")}";
-                    }
-                    else
-                    {
-                        var friendsLeaderboard = await _leaderboardViewModel.GetFriendsLeaderboard(currentUserId, "Accuracy");
-                        Leaderboard = new ObservableCollection<LeaderboardEntry>(friendsLeaderboard);
-                        CurrentUserRank.Text = $"Your Rank: {await _leaderboardViewModel.GetCurrentUserFriendsRank(currentUserId, "Accuracy")}";
-                    }
-                    LeaderboardListView.ItemsSource = Leaderboard;
-                    break;
-                
-                case "CompletedQuizzes":
-                    if (_selectedMode == "Global")
-                    {
-                        Leaderboard = new ObservableCollection<LeaderboardEntry>(await _leaderboardViewModel.GetGlobalLeaderboard("CompletedQuizzes"));
-                        CurrentUserRank.Text = $"Your Rank: {_leaderboardViewModel.GetCurrentUserGlobalRank(currentUserId, "CompletedQuizzes")}";
-                    }
-                    else
-                    {
-                        var friendsLeaderboard = await _leaderboardViewModel.GetFriendsLeaderboard(currentUserId, "CompletedQuizzes");
-                        Leaderboard = new ObservableCollection<LeaderboardEntry>(friendsLeaderboard);
-                        CurrentUserRank.Text = $"Your Rank: {await _leaderboardViewModel.GetCurrentUserFriendsRank(currentUserId, "CompletedQuizzes")}";
-                    }
-                    LeaderboardListView.ItemsSource = Leaderboard;
-                    break;
+                this.Leaderboard = new ObservableCollection<LeaderboardEntry>(await this.leaderboardViewModel.GetGlobalLeaderboard("Accuracy"));
+                this.CurrentUserRank.Text = $"Your Rank: {this.leaderboardViewModel.GetCurrentUserGlobalRank(this.currentUserId, "Accuracy")}";
+            }
+            else
+            {
+                var friendsLeaderboard = await this.leaderboardViewModel.GetFriendsLeaderboard(this.currentUserId, "Accuracy");
+                this.Leaderboard = new ObservableCollection<LeaderboardEntry>(friendsLeaderboard);
+                this.CurrentUserRank.Text = $"Your Rank: {await this.leaderboardViewModel.GetCurrentUserFriendsRank(this.currentUserId, "Accuracy")}";
+            }
+            this.LeaderboardListView.ItemsSource = this.Leaderboard;
+            this.RankingCriteriaComboBox.SelectedItem = this.SortBy;
+        }
+
+        private async void RankingCriteriaComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (this.RankingCriteriaComboBox.SelectedItem is ComboBoxItem selectedItem)
+            {
+                string selectedCriteria = selectedItem.Content.ToString();
+                switch (selectedCriteria)
+                {
+                    case "Accuracy":
+                        if (this.selectedMode == "Global")
+                        {
+                            this.Leaderboard = new ObservableCollection<LeaderboardEntry>(await this.leaderboardViewModel.GetGlobalLeaderboard("Accuracy"));
+                            this.CurrentUserRank.Text = $"Your Rank: {this.leaderboardViewModel.GetCurrentUserGlobalRank(this.currentUserId, "Accuracy")}";
+                        }
+                        else
+                        {
+                            var friendsLeaderboard = await this.leaderboardViewModel.GetFriendsLeaderboard(this.currentUserId, "Accuracy");
+                            this.Leaderboard = new ObservableCollection<LeaderboardEntry>(friendsLeaderboard);
+                            this.CurrentUserRank.Text = $"Your Rank: {await this.leaderboardViewModel.GetCurrentUserFriendsRank(this.currentUserId, "Accuracy")}";
+                        }
+                        this.LeaderboardListView.ItemsSource = this.Leaderboard;
+                        break;
+
+                    case "CompletedQuizzes":
+                        if (this.selectedMode == "Global")
+                        {
+                            this.Leaderboard = new ObservableCollection<LeaderboardEntry>(await this.leaderboardViewModel.GetGlobalLeaderboard("CompletedQuizzes"));
+                            this.CurrentUserRank.Text = $"Your Rank: {this.leaderboardViewModel.GetCurrentUserGlobalRank(this.currentUserId, "CompletedQuizzes")}";
+                        }
+                        else
+                        {
+                            var friendsLeaderboard = await this.leaderboardViewModel.GetFriendsLeaderboard(this.currentUserId, "CompletedQuizzes");
+                            this.Leaderboard = new ObservableCollection<LeaderboardEntry>(friendsLeaderboard);
+                            this.CurrentUserRank.Text = $"Your Rank: {await this.leaderboardViewModel.GetCurrentUserFriendsRank(this.currentUserId, "CompletedQuizzes")}";
+                        }
+                        this.LeaderboardListView.ItemsSource = this.Leaderboard;
+                        break;
+                }
             }
         }
     }
