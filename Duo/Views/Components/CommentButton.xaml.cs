@@ -1,5 +1,5 @@
-// <copyright file="CommentButton.xaml.cs" company="YourCompany">
-// Copyright (c) YourCompany. All rights reserved.
+// <copyright file="CommentButton.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
 // </copyright>
 
 namespace Duo.Views.Components
@@ -13,17 +13,17 @@ namespace Duo.Views.Components
     public sealed partial class CommentButton : UserControl
     {
         /// <summary>
-        /// Occurs when the comment button is clicked.
-        /// </summary>
-        public event RoutedEventHandler? Click;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="CommentButton"/> class.
         /// </summary>
         public CommentButton()
         {
             this.InitializeComponent();
         }
+
+        /// <summary>
+        /// Occurs when the comment button is clicked.
+        /// </summary>
+        public event RoutedEventHandler? Click;
 
         private void CommentButton_Click(object sender, RoutedEventArgs e)
         {
