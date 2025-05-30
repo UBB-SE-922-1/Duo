@@ -1,5 +1,5 @@
-// <copyright file="SignUpPage.xaml.cs" company="YourCompany">
-// Copyright (c) YourCompany. All rights reserved.
+// <copyright file="SignUpPage.xaml.cs" company="DuoISS">
+// Copyright (c) DuoISS. All rights reserved.
 // </copyright>
 
 namespace Duo.Views.Pages
@@ -19,11 +19,6 @@ namespace Duo.Views.Pages
     public sealed partial class SignUpPage : Page
     {
         /// <summary>
-        /// Gets the ViewModel for this page.
-        /// </summary>
-        public SignUpViewModel ViewModel { get; private set; }
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="SignUpPage"/> class.
         /// </summary>
         public SignUpPage()
@@ -32,6 +27,11 @@ namespace Duo.Views.Pages
             this.ViewModel = App.ServiceProvider.GetRequiredService<SignUpViewModel>();
             this.DataContext = this.ViewModel;
         }
+
+        /// <summary>
+        /// Gets the ViewModel for this page.
+        /// </summary>
+        public SignUpViewModel ViewModel { get; private set; }
 
         /// <summary>
         /// Handles the create user button click event.
