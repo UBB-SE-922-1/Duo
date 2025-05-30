@@ -48,7 +48,7 @@
 
         @if (!Model.IsEnrolled)
         {
-            <form asp-controller="Course" asp-action="Enroll" method="post" class="me-3">
+            <form method="post" action="/Course/Enroll" class="me-3">
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="id" value="@Model.Course.CourseId" />
                 <button type="submit" class="btn btn-primary">Enroll</button>
