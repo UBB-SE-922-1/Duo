@@ -557,6 +557,12 @@ namespace Duo.ViewModels
                         RaiseErrorMessage("Progression Error", "Exam ID does not match section's final exam.");
                         return;
                     }
+                    bool isExamCompleted = await quizService.IsExamCompleted(user.UserId, ExamId);
+                    if (isExamCompleted)
+                    {
+                        RaiseErrorMessage("Progression Error", "Exam already completed.");
+                        return;
+                    }
 
                     if (CurrentExam.SectionId == null)
                     {
@@ -574,6 +580,20 @@ namespace Duo.ViewModels
                     if (CurrentQuiz == null)
                     {
                         RaiseErrorMessage("Progression Error", "Current quiz is not set.");
+                        return;
+                    }
+                    int ct = 0;
+                    foreach (Quiz q in currentSectionQuizzes)
+                    {
+                        bool isCompleted = await quizService.IsQuizCompleted(user.UserId, q.Id);
+                        if (isCompleted)
+                        {
+                            ct++;
+                        }
+                    }
+                    if (ct == currentSectionQuizzes.Count)
+                    {
+                        RaiseErrorMessage("Progression Error", "All quizzes already completed.");
                         return;
                     }
                     if (CurrentQuiz.Id != QuizId)
