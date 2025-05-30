@@ -24,7 +24,7 @@ namespace WebServerTest.Controllers
         {
             // Fetch the module details
             var module = await _courseService.GetModuleAsync(id);
-            var userId = 1;
+            var userId = HttpContext.Session.GetInt32("UserId") ?? 0;
 
             // Get the necessary details
             var timeSpent = await _courseService.GetTimeSpentAsync(userId, module.CourseId);
@@ -80,7 +80,7 @@ namespace WebServerTest.Controllers
         [HttpPost]
         public async Task<IActionResult> Complete(int id)
         {
-            var userId = 1;
+            var userId = HttpContext.Session.GetInt32("UserId") ?? 0;
             var module = await _courseService.GetModuleAsync(id);
             var courseId = module.CourseId;
             var CourseCompletionRewardCoins = 50;
