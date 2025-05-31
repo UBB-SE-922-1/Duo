@@ -96,20 +96,19 @@ namespace WebServerTest.Controllers
                 {
                     if (await _courseService.ClaimCompletionRewardAsync(userId, courseId, CourseCompletionRewardCoins))
                     {
-                        string message = $"Congratulations! You have completed all required modules in this course. {CourseCompletionRewardCoins} coins have been added to your balance.";
-                        // alert(message)
+                        TempData["CompletionReward"] = $"Congratulations! You have completed all required modules in this course. {CourseCompletionRewardCoins} coins have been added to your balance.";
                     }
 
-                    if (await _courseService.ClaimTimedRewardAsync(userId, courseId, totalSecondsSpentOnCourse, CourseCompletionRewardCoins))
+                    if (await _courseService.ClaimTimedRewardAsync(userId, courseId, totalSecondsSpentOnCourse, TimedCompletionRewardCoins))
                     {
-                        string message = $"Congratulations! You completed the course within the time limit. {TimedCompletionRewardCoins} coins have been added to your balance.";
-                        // alert(message)
+                        TempData["TimedReward"] = $"Congratulations! You completed the course within the time limit. {TimedCompletionRewardCoins} coins have been added to your balance.";
                     }
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine($"Error completing module: {e.Message}");
+                TempData["Error"] = "An error occurred while completing the module.";
             }
             return RedirectToAction("Details", "Module", new { id });
         }
