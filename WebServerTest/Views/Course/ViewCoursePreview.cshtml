@@ -128,7 +128,6 @@
 			}
 		}
 	}
-
 	// Converts "hh:mm:ss" or "mm:ss" to seconds
 	function parseTimeString(timeStr) {
 		const parts = timeStr.split(':').map(Number);
@@ -191,3 +190,16 @@
 		}
 	});
 </script>
+
+@section Scripts {
+	<script>
+		@if (TempData["Error"] != null)
+		{
+			<text>alert('@TempData["Error"]');</text>
+		}
+		@if (TempData["Notification"] != null)
+		{
+			<text>alert('@TempData["Notification"]');</text>
+		}
+	</script>
+}
