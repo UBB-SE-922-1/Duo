@@ -111,7 +111,7 @@ namespace WebServerTest.Controllers
             {
                 Console.WriteLine($"Error completing module: {e.Message}");
             }
-            return RedirectToRoute("Module", new { id });
+            return RedirectToAction("Details", "Module", new { id });
         }
 
         private async Task<Boolean> IsCourseCompleted(int userId, int courseId)
