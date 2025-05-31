@@ -66,6 +66,7 @@ namespace WebServerTest.Controllers
                     CourseId = id,  // Course ID is still relevant for context
                     IsCompleted = isCompleted,
                     IsUnlocked = isUnlocked,
+                    IsBonus = module.IsBonus,
                     TimeSpent = await _courseService.GetTimeSpentAsync(userId, id).ContinueWith(t =>
                         TimeSpan.FromSeconds(t.Result).ToString(@"hh\:mm\:ss")), // Format time spent
                     CoinBalance = coinBalance.ToString()  // Assuming coin balance is an integer
