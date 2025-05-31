@@ -20,6 +20,7 @@ namespace WebServerTest.Controllers
             _coinsService = coinsService;
         }
 
+        [HttpGet("/Module/{id}")]
         public async Task<IActionResult> Details(int id)
         {
             // Fetch the module details
