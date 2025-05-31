@@ -92,7 +92,7 @@ namespace WebServerTest.Controllers
             {
                 await _courseService.CompleteModuleAsync(userId, id, courseId);
 
-                if (await IsCourseCompleted(userId, courseId))
+                if (await IsCourseCompleted(userId, courseId) && !module.IsBonus)
                 {
                     if (await _courseService.ClaimCompletionRewardAsync(userId, courseId, CourseCompletionRewardCoins))
                     {
@@ -113,11 +113,60 @@ namespace WebServerTest.Controllers
             return RedirectToAction("Details", "Module", new { id });
         }
 
+        [HttpGet("/Module/PurchaseBonusModule")]
+        public async Task<IActionResult> PurchaseBonusModule(int moduleId)
+        {
+            var userId = HttpContext.Session.GetInt32("UserId") ?? 0;
+            if (userId == 0)
+            {
+                TempData["Error"] = "You must be logged in to purchase modules.";
+                return RedirectToAction("Login", "User");
+            }
+
+            var module = await _courseService.GetModuleAsync(moduleId);
+
+            if (!module.IsBonus)
+            {
+                TempData["Error"] = "This module is not a bonus module.";
+                return RedirectToAction("Preview", "Course", new { id = module.CourseId });
+            }
+
+            // ✅ Check if the user is enrolled
+            var isEnrolled = await _courseService.IsUserEnrolledAsync(userId, module.CourseId);
+            if (!isEnrolled)
+            {
+                TempData["Error"] = "You must be enrolled in the course to purchase bonus modules.";
+                return RedirectToAction("CoursePreview", "Course", new { id = module.CourseId });
+            }
+
+            // ✅ Check if all required modules are completed
+            var isCourseCompleted = await IsCourseCompleted(userId, module.CourseId);
+            if (!isCourseCompleted)
+            {
+                TempData["Error"] = "You must complete all required modules before purchasing bonus modules.";
+                return RedirectToAction("CoursePreview", "Course", new { id = module.CourseId });
+            }
+
+            // Attempt purchase
+            var success = await _courseService.BuyBonusModuleAsync(userId, moduleId);
+            if (success)
+            {
+                TempData["Notification"] = "Bonus module purchased successfully!";
+            }
+            else
+            {
+                TempData["Error"] = "Not enough coins or module already unlocked.";
+            }
+
+            return RedirectToAction("CoursePreview", "Course", new { id = module.CourseId });
+        }
+
         private async Task<Boolean> IsCourseCompleted(int userId, int courseId)
         {
             var completedModulesCount = await _courseService.GetCompletedModulesCountAsync(userId, courseId);
             var requiredModulesCount = await _courseService.GetRequiredModulesCountAsync(courseId);
-            return completedModulesCount >= requiredModulesCount;
+            return completedModulesCount == requiredModulesCount;
         }
+
     }
 }
