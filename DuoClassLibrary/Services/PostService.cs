@@ -526,9 +526,13 @@ namespace DuoClassLibrary.Services
                 // Filter by hashtags if needed and not "All"
                 if (selectedHashtags.Count > DEFAULT_COUNT && !selectedHashtags.Contains("All"))
                 {
-                    filteredPosts = filteredPosts.Where(p => 
-                        p.Hashtags != null && 
-                        p.Hashtags.Any(h => selectedHashtags.Contains(h)));
+                    // Partial match: treat each selectedHashtag as a search term
+                    filteredPosts = filteredPosts.Where(p =>
+                        p.Hashtags != null &&
+                        selectedHashtags.Any(search =>
+                            p.Hashtags.Any(h => h != null && h.ToLower().Contains(search.ToLower()))
+                        )
+                    );
                 }
 
                 // Apply text filtering if needed

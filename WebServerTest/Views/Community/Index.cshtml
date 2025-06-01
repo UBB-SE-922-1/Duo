@@ -15,7 +15,11 @@
         <div class="alert alert-danger">@TempData["Error"]</div>
     }
 
-    <!-- Hashtag Filter -->
+    <!-- Hashtag Search and Filter -->
+    <form method="get" asp-action="Index" class="d-inline me-2">
+        <input type="text" name="hashtags" class="form-control d-inline w-auto" placeholder="Search hashtag..." style="display:inline-block; width:200px;" />
+        <button type="submit" class="btn btn-outline-primary ms-1">Search</button>
+    </form>
     <div class="d-flex flex-wrap gap-2 align-items-center mb-3 mt-2">
         <a href="@Url.Action("Index", new { hashtags = (string[])null, categoryId = Model.SelectedCategoryId })" class="btn @(Model.SelectedHashtags.Count == 0 ? "btn-primary" : "btn-outline-primary")">All Posts</a>
         <a href="@Url.Action("AddPost", "Community")" class="btn btn-success">Add Post</a>
