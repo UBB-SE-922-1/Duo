@@ -16,20 +16,37 @@
     }
 
     <!-- Hashtag Search and Filter -->
-    <form method="get" asp-action="Index" class="d-inline me-2">
-        <input type="text" name="hashtags" class="form-control d-inline w-auto" placeholder="Search hashtag..." style="display:inline-block; width:200px;" />
-        <button type="submit" class="btn btn-outline-primary ms-1">Search</button>
-    </form>
-    <div class="d-flex flex-wrap gap-2 align-items-center mb-3 mt-2">
-        <a href="@Url.Action("Index", new { hashtags = (string[])null, categoryId = Model.SelectedCategoryId })" class="btn @(Model.SelectedHashtags.Count == 0 ? "btn-primary" : "btn-outline-primary")">All Posts</a>
-        <a href="@Url.Action("AddPost", "Community")" class="btn btn-success">Add Post</a>
-        @{
-            var allPostTags = Model.Posts.SelectMany(p => p.Hashtags ?? new List<string>()).Distinct().ToList();
-        }
-        @foreach (var tag in allPostTags)
-        {
-            <a href="@Url.Action("Index", new { hashtags = new string[] { tag }, categoryId = Model.SelectedCategoryId })" class="badge rounded-pill bg-primary text-decoration-none" style="font-size:1rem;">#@tag</a>
-        }
+    <div class="mb-4">
+        <div class="d-flex flex-wrap gap-2 mb-2">
+            <a href="@Url.Action("Index", new { hashtags = (string[])null, categoryId = Model.SelectedCategoryId })" 
+               class="btn @(Model.SelectedHashtags.Count == 0 ? "btn-primary" : "btn-outline-primary")">
+                All Posts
+            </a>
+            <a href="@Url.Action("AddPost", "Community")" class="btn btn-success">Add Post</a>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            @foreach (var hashtag in Model.AllHashtags)
+            {
+                var isSelected = Model.SelectedHashtags.Contains(hashtag.Tag);
+                var newHashtags = Model.SelectedHashtags.ToList();
+                if (isSelected)
+                {
+                    newHashtags.Remove(hashtag.Tag);
+                }
+                else
+                {
+                    newHashtags.Add(hashtag.Tag);
+                }
+
+                <a href="@Url.Action("Index", new { 
+                    hashtags = newHashtags.ToArray(), 
+                    categoryId = Model.SelectedCategoryId 
+                })" 
+                   class="btn @(isSelected ? "btn-primary" : "btn-outline-primary")">
+                    #@hashtag.Tag
+                </a>
+            }
+        </div>
     </div>
 
     <!-- Posts -->
