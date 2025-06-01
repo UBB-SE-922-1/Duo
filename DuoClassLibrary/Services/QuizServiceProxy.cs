@@ -24,7 +24,11 @@ namespace DuoClassLibrary.Services
 
         public QuizServiceProxy(HttpClient httpClient)
         {
-            this.httpClient = httpClient;
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            this.httpClient = new HttpClient(handler);
         }
 
         public async Task<List<Quiz>> GetAsync()

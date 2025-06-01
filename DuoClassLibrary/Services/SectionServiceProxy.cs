@@ -32,7 +32,11 @@ namespace DuoClassLibrary.Services
         /// <param name="httpClient">HTTP client used to call the backend API.</param>
         public SectionServiceProxy(HttpClient httpClient)
         {
-            this.httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            this.httpClient = new HttpClient(handler);
         }
 
         public async Task<int> AddSection(Section section)

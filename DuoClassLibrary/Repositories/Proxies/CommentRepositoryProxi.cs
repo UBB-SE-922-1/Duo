@@ -10,7 +10,11 @@ public class CommentRepositoryProxi : ICommentRepository, IDisposable
 
     public CommentRepositoryProxi()
     {
-        _httpClient = new HttpClient();
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        _httpClient = new HttpClient(handler);
     }
 
     public async Task<Comment?> GetCommentById(int commentId)

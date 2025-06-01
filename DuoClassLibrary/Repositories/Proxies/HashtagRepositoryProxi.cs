@@ -16,7 +16,11 @@ namespace DuoClassLibrary.Repositories.Proxies
 
         public HashtagRepositoryProxi()
         {
-            _httpClient = new HttpClient();
+            var handler = new HttpClientHandler
+            {
+                ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            };
+            _httpClient = new HttpClient(handler);
         }
         public async Task<int> CreateHashtag(Hashtag hashtag)
         {

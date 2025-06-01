@@ -8,6 +8,6 @@ namespace DuoClassLibrary.Constants
 {
     internal class Environment
     {
-        public const string BaseUrl = "https://localhost:7174/api/";
+        public const string BaseUrl = "https://172.30.252.211:7174/api/";
     }
 }
