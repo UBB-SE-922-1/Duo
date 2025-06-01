@@ -44,6 +44,20 @@ namespace Duo.Api.Controllers
             await _postRepository.DeletePost(id);
             return NoContent();
         }
+
+        [HttpPost("{id}/like")]
+        public async Task<IActionResult> Like(int id)
+        {
+            var posts = await _postRepository.GetPosts();
+            var post = posts.FirstOrDefault(p => p.Id == id);
+            if (post == null)
+                return NotFound("Post not found");
+
+            post.LikeCount++;
+            await _postRepository.UpdatePost(post);
+
+            return Ok();
+        }
     }
 }
 
