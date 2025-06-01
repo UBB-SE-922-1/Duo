@@ -76,6 +76,10 @@
 </form>
 
 <script>
+    document.addEventListener('timeUp', function() {
+		validateExercise();
+    })
+
     async function validateExercise() {
         const form = document.getElementById('exerciseForm');
         const submitButton = document.getElementById('submitButton');
