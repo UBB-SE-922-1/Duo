@@ -156,7 +156,8 @@ namespace Duo.Views.Components
                             FontSize = 16,
                             Foreground = textColor,
                             VerticalAlignment = VerticalAlignment.Center,
-                            Margin = new Thickness(4)
+                            Margin = new Thickness(4),
+                            TextWrapping = TextWrapping.Wrap,
                         };
                         QuestionElements.Add(textBlock);
                     }
